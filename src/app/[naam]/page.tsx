@@ -107,12 +107,7 @@ export default async function NaamPage({ params, searchParams }: Props) {
             >
               {ui.hero.cta}
             </a>
-            <ShareButton
-              naam={naam}
-              lang={lang}
-              label={ui.share.shareButton(naam)}
-              copiedLabel={ui.share.copied}
-            />
+            <ShareButton naam={naam} lang={lang} />
           </div>
         </div>
         <div className="absolute bottom-10 animate-bounce text-zinc-600">
