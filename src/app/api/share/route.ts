@@ -7,7 +7,10 @@ const SORTED_SET_KEY = "shares:leaderboard";
 const CACHE_TTL = 30; // seconds
 
 function getRedis() {
-  return Redis.fromEnv();
+  return new Redis({
+    url: process.env.KV_REST_API_URL!,
+    token: process.env.KV_REST_API_TOKEN!,
+  });
 }
 
 // POST: increment share count — 1 Redis command (ZINCRBY)
