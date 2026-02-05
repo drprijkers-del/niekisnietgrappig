@@ -55,8 +55,8 @@ export default function ShareButton({
 
   const getShareText = () =>
     lang === "en"
-      ? `${naam} is not funny. The proof is here:`
-      : `${naam} is niet grappig. Het bewijs is hier:`;
+      ? `Lmaooo ${naam} look 😂`
+      : `Hahaha ${naam} kijk 😂`;
 
   const trackShare = () => {
     const sid = getSessionId();
@@ -80,11 +80,14 @@ export default function ShareButton({
   const handleCopy = async () => {
     trackShare();
     const shareUrl = getShareUrl("copy");
+    const copyText = lang === "en"
+      ? `${naam} is not funny and it's now official 😂 ${shareUrl}`
+      : `${naam} is niet grappig en het is nu officieel 😂 ${shareUrl}`;
     try {
-      await navigator.clipboard.writeText(shareUrl);
+      await navigator.clipboard.writeText(copyText);
     } catch {
       const ta = document.createElement("textarea");
-      ta.value = shareUrl;
+      ta.value = copyText;
       document.body.appendChild(ta);
       ta.select();
       document.execCommand("copy");

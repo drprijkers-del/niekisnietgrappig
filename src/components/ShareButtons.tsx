@@ -83,11 +83,14 @@ export default function ShareButtons({
   const handleCopy = async () => {
     trackShare();
     const shareUrl = getShareUrl("copy");
+    const copyText = lang === "en"
+      ? `${naam} is not funny and it's now official 😂 ${shareUrl}`
+      : `${naam} is niet grappig en het is nu officieel 😂 ${shareUrl}`;
     try {
-      await navigator.clipboard.writeText(shareUrl);
+      await navigator.clipboard.writeText(copyText);
     } catch {
       const ta = document.createElement("textarea");
-      ta.value = shareUrl;
+      ta.value = copyText;
       document.body.appendChild(ta);
       ta.select();
       document.execCommand("copy");

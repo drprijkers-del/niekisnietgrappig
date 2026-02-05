@@ -178,7 +178,7 @@ export function getUI(lang: Lang = "nl") {
         copyLink: "Copy link",
         create: "Pick a new victim",
         shareText: (naam: string) =>
-          `${naam} is not funny. The proof is here:`,
+          `Lmaooo ${naam} look 😂`,
       },
       footer: {
         stichting: () =>
@@ -227,7 +227,7 @@ export function getUI(lang: Lang = "nl") {
       copyLink: "Kopieer link",
       create: "Kies een nieuw slachtoffer",
       shareText: (naam: string) =>
-        `${naam} is niet grappig. Het bewijs is hier:`,
+        `Hahaha ${naam} kijk 😂`,
     },
     footer: {
       stichting: () =>

@@ -103,8 +103,8 @@ export async function GET(request: Request) {
             }}
           >
             {isEN
-              ? `The proof is here. ${naam} is not funny and that is now official.`
-              : `Het bewijs is hier. ${naam} is niet grappig en dat is nu officieel.`}
+              ? `Officially researched. Irrefutably documented.`
+              : `Officieel onderzocht. Onomstotelijk vastgelegd.`}
           </div>
         </div>
 

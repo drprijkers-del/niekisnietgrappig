@@ -11,7 +11,7 @@ import ViewTracker from "@/components/ViewTracker";
 
 type Props = {
   params: Promise<{ naam: string }>;
-  searchParams: Promise<{ lang?: string; w?: string }>;
+  searchParams: Promise<{ lang?: string; w?: string; ref?: string }>;
 };
 
 export async function generateMetadata({
@@ -19,35 +19,50 @@ export async function generateMetadata({
   searchParams,
 }: Props): Promise<Metadata> {
   const { naam: rawNaam } = await params;
-  const { lang: langParam } = await searchParams;
+  const { lang: langParam, ref } = await searchParams;
   const lang: Lang = langParam === "en" ? "en" : "nl";
   const naam = capitalizeName(rawNaam);
 
   const isEN = lang === "en";
+
+  // Vary OG description based on referral source
+  const ogDescription = (() => {
+    if (ref === "wa") {
+      return isEN
+        ? `Someone shared this with you — for good reason. Know someone who isn't funny?`
+        : `Dit kreeg je doorgestuurd — en terecht. Ken jij ook iemand die niet grappig is?`;
+    }
+    if (ref === "copy") {
+      return isEN
+        ? `This is already making the rounds. Know someone who isn't funny?`
+        : `Dit gaat al rond. Ken jij ook iemand die niet grappig is?`;
+    }
+    return isEN
+      ? `Officially researched and documented. Know someone who isn't funny?`
+      : `Officieel onderzocht en vastgelegd. Ken jij ook iemand die niet grappig is?`;
+  })();
+
+  const ogTitle = isEN
+    ? `Is ${naam} funny? Science says no.`
+    : `Is ${naam} grappig? De wetenschap zegt nee.`;
 
   return {
     title: isEN
       ? `${naam} Is Not Funny`
       : `${naam} Is Niet Grappig`,
     description: isEN
-      ? `A scientifically backed website about why ${naam} is not funny.`
-      : `Een wetenschappelijk onderbouwde website over waarom ${naam} niet grappig is.`,
+      ? `Officially researched and documented. Know someone who isn't funny?`
+      : `Officieel onderzocht en vastgelegd. Ken jij ook iemand die niet grappig is?`,
     openGraph: {
-      title: isEN
-        ? `${naam} is not funny`
-        : `${naam} is niet grappig`,
-      description: isEN
-        ? `The proof is here. ${naam} is not funny and it's now official.`
-        : `Het bewijs is hier. ${naam} is niet grappig en dat is nu officieel.`,
+      title: ogTitle,
+      description: ogDescription,
       siteName: isEN ? "Is Not Funny" : "Is Niet Grappig",
       images: [
         {
           url: `/api/og?naam=${encodeURIComponent(rawNaam)}&lang=${lang}`,
           width: 1200,
           height: 630,
-          alt: isEN
-            ? `${naam} is not funny`
-            : `${naam} is niet grappig`,
+          alt: ogTitle,
         },
       ],
       locale: isEN ? "en_US" : "nl_NL",
@@ -55,12 +70,8 @@ export async function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title: isEN
-        ? `${naam} is not funny`
-        : `${naam} is niet grappig`,
-      description: isEN
-        ? `The proof is here. ${naam} is not funny.`
-        : `Het bewijs is hier. ${naam} is niet grappig.`,
+      title: ogTitle,
+      description: ogDescription,
       images: [`/api/og?naam=${encodeURIComponent(rawNaam)}&lang=${lang}`],
     },
   };
