@@ -5,8 +5,8 @@ export function middleware(request: NextRequest) {
   const url = request.nextUrl.clone();
 
   // Subdomain pattern for both domains
-  const nlMatch = hostname.match(/^([a-z0-9-]+)\.isnietgrappig\.com$/i);
-  const enMatch = hostname.match(/^([a-z0-9-]+)\.isntfunny\.com$/i);
+  const nlMatch = hostname.match(/^([^.]+)\.isnietgrappig\.com$/i);
+  const enMatch = hostname.match(/^([^.]+)\.isntfunny\.com$/i);
 
   const match = nlMatch || enMatch;
 
