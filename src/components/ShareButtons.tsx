@@ -3,6 +3,14 @@
 import { useState } from "react";
 import { getUI, Lang } from "@/lib/content";
 
+function getHomeUrl() {
+  if (typeof window === "undefined") return "/";
+  const hostname = window.location.hostname;
+  if (hostname.match(/\.isnietgrappig\.com$/)) return "https://isnietgrappig.com";
+  if (hostname.match(/\.isntfunny\.com$/)) return "https://isntfunny.com";
+  return "/";
+}
+
 function getShareUrl(ref: string) {
   const url = new URL(window.location.href);
   const hostname = url.hostname;
@@ -117,7 +125,7 @@ export default function ShareButtons({
             )}
           </button>
           <a
-            href="/"
+            href={getHomeUrl()}
             className="flex w-full items-center justify-center gap-2 rounded-full border border-zinc-700 px-6 py-3 font-medium transition-all hover:bg-white hover:text-black hover:border-white"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
