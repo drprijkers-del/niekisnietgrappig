@@ -18,13 +18,17 @@ export async function GET(request: NextRequest) {
   try {
     const redis = getRedis();
 
-    // Top 50 views and shares (name, score pairs)
-    const [viewsRaw, sharesRaw] = await Promise.all([
+    // Top 50 views, shares, and all refs (name, score pairs)
+    const [viewsRaw, sharesRaw, refsRaw] = await Promise.all([
       redis.zrange<string[]>("views:leaderboard", 0, 49, {
         rev: true,
         withScores: true,
       }),
       redis.zrange<string[]>("shares:leaderboard", 0, 49, {
+        rev: true,
+        withScores: true,
+      }),
+      redis.zrange<string[]>("refs:leaderboard", 0, -1, {
         rev: true,
         withScores: true,
       }),
@@ -41,16 +45,20 @@ export async function GET(request: NextRequest) {
 
     const views = parse(viewsRaw || []);
     const shares = parse(sharesRaw || []);
+    const refs = parse(refsRaw || []);
 
     const totalViews = views.reduce((sum, v) => sum + v.count, 0);
     const totalShares = shares.reduce((sum, s) => sum + s.count, 0);
+    const totalRefs = refs.reduce((sum, r) => sum + r.count, 0);
 
     return NextResponse.json({
       totalViews,
       totalShares,
+      totalRefs,
       uniqueNames: views.length,
       topViewed: views.slice(0, 20),
       topShared: shares.slice(0, 20),
+      referrals: refs,
     });
   } catch {
     return NextResponse.json({ error: "Failed to fetch stats" }, { status: 500 });

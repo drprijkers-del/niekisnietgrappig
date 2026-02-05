@@ -2,6 +2,13 @@
 
 import { useState } from "react";
 
+function getShareUrl(ref: string) {
+  const url = new URL(window.location.href);
+  url.searchParams.delete("ref");
+  url.searchParams.set("ref", ref);
+  return url.toString();
+}
+
 export default function ShareButton({
   naam,
   lang,
@@ -28,19 +35,21 @@ export default function ShareButton({
 
   const handleWhatsApp = () => {
     trackShare();
+    const shareUrl = getShareUrl("wa");
     window.open(
-      `https://wa.me/?text=${encodeURIComponent(`${getShareText()} ${window.location.href}`)}`,
+      `https://wa.me/?text=${encodeURIComponent(`${getShareText()} ${shareUrl}`)}`,
       "_blank"
     );
   };
 
   const handleCopy = async () => {
     trackShare();
+    const shareUrl = getShareUrl("copy");
     try {
-      await navigator.clipboard.writeText(window.location.href);
+      await navigator.clipboard.writeText(shareUrl);
     } catch {
       const ta = document.createElement("textarea");
-      ta.value = window.location.href;
+      ta.value = shareUrl;
       document.body.appendChild(ta);
       ta.select();
       document.execCommand("copy");
