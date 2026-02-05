@@ -7,6 +7,10 @@ const REFS_KEY = "refs:leaderboard";
 const DOMAIN_VIEWS_KEY = "domains:views";
 const DOMAIN_CLICKS_KEY = "domains:clicks";
 
+// Daily leaderboard keys (expire after 32 days)
+const DAILY_VIEWS_TTL = 2764800; // 32 days
+const DAILY_CLICKS_TTL = 2764800;
+
 const ALLOWED_REFS = new Set(["wa", "copy", "x", "ig", "tiktok", "fb", "email"]);
 
 function getDomain(request: NextRequest): "nl" | "en" | null {
@@ -33,6 +37,16 @@ function dayKey() {
   return `dv:${d.getUTCFullYear()}${String(d.getUTCMonth() + 1).padStart(2, "0")}${String(d.getUTCDate()).padStart(2, "0")}`;
 }
 
+function dailyViewsKey() {
+  const d = new Date();
+  return `views:daily:${d.getUTCFullYear()}${String(d.getUTCMonth() + 1).padStart(2, "0")}${String(d.getUTCDate()).padStart(2, "0")}`;
+}
+
+function dailyClicksKey() {
+  const d = new Date();
+  return `clicks:daily:${d.getUTCFullYear()}${String(d.getUTCMonth() + 1).padStart(2, "0")}${String(d.getUTCDate()).padStart(2, "0")}`;
+}
+
 export async function POST(request: NextRequest) {
   try {
     const { naam, ref, sid } = await request.json();
@@ -43,9 +57,13 @@ export async function POST(request: NextRequest) {
     const redis = getRedis();
     const pipeline = redis.pipeline();
     const hk = hourKey();
+    const dvk = dailyViewsKey();
+    const dck = dailyClicksKey();
 
     pipeline.zincrby(VIEWS_KEY, 1, naam.toLowerCase());
+    pipeline.zincrby(dvk, 1, naam.toLowerCase());
     pipeline.hincrby(hk, "views", 1);
+    pipeline.expire(dvk, DAILY_VIEWS_TTL);
 
     if (sid && typeof sid === "string") {
       pipeline.pfadd("visitors", sid);
@@ -60,8 +78,10 @@ export async function POST(request: NextRequest) {
 
     if (ref && typeof ref === "string" && ALLOWED_REFS.has(ref)) {
       pipeline.zincrby(CLICKS_KEY, 1, naam.toLowerCase());
+      pipeline.zincrby(dck, 1, naam.toLowerCase());
       pipeline.zincrby(REFS_KEY, 1, ref);
       pipeline.hincrby(hk, "clicks", 1);
+      pipeline.expire(dck, DAILY_CLICKS_TTL);
       if (domain) {
         pipeline.zincrby(DOMAIN_CLICKS_KEY, 1, domain);
       }

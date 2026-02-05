@@ -3,13 +3,53 @@ import { Redis } from "@upstash/redis";
 
 export const runtime = "edge";
 
+type Period = "today" | "week" | "month" | "year" | "all";
+
 function capitalize(s: string) {
   return s.replace(/(^|[\s'-])(\S)/g, (_, sep, c) => sep + c.toUpperCase());
+}
+
+function pad(n: number) {
+  return String(n).padStart(2, "0");
+}
+
+function getDayKeys(days: number): string[] {
+  const keys: string[] = [];
+  const now = Date.now();
+  for (let i = 0; i < days; i++) {
+    const d = new Date(now - i * 86400_000);
+    keys.push(`views:daily:${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(d.getUTCDate())}`);
+  }
+  return keys;
+}
+
+function getPeriodTitle(period: Period): string {
+  switch (period) {
+    case "today": return "Wie is vandaag het minst grappig?";
+    case "week": return "Wie is deze week het minst grappig?";
+    case "month": return "Wie is deze maand het minst grappig?";
+    case "year": return "Wie is dit jaar het minst grappig?";
+    case "all": return "Wie is het minst grappig?";
+  }
+}
+
+function getPeriodSubtitle(period: Period): string {
+  switch (period) {
+    case "today": return "Vandaag";
+    case "week": return "Deze week";
+    case "month": return "Deze maand";
+    case "year": return "Dit jaar";
+    case "all": return "Leaderboard";
+  }
 }
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const key = searchParams.get("key");
+  const periodParam = searchParams.get("period") as Period | null;
+  const period: Period = ["today", "week", "month", "year", "all"].includes(periodParam || "")
+    ? (periodParam as Period)
+    : "all";
 
   if (!key || key !== process.env.STATS_SECRET) {
     return new Response("Unauthorized", { status: 401 });
@@ -20,14 +60,39 @@ export async function GET(request: Request) {
     token: process.env.KV_REST_API_TOKEN!,
   });
 
-  // Fetch top 10 by views
-  const viewsRaw = await redis.zrange<string[]>(
-    "views:leaderboard", 0, 9, { rev: true, withScores: true }
-  );
+  let entries: { naam: string; views: number }[] = [];
 
-  const entries: { naam: string; views: number }[] = [];
-  for (let i = 0; i < (viewsRaw?.length || 0); i += 2) {
-    entries.push({ naam: viewsRaw[i], views: Number(viewsRaw[i + 1]) });
+  if (period === "all") {
+    // All-time leaderboard
+    const viewsRaw = await redis.zrange<string[]>(
+      "views:leaderboard", 0, 9, { rev: true, withScores: true }
+    );
+    for (let i = 0; i < (viewsRaw?.length || 0); i += 2) {
+      entries.push({ naam: viewsRaw[i], views: Number(viewsRaw[i + 1]) });
+    }
+  } else {
+    // Period-based leaderboard - aggregate daily keys
+    const days = period === "today" ? 1 : period === "week" ? 7 : period === "month" ? 30 : 365;
+    const dayKeys = getDayKeys(days);
+
+    // Use ZUNIONSTORE to combine daily leaderboards, or fall back to manual aggregation
+    const totals = new Map<string, number>();
+
+    for (const dk of dayKeys) {
+      const dayData = await redis.zrange<string[]>(dk, 0, -1, { withScores: true });
+      if (dayData) {
+        for (let i = 0; i < dayData.length; i += 2) {
+          const naam = dayData[i];
+          const count = Number(dayData[i + 1]);
+          totals.set(naam, (totals.get(naam) || 0) + count);
+        }
+      }
+    }
+
+    entries = [...totals.entries()]
+      .map(([naam, views]) => ({ naam, views }))
+      .sort((a, b) => b.views - a.views)
+      .slice(0, 5);
   }
 
   const topViews = entries[0]?.views || 1;
@@ -71,10 +136,10 @@ export async function GET(request: Request) {
                 letterSpacing: "0.25em",
               }}
             >
-              Leaderboard
+              {getPeriodSubtitle(period)}
             </div>
             <div style={{ fontSize: 36, fontWeight: 900, color: "#ffffff", marginTop: 6, display: "flex" }}>
-              Wie is het minst grappig?
+              {getPeriodTitle(period)}
             </div>
           </div>
           <div style={{ fontSize: 16, color: "#52525b", display: "flex" }}>
