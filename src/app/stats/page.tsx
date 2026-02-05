@@ -63,6 +63,41 @@ export default async function StatsPage({ searchParams }: Props) {
 
   const rangeLabel = range === "1h" ? "Last hour" : range === "24h" ? "Last 24h" : "Last 7 days";
 
+  // Calculate trends by comparing last 2 hours to previous 2 hours
+  const recentHours = d.hourly.slice(-2);
+  const previousHours = d.hourly.slice(-4, -2);
+
+  const sumRecent = (field: "views" | "clicks" | "shares") =>
+    recentHours.reduce((sum, h) => sum + h[field], 0);
+  const sumPrevious = (field: "views" | "clicks" | "shares") =>
+    previousHours.reduce((sum, h) => sum + h[field], 0);
+
+  const getTrend = (recent: number, previous: number): "up" | "down" | "flat" => {
+    if (previous === 0) return recent > 0 ? "up" : "flat";
+    const change = (recent - previous) / previous;
+    if (change > 0.1) return "up";
+    if (change < -0.1) return "down";
+    return "flat";
+  };
+
+  // Trends for key metrics
+  const viewsTrend = getTrend(sumRecent("views"), sumPrevious("views"));
+  const clicksTrend = getTrend(sumRecent("clicks"), sumPrevious("clicks"));
+  const sharesTrend = getTrend(sumRecent("shares"), sumPrevious("shares"));
+
+  // For ratios, calculate based on recent vs previous period
+  const recentShareRate = sumRecent("views") > 0
+    ? (sumRecent("shares") / sumRecent("views")) * 100 : 0;
+  const prevShareRate = sumPrevious("views") > 0
+    ? (sumPrevious("shares") / sumPrevious("views")) * 100 : 0;
+  const shareRateTrend = getTrend(recentShareRate, prevShareRate);
+
+  const recentViralK = sumRecent("shares") > 0
+    ? sumRecent("clicks") / sumRecent("shares") : 0;
+  const prevViralK = sumPrevious("shares") > 0
+    ? sumPrevious("clicks") / sumPrevious("shares") : 0;
+  const viralKTrend = getTrend(recentViralK, prevViralK);
+
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-[#ededed] font-sans overflow-x-hidden">
       <div className="mx-auto max-w-5xl px-4 sm:px-6 py-12 overflow-x-hidden">
@@ -131,6 +166,7 @@ export default async function StatsPage({ searchParams }: Props) {
               label="Visitors"
               value={d.uniqueVisitorsAllTime.toLocaleString()}
               sub={`${d.rangeVisitors.toLocaleString()} in ${rangeLabel.toLowerCase()}`}
+              trend={viewsTrend}
             />
             <KPICard
               label="Share rate"
@@ -138,11 +174,7 @@ export default async function StatsPage({ searchParams }: Props) {
               sub="sharers / visitors"
               status={shareRateStatus(d.shareRate)}
               target={{ label: "15%", current: d.shareRate, goal: 15 }}
-              tips={shareRateStatus(d.shareRate) !== "good" ? [
-                "Make share button bigger or more prominent",
-                "Add share CTA after the punchline section",
-                "Pre-fill a funnier share text",
-              ] : undefined}
+              trend={shareRateTrend}
             />
             <KPICard
               label="Viral coeff (K)"
@@ -150,43 +182,25 @@ export default async function StatsPage({ searchParams }: Props) {
               sub="clicks / sharers"
               status={viralCoeffStatus(d.viralCoeff)}
               target={{ label: "1.00", current: d.viralCoeff, goal: 1 }}
-              tips={viralCoeffStatus(d.viralCoeff) !== "good" ? [
-                "Improve OG image / WhatsApp preview",
-                "Make the share link text more clickable",
-                "Add curiosity: 'See why {name} is not funny'",
-              ] : undefined}
+              trend={viralKTrend}
             />
             <KPICard
               label="Clicks / share"
               value={d.clicksPerShare.toFixed(2)}
               status={clicksPerShareStatus(d.clicksPerShare)}
               target={{ label: "2.00", current: d.clicksPerShare, goal: 2 }}
-              tips={clicksPerShareStatus(d.clicksPerShare) !== "good" ? [
-                "Test different share text in WhatsApp",
-                "Make the OG image more intriguing",
-                "Add the person's name in the link preview title",
-              ] : undefined}
+              trend={clicksTrend}
             />
             <KPICard
               label="Time to share"
               value={d.avgTimeToShare !== null ? `${d.avgTimeToShare}s` : "—"}
               status={ttsStatus(d.avgTimeToShare)}
               target={d.avgTimeToShare !== null ? { label: "&le;30s", current: d.avgTimeToShare, goal: 30, invert: true } : undefined}
-              tips={ttsStatus(d.avgTimeToShare) === "bad" ? [
-                "Move share buttons higher on the page",
-                "Reduce content before the share CTA",
-                "Make the hero section more immediately funny",
-              ] : undefined}
             />
             <KPICard
               label="Names / session"
               value={d.namesPerSession.toFixed(1)}
               target={{ label: "2.0", current: d.namesPerSession, goal: 2 }}
-              tips={d.namesPerSession < 2 ? [
-                "Make 'new victim' button more visible",
-                "Show suggested names at the bottom",
-                "Add 'Try another name' after sharing",
-              ] : undefined}
             />
           </div>
         </section>
@@ -386,14 +400,14 @@ function KPICard({
   sub,
   status,
   target,
-  tips,
+  trend,
 }: {
   label: string;
   value: string;
   sub?: string;
   status?: Status;
   target?: { label: string; current: number; goal: number; invert?: boolean };
-  tips?: string[];
+  trend?: "up" | "down" | "flat";
 }) {
   const border = status ? statusColor(status).split(" ")[1] : "border-zinc-800";
   const textColor = status ? statusColor(status).split(" ")[0] : "";
@@ -404,11 +418,31 @@ function KPICard({
     : 0;
   const barColor = status === "good" ? "bg-emerald-400" : status === "ok" ? "bg-amber-400" : "bg-red-400";
 
+  const TrendIcon = () => {
+    if (!trend) return null;
+    if (trend === "up") return (
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-emerald-400">
+        <polyline points="18 15 12 9 6 15" />
+      </svg>
+    );
+    if (trend === "down") return (
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-red-400">
+        <polyline points="6 9 12 15 18 9" />
+      </svg>
+    );
+    return (
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-zinc-500">
+        <line x1="5" y1="12" x2="19" y2="12" />
+      </svg>
+    );
+  };
+
   return (
     <div className={`rounded-xl border bg-zinc-900/50 p-4 ${border}`}>
       <div className="flex items-center gap-2">
         {status && <div className={`w-2 h-2 rounded-full ${statusDot(status)}`} />}
         <div className={`text-2xl font-bold tabular-nums ${textColor}`}>{value}</div>
+        <TrendIcon />
       </div>
       <div className="mt-1 text-xs text-zinc-500">{label}</div>
       {sub && <div className="mt-0.5 text-[10px] text-zinc-700">{sub}</div>}
@@ -425,15 +459,6 @@ function KPICard({
             <span>target: {target.label}</span>
           </div>
         </div>
-      )}
-      {tips && tips.length > 0 && (
-        <ul className="mt-2 space-y-0.5 hidden sm:block">
-          {tips.map((tip, i) => (
-            <li key={i} className="text-[10px] text-zinc-600 leading-tight">
-              <span className="text-amber-500 mr-1">&rarr;</span>{tip}
-            </li>
-          ))}
-        </ul>
       )}
     </div>
   );

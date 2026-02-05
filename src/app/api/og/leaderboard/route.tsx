@@ -56,28 +56,28 @@ export async function GET(request: Request) {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            paddingLeft: 50,
-            paddingRight: 50,
-            paddingTop: 32,
+            paddingLeft: 60,
+            paddingRight: 60,
+            paddingTop: 28,
             paddingBottom: 20,
           }}
         >
           <div style={{ display: "flex", flexDirection: "column" }}>
             <div
               style={{
-                fontSize: 16,
+                fontSize: 18,
                 color: "#71717a",
                 textTransform: "uppercase",
-                letterSpacing: "0.3em",
+                letterSpacing: "0.25em",
               }}
             >
               Leaderboard
             </div>
-            <div style={{ fontSize: 28, fontWeight: 900, color: "#ffffff", marginTop: 4, display: "flex" }}>
+            <div style={{ fontSize: 36, fontWeight: 900, color: "#ffffff", marginTop: 6, display: "flex" }}>
               Wie is het minst grappig?
             </div>
           </div>
-          <div style={{ fontSize: 14, color: "#3f3f46", display: "flex" }}>
+          <div style={{ fontSize: 16, color: "#52525b", display: "flex" }}>
             {dateStr}
           </div>
         </div>
@@ -85,35 +85,36 @@ export async function GET(request: Request) {
         {/* Divider */}
         <div style={{ width: "100%", height: 1, backgroundColor: "#27272a", display: "flex" }} />
 
-        {/* Leaderboard rows */}
+        {/* Leaderboard rows — only top 5 for readability */}
         <div
           style={{
             display: "flex",
             flexDirection: "column",
             flexGrow: 1,
-            paddingLeft: 50,
-            paddingRight: 50,
-            paddingTop: 16,
-            paddingBottom: 16,
+            paddingLeft: 60,
+            paddingRight: 60,
+            paddingTop: 12,
+            paddingBottom: 12,
+            justifyContent: "center",
           }}
         >
-          {entries.map((entry, i) => (
+          {entries.slice(0, 5).map((entry, i) => (
             <div
               key={entry.naam}
               style={{
                 display: "flex",
                 alignItems: "center",
-                paddingTop: i === 0 ? 10 : 7,
-                paddingBottom: i === 0 ? 10 : 7,
+                paddingTop: i === 0 ? 14 : 10,
+                paddingBottom: i === 0 ? 14 : 10,
               }}
             >
               {/* Rank */}
               <div
                 style={{
-                  fontSize: i === 0 ? 28 : 20,
+                  fontSize: i === 0 ? 48 : 32,
                   fontWeight: 900,
                   color: i === 0 ? "#ef4444" : i < 3 ? "#a1a1aa" : "#52525b",
-                  width: 50,
+                  width: 70,
                   display: "flex",
                 }}
               >
@@ -123,8 +124,8 @@ export async function GET(request: Request) {
               {/* Name */}
               <div
                 style={{
-                  fontSize: i === 0 ? 28 : 20,
-                  fontWeight: i === 0 ? 900 : 600,
+                  fontSize: i === 0 ? 48 : 32,
+                  fontWeight: i === 0 ? 900 : 700,
                   color: i === 0 ? "#ffffff" : "#d4d4d8",
                   flexGrow: 1,
                   display: "flex",
@@ -134,12 +135,12 @@ export async function GET(request: Request) {
               </div>
 
               {/* Bar + count */}
-              <div style={{ display: "flex", alignItems: "center", gap: 16, width: 320 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 20, width: 380 }}>
                 <div
                   style={{
                     display: "flex",
-                    width: 220,
-                    height: i === 0 ? 14 : 10,
+                    width: 260,
+                    height: i === 0 ? 20 : 14,
                     backgroundColor: "#1c1c1c",
                     borderRadius: 99,
                     overflow: "hidden",
@@ -157,10 +158,10 @@ export async function GET(request: Request) {
                 </div>
                 <div
                   style={{
-                    fontSize: i === 0 ? 22 : 16,
+                    fontSize: i === 0 ? 32 : 24,
                     fontWeight: 700,
                     color: i === 0 ? "#ef4444" : "#71717a",
-                    width: 80,
+                    width: 100,
                     textAlign: "right",
                     display: "flex",
                     justifyContent: "flex-end",
@@ -179,16 +180,16 @@ export async function GET(request: Request) {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            paddingLeft: 50,
-            paddingRight: 50,
-            paddingTop: 16,
-            paddingBottom: 16,
+            paddingLeft: 60,
+            paddingRight: 60,
+            paddingTop: 20,
+            paddingBottom: 20,
             borderTop: "1px solid #27272a",
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
             {/* Favicon inline */}
-            <svg width="28" height="28" viewBox="0 0 512 512">
+            <svg width="36" height="36" viewBox="0 0 512 512">
               <rect width="512" height="512" rx="96" fill="#f59e0b"/>
               <line x1="136" y1="148" x2="216" y2="164" stroke="#0a0a0a" strokeWidth="16" strokeLinecap="round"/>
               <line x1="376" y1="132" x2="296" y2="164" stroke="#0a0a0a" strokeWidth="16" strokeLinecap="round"/>
@@ -196,11 +197,11 @@ export async function GET(request: Request) {
               <circle cx="336" cy="208" r="38" fill="#0a0a0a"/>
               <rect x="144" y="328" width="224" height="24" rx="12" fill="#0a0a0a"/>
             </svg>
-            <div style={{ display: "flex", fontSize: 18, fontWeight: 700, color: "#52525b" }}>
+            <div style={{ display: "flex", fontSize: 22, fontWeight: 700, color: "#52525b" }}>
               isnietgrappig<span style={{ color: "#ef4444" }}>.com</span>
             </div>
           </div>
-          <div style={{ fontSize: 14, color: "#3f3f46" }}>
+          <div style={{ fontSize: 18, color: "#52525b" }}>
             Deel de waarheid
           </div>
         </div>
