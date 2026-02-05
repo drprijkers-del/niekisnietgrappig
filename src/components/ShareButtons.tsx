@@ -13,18 +13,28 @@ export default function ShareButtons({
   const [copied, setCopied] = useState(false);
   const ui = getUI(lang).share;
 
-  const shareUrl = typeof window !== "undefined" ? window.location.href : "";
-  const shareText = ui.shareText(naam);
-
   const handleShare = async () => {
-    if (navigator.share) {
-      await navigator.share({
-        title: lang === "en" ? `${naam} is not funny` : `${naam} is niet grappig`,
-        text: shareText,
-        url: shareUrl,
-      });
-    } else {
-      await navigator.clipboard.writeText(`${shareText} ${shareUrl}`);
+    const shareUrl = window.location.href;
+    const shareText = ui.shareText(naam);
+    const title =
+      lang === "en" ? `${naam} is not funny` : `${naam} is niet grappig`;
+
+    try {
+      if (navigator.share) {
+        await navigator.share({ title, text: shareText, url: shareUrl });
+      } else {
+        await navigator.clipboard.writeText(`${shareText} ${shareUrl}`);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      }
+    } catch {
+      // Fallback: copy manually via textarea trick
+      const textarea = document.createElement("textarea");
+      textarea.value = `${shareText} ${shareUrl}`;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textarea);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }
