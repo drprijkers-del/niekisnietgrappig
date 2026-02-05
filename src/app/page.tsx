@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import { getUI, Lang } from "@/lib/content";
 import NameForm from "@/components/NameForm";
 import LanguageToggle from "@/components/LanguageToggle";
@@ -5,6 +6,18 @@ import LanguageToggle from "@/components/LanguageToggle";
 type Props = {
   searchParams: Promise<{ lang?: string }>;
 };
+
+export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
+  const { lang: langParam } = await searchParams;
+  const isEN = langParam === "en";
+
+  return {
+    title: isEN ? "Is Not Funny" : "Is Niet Grappig",
+    description: isEN
+      ? "Discover the scientific evidence that someone is not funny."
+      : "Ontdek het wetenschappelijk bewijs dat iemand niet grappig is.",
+  };
+}
 
 export default async function LandingPage({ searchParams }: Props) {
   const { lang: langParam } = await searchParams;
