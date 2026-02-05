@@ -21,13 +21,28 @@ export function middleware(request: NextRequest) {
     return NextResponse.rewrite(url);
   }
 
-  // Root domain isntfunny.com → redirect to add ?lang=en if missing
-  if (
-    hostname.match(/^(www\.)?isntfunny\.com$/i) &&
-    !url.searchParams.has("lang")
-  ) {
-    url.searchParams.set("lang", "en");
-    return NextResponse.redirect(url);
+  // Root domain with path-based name → redirect to subdomain
+  const isRootNL = /^(www\.)?isnietgrappig\.com$/i.test(hostname);
+  const isRootEN = /^(www\.)?isntfunny\.com$/i.test(hostname);
+
+  if (isRootNL || isRootEN) {
+    const pathParts = url.pathname.split("/").filter(Boolean);
+    if (pathParts.length > 0) {
+      const naam = pathParts[0];
+      const baseDomain = isRootNL ? "isnietgrappig.com" : "isntfunny.com";
+      const rest = pathParts.slice(1).join("/");
+      const redirectUrl = new URL(`https://${naam}.${baseDomain}${rest ? `/${rest}` : ""}`);
+      url.searchParams.forEach((value, key) => {
+        redirectUrl.searchParams.set(key, value);
+      });
+      return NextResponse.redirect(redirectUrl, 301);
+    }
+
+    // Root isntfunny.com without path → add ?lang=en
+    if (isRootEN && !url.searchParams.has("lang")) {
+      url.searchParams.set("lang", "en");
+      return NextResponse.redirect(url);
+    }
   }
 
   return NextResponse.next();
