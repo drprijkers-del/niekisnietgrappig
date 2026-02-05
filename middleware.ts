@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export function middleware(request: NextRequest) {
   const hostname = request.headers.get("host") || "";
+  const url = request.nextUrl.clone();
 
   // Subdomain pattern for both domains
   const nlMatch = hostname.match(/^([a-z0-9-]+)\.isnietgrappig\.com$/i);
@@ -11,10 +12,8 @@ export function middleware(request: NextRequest) {
 
   if (match && match[1] !== "www") {
     const naam = match[1];
-    const url = request.nextUrl.clone();
     url.pathname = `/${naam}${url.pathname === "/" ? "" : url.pathname}`;
 
-    // Auto-set language based on domain
     if (enMatch && !url.searchParams.has("lang")) {
       url.searchParams.set("lang", "en");
     }
@@ -22,13 +21,13 @@ export function middleware(request: NextRequest) {
     return NextResponse.rewrite(url);
   }
 
-  // Root domain isntfunny.com without subdomain → default to English
-  if (hostname.match(/^(www\.)?isntfunny\.com$/i)) {
-    const url = request.nextUrl.clone();
-    if (!url.searchParams.has("lang")) {
-      url.searchParams.set("lang", "en");
-    }
-    return NextResponse.rewrite(url);
+  // Root domain isntfunny.com → redirect to add ?lang=en if missing
+  if (
+    hostname.match(/^(www\.)?isntfunny\.com$/i) &&
+    !url.searchParams.has("lang")
+  ) {
+    url.searchParams.set("lang", "en");
+    return NextResponse.redirect(url);
   }
 
   return NextResponse.next();
