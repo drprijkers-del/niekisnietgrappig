@@ -75,6 +75,9 @@ export async function generateMetadata({
       description: ogDescription,
       images: [`/api/og?naam=${encodeURIComponent(rawNaam)}&lang=${lang}`],
     },
+    other: {
+      "og:image:type": "image/png",
+    },
   };
 }
 
