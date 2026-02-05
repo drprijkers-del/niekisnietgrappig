@@ -174,14 +174,12 @@ export default async function NaamPage({ params, searchParams }: Props) {
             <p className="text-sm font-mono uppercase tracking-[0.3em] text-amber-400 animate-pulse">
               {isEN ? "ERROR 403 — ACCESS DENIED" : "FOUT 403 — TOEGANG GEWEIGERD"}
             </p>
-            <div className="w-full max-w-2xl mx-auto">
-              <h1 className="text-4xl font-black tracking-tight sm:text-6xl md:text-7xl">
-                {isEN ? "Nice try." : "Leuk geprobeerd."}
-              </h1>
-              <p className="text-right text-sm sm:text-base text-zinc-500 italic mt-2">
-                {isEN ? "he's actually kind of funny" : "hij is nu net wél grappig"}
-              </p>
-            </div>
+            <h1 className="text-4xl font-black tracking-tight sm:text-6xl md:text-7xl">
+              {isEN ? "Nice try." : "Leuk geprobeerd."}
+            </h1>
+            <p className="text-sm sm:text-base text-zinc-500 italic -mt-4">
+              {isEN ? "he's actually kind of funny... my creator, after all" : "hij is nu net wél grappig... mijn creator dan"}
+            </p>
             <div className="space-y-5 text-lg sm:text-xl text-zinc-300 leading-relaxed max-w-2xl mx-auto">
               <p>
                 {isEN
