@@ -186,8 +186,19 @@ export async function GET(request: Request) {
             borderTop: "1px solid #27272a",
           }}
         >
-          <div style={{ display: "flex", fontSize: 18, fontWeight: 700, color: "#52525b" }}>
-            isnietgrappig<span style={{ color: "#ef4444" }}>.com</span>
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            {/* Favicon inline */}
+            <svg width="28" height="28" viewBox="0 0 512 512">
+              <rect width="512" height="512" rx="96" fill="#f59e0b"/>
+              <line x1="136" y1="148" x2="216" y2="164" stroke="#0a0a0a" strokeWidth="16" strokeLinecap="round"/>
+              <line x1="376" y1="132" x2="296" y2="164" stroke="#0a0a0a" strokeWidth="16" strokeLinecap="round"/>
+              <circle cx="176" cy="208" r="28" fill="#0a0a0a"/>
+              <circle cx="336" cy="208" r="38" fill="#0a0a0a"/>
+              <rect x="144" y="328" width="224" height="24" rx="12" fill="#0a0a0a"/>
+            </svg>
+            <div style={{ display: "flex", fontSize: 18, fontWeight: 700, color: "#52525b" }}>
+              isnietgrappig<span style={{ color: "#ef4444" }}>.com</span>
+            </div>
           </div>
           <div style={{ fontSize: 14, color: "#3f3f46" }}>
             Deel de waarheid

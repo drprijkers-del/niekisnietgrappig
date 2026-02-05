@@ -84,8 +84,8 @@ export default function ShareButtons({
     trackShare();
     const shareUrl = getShareUrl("copy");
     const copyText = lang === "en"
-      ? `${naam} is not funny and it's now official 😂 ${shareUrl}`
-      : `${naam} is niet grappig en het is nu officieel 😂 ${shareUrl}`;
+      ? `${naam} is not funny and it's now official 😂 Check the evidence: ${shareUrl}`
+      : `${naam} is niet grappig en het is nu officieel 😂 Check hier de feiten: ${shareUrl}`;
     try {
       await navigator.clipboard.writeText(copyText);
     } catch {
