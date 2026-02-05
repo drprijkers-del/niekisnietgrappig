@@ -85,7 +85,7 @@ export default async function NaamPage({ params, searchParams }: Props) {
       {/* Hero */}
       <section className="relative flex min-h-screen flex-col items-center justify-center px-6 text-center overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-red-950/20 via-transparent to-transparent" />
-        <div className="absolute top-8 left-0 right-0 z-10 flex justify-center">
+        <div className="absolute top-20 sm:top-8 left-0 right-0 z-10 flex justify-center">
           <TopShared lang={lang} />
         </div>
         <div className="relative z-10 animate-fade-in-up">
@@ -246,7 +246,7 @@ export default async function NaamPage({ params, searchParams }: Props) {
       {/* Footer */}
       <footer className="border-t border-zinc-800 py-12 px-6 text-center">
         <p className="text-sm text-zinc-600">
-          &copy; {new Date().getFullYear()} {ui.footer.stichting(naam)}
+          &copy; {new Date().getFullYear()} {ui.footer.stichting()}
         </p>
         <p className="mt-2 text-xs text-zinc-700">
           {ui.footer.disclaimer(naam)}

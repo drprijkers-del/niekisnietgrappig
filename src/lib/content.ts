@@ -162,8 +162,8 @@ export function getUI(lang: Lang = "nl") {
           `${naam} is not funny. The proof is here:`,
       },
       footer: {
-        stichting: (naam: string) =>
-          `Foundation ${naam} Is Not Funny. All rights reserved.`,
+        stichting: () =>
+          `This is satire. Please don't sue us.`,
         disclaimer: (naam: string) =>
           `No ${naam}s were harmed in the making of this website. Only their ego.`,
       },
@@ -210,8 +210,8 @@ export function getUI(lang: Lang = "nl") {
         `${naam} is niet grappig. Het bewijs is hier:`,
     },
     footer: {
-      stichting: (naam: string) =>
-        `Stichting ${naam} Is Niet Grappig. Alle rechten voorbehouden.`,
+      stichting: () =>
+        `Dit is satire. Geen zorgen, geen rechtszaken.`,
       disclaimer: (naam: string) =>
         `Geen ${naam}s zijn beschadigd bij het maken van deze website. Alleen hun ego.`,
     },
