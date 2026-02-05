@@ -1,7 +1,8 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { capitalizeName } from "@/lib/utils";
+import { capitalizeName, validateSpice } from "@/lib/utils";
 import { getContent, getUI, Lang } from "@/lib/content";
+import { getSpiceLines } from "@/lib/spice";
 import ShareButtons from "@/components/ShareButtons";
 import ShareButton from "@/components/ShareButton";
 import LanguageToggle from "@/components/LanguageToggle";
@@ -10,7 +11,7 @@ import ViewTracker from "@/components/ViewTracker";
 
 type Props = {
   params: Promise<{ naam: string }>;
-  searchParams: Promise<{ lang?: string }>;
+  searchParams: Promise<{ lang?: string; w?: string }>;
 };
 
 export async function generateMetadata({
@@ -67,7 +68,7 @@ export async function generateMetadata({
 
 export default async function NaamPage({ params, searchParams }: Props) {
   const { naam: rawNaam } = await params;
-  const { lang: langParam } = await searchParams;
+  const { lang: langParam, w } = await searchParams;
   const lang: Lang = langParam === "en" ? "en" : "nl";
 
   const decoded = decodeURIComponent(rawNaam);
@@ -76,8 +77,10 @@ export default async function NaamPage({ params, searchParams }: Props) {
   }
 
   const naam = capitalizeName(rawNaam);
+  const spice = validateSpice(w);
   const { redenen, statistieken, getuigenissen, faq } = getContent(naam, lang);
   const ui = getUI(lang);
+  const lines = getSpiceLines(naam, spice, lang);
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-[#ededed] font-sans">
@@ -130,6 +133,31 @@ export default async function NaamPage({ params, searchParams }: Props) {
           >
             <path d="M12 5v14M5 12l7 7 7-7" />
           </svg>
+        </div>
+      </section>
+
+      {/* Verdict */}
+      <section className="border-t border-zinc-800 py-16 px-6">
+        <div className="mx-auto max-w-2xl">
+          <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-8 text-center space-y-3">
+            <p className="text-sm font-mono uppercase tracking-widest text-zinc-500">
+              {lines.opening}
+            </p>
+            <p className="text-2xl font-bold sm:text-3xl">
+              {lines.verdict}
+            </p>
+            <p className="text-zinc-400">
+              {lines.context}
+            </p>
+            {lines.stat && (
+              <p className="text-sm font-mono text-red-400">
+                {lines.stat}
+              </p>
+            )}
+            <p className="text-sm text-zinc-500 pt-2">
+              {lines.closing}
+            </p>
+          </div>
         </div>
       </section>
 

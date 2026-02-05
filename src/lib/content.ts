@@ -1,4 +1,32 @@
+import { hashString, seededRng } from "./utils";
+
 export type Lang = "nl" | "en";
+
+function randomStats(naam: string, lang: Lang) {
+  const rng = seededRng(hashString(`stats|${naam}|${lang}`));
+  const r = (min: number, max: number) =>
+    Math.floor(rng() * (max - min + 1)) + min;
+
+  const failed = r(23, 89);
+  const polite = r(89, 99);
+  const repeats = r(61, 96);
+  const silence = (rng() * 8 + 3.5).toFixed(1); // 3.5 - 11.5 sec
+
+  if (lang === "en") {
+    return [
+      { label: "Failed jokes per day", waarde: `${failed}` },
+      { label: "People laughing out of politeness", waarde: `${polite}%` },
+      { label: "Jokes that are repeats", waarde: `${repeats}%` },
+      { label: "Seconds of silence after a joke", waarde: silence },
+    ];
+  }
+  return [
+    { label: "Mislukte grappen per dag", waarde: `${failed}` },
+    { label: "Mensen die uit beleefdheid lachen", waarde: `${polite}%` },
+    { label: "Grappen die herhaling zijn", waarde: `${repeats}%` },
+    { label: "Seconden stilte na een grap", waarde: silence },
+  ];
+}
 
 export function getContent(naam: string, lang: Lang = "nl") {
   if (lang === "en") {
@@ -29,12 +57,7 @@ export function getContent(naam: string, lang: Lang = "nl") {
           tekst: `Before ${naam} gets to the punchline, he first provides 15 minutes of background information. By the time the punchline drops, everyone has forgotten what the story was about. Including ${naam}.`,
         },
       ],
-      statistieken: [
-        { label: "Failed jokes per day", waarde: "47" },
-        { label: "People laughing out of politeness", waarde: "98%" },
-        { label: "Jokes that are repeats", waarde: "84%" },
-        { label: "Seconds of silence after a joke", waarde: "\u221E" },
-      ],
+      statistieken: randomStats(naam, "en"),
       getuigenissen: [
         {
           quote: "I thought he was asking a question. Apparently it was a joke.",
@@ -93,12 +116,7 @@ export function getContent(naam: string, lang: Lang = "nl") {
         tekst: `Voordat ${naam} bij de clou komt, geeft hij eerst 15 minuten achtergrondinformatie. Tegen de tijd dat de punchline valt, is iedereen vergeten waar het verhaal over ging. Inclusief ${naam} zelf.`,
       },
     ],
-    statistieken: [
-      { label: "Mislukte grappen per dag", waarde: "47" },
-      { label: "Mensen die uit beleefdheid lachen", waarde: "98%" },
-      { label: "Grappen die herhaling zijn", waarde: "84%" },
-      { label: "Seconden stilte na een grap", waarde: "\u221E" },
-    ],
+    statistieken: randomStats(naam, "nl"),
     getuigenissen: [
       {
         quote: "Ik dacht dat hij een vraag stelde. Blijkbaar was het een grap.",

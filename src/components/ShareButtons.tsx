@@ -15,6 +15,12 @@ function getHomeUrl() {
 function getShareUrl(ref: string) {
   const url = new URL(window.location.href);
   const hostname = url.hostname;
+  const w = url.searchParams.get("w");
+
+  const applyParams = (u: URL) => {
+    u.searchParams.set("ref", ref);
+    if (w) u.searchParams.set("w", w);
+  };
 
   // Already on a subdomain (dennis.isnietgrappig.com)
   const subNL = hostname.match(/^(.+)\.isnietgrappig\.com$/);
@@ -22,7 +28,7 @@ function getShareUrl(ref: string) {
   const sub = subNL || subEN;
   if (sub && sub[1] !== "www") {
     const shareUrl = new URL(`https://${hostname}`);
-    shareUrl.searchParams.set("ref", ref);
+    applyParams(shareUrl);
     return shareUrl.toString();
   }
 
@@ -34,7 +40,7 @@ function getShareUrl(ref: string) {
     if (naam) {
       const baseDomain = isNL ? "isnietgrappig.com" : "isntfunny.com";
       const shareUrl = new URL(`https://${decodeURIComponent(naam)}.${baseDomain}`);
-      shareUrl.searchParams.set("ref", ref);
+      applyParams(shareUrl);
       return shareUrl.toString();
     }
   }
