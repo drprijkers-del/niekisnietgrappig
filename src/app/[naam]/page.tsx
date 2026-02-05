@@ -63,6 +63,7 @@ export async function generateMetadata({
           width: 1200,
           height: 630,
           alt: ogTitle,
+          type: "image/png",
         },
       ],
       locale: isEN ? "en_US" : "nl_NL",
