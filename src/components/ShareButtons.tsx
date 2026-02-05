@@ -124,8 +124,8 @@ export default function ShareButtons({
               </>
             )}
           </button>
-          <a
-            href={getHomeUrl()}
+          <button
+            onClick={() => { window.location.href = getHomeUrl(); }}
             className="flex w-full items-center justify-center gap-2 rounded-full border border-zinc-700 px-6 py-3 font-medium transition-all hover:bg-white hover:text-black hover:border-white"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -133,7 +133,7 @@ export default function ShareButtons({
               <line x1="5" y1="12" x2="19" y2="12" />
             </svg>
             {ui.create}
-          </a>
+          </button>
         </div>
       </div>
     </section>
