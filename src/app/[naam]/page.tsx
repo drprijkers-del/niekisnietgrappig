@@ -6,6 +6,7 @@ import ShareButtons from "@/components/ShareButtons";
 import ShareButton from "@/components/ShareButton";
 import LanguageToggle from "@/components/LanguageToggle";
 import TopShared from "@/components/TopShared";
+import ViewTracker from "@/components/ViewTracker";
 
 type Props = {
   params: Promise<{ naam: string }>;
@@ -80,6 +81,7 @@ export default async function NaamPage({ params, searchParams }: Props) {
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-[#ededed] font-sans">
+      <ViewTracker naam={naam} />
       <LanguageToggle lang={lang} />
 
       {/* Hero */}
