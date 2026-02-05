@@ -1,6 +1,8 @@
 import { redirect } from "next/navigation";
 import { Metadata } from "next";
 import CopyDashboardLink from "./CopyDashboardLink";
+import LeaderboardToggle from "./LeaderboardToggle";
+import DownloadLeaderboard from "./DownloadLeaderboard";
 import {
   getRedis,
   fetchDashboard,
@@ -62,8 +64,8 @@ export default async function StatsPage({ searchParams }: Props) {
   const rangeLabel = range === "1h" ? "Last hour" : range === "24h" ? "Last 24h" : "Last 7 days";
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-[#ededed] font-sans">
-      <div className="mx-auto max-w-5xl px-6 py-12">
+    <div className="min-h-screen bg-[#0a0a0a] text-[#ededed] font-sans overflow-x-hidden">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 py-12 overflow-x-hidden">
         {/* Header */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
           <div>
@@ -72,14 +74,24 @@ export default async function StatsPage({ searchParams }: Props) {
               Is Niet Grappig &mdash; viral monitor
             </p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <a
+              href={`/stats?key=${key}&range=${range}`}
+              className="inline-flex items-center justify-center rounded-lg border border-zinc-800 px-2.5 py-1.5 text-zinc-400 transition-all hover:bg-white hover:text-black hover:border-white"
+              title="Refresh"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="23 4 23 10 17 10" />
+                <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
+              </svg>
+            </a>
             <TimeRangeSelector currentRange={range} secretKey={key} />
             <CopyDashboardLink />
             <a
               href="/"
-              className="text-sm text-zinc-500 hover:text-white transition-colors"
+              className="text-xs sm:text-sm text-zinc-500 hover:text-white transition-colors"
             >
-              &larr; Home
+              &larr;
             </a>
           </div>
         </div>
@@ -266,8 +278,8 @@ export default async function StatsPage({ searchParams }: Props) {
                   const ds = d.domShares.find((x) => x.naam === dom)?.count || 0;
                   if (dv === 0 && dc === 0 && ds === 0) return null;
                   return (
-                    <div key={dom} className="flex items-center gap-4">
-                      <span className="text-xs font-medium w-36 shrink-0">
+                    <div key={dom} className="flex flex-wrap items-center gap-x-4 gap-y-1">
+                      <span className="text-xs font-medium w-full sm:w-36 sm:shrink-0">
                         {dom === "nl" ? "isnietgrappig.com" : "isntfunny.com"}
                       </span>
                       <span className="text-xs tabular-nums text-zinc-400">{dv} opens</span>
@@ -286,72 +298,53 @@ export default async function StatsPage({ searchParams }: Props) {
 
         {/* F) Leaderboards */}
         <section className="mb-8">
-          <h2 className="text-sm font-mono uppercase tracking-widest text-zinc-500 mb-4">
-            Leaderboard
-          </h2>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-sm font-mono uppercase tracking-widest text-zinc-500">
+              Leaderboard
+            </h2>
+            <DownloadLeaderboard secretKey={key} />
+          </div>
           <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 overflow-hidden">
             <div className="overflow-x-auto">
-              <table className="w-full text-sm">
+              <table className="w-full text-xs sm:text-sm">
                 <thead>
                   <tr className="border-b border-zinc-800 text-zinc-500">
-                    <th className="px-4 py-3 text-left font-medium">#</th>
-                    <th className="px-4 py-3 text-left font-medium">Name</th>
-                    <th className="px-4 py-3 text-right font-medium">Opens</th>
-                    <th className="px-4 py-3 text-right font-medium">Clicks</th>
-                    <th className="px-4 py-3 text-right font-medium">Shared</th>
-                    <th className="px-4 py-3 text-right font-medium">Share %</th>
-                    <th className="px-4 py-3 w-24 sr-only">Bar</th>
+                    <th className="px-2 sm:px-4 py-2 sm:py-3 text-left font-medium w-8">#</th>
+                    <th className="px-2 sm:px-4 py-2 sm:py-3 text-left font-medium">Name</th>
+                    <th className="px-2 sm:px-4 py-2 sm:py-3 text-right font-medium">Opens</th>
+                    <th className="hidden sm:table-cell px-4 py-3 text-right font-medium">Clicks</th>
+                    <th className="px-2 sm:px-4 py-2 sm:py-3 text-right font-medium">Shared</th>
+                    <th className="hidden sm:table-cell px-4 py-3 text-right font-medium">Share %</th>
+                    <th className="hidden sm:table-cell px-4 py-3 w-24 sr-only">Bar</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {combined.map((row, i) => (
-                    <tr key={row.naam} className="border-b border-zinc-800/50 hover:bg-zinc-800/30">
-                      <td className="px-4 py-2.5 text-zinc-600">{i + 1}</td>
-                      <td className="px-4 py-2.5 font-medium">
-                        <a
-                          href={`https://${encodeURIComponent(row.naam)}.isnietgrappig.com`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="hover:text-red-400 transition-colors"
-                        >
-                          {capitalize(row.naam)}
-                        </a>
-                      </td>
-                      <td className="px-4 py-2.5 text-right tabular-nums text-zinc-400">
-                        {row.views.toLocaleString()}
-                      </td>
-                      <td className="px-4 py-2.5 text-right tabular-nums text-emerald-400">
-                        {row.clicks.toLocaleString()}
-                      </td>
-                      <td className="px-4 py-2.5 text-right tabular-nums text-orange-400">
-                        {row.shares.toLocaleString()}
-                      </td>
-                      <td className="px-4 py-2.5 text-right tabular-nums text-zinc-500">
-                        {row.shareRate.toFixed(1)}%
-                      </td>
-                      <td className="px-4 py-2.5 w-24">
-                        <div className="flex h-1.5 rounded-full bg-zinc-800 overflow-hidden">
-                          <div
-                            className="h-full bg-red-500"
-                            style={{
-                              width: `${(row.views / (combined[0]?.views || 1)) * 100}%`,
-                            }}
-                          />
-                        </div>
-                      </td>
-                    </tr>
+                  {combined.slice(0, 10).map((row, i) => (
+                    <LeaderboardRow key={row.naam} row={row} rank={i + 1} topViews={combined[0]?.views || 1} />
                   ))}
                 </tbody>
+                {combined.length > 10 && (
+                  <tbody id="leaderboard-extra" className="hidden">
+                    {combined.slice(10).map((row, i) => (
+                      <LeaderboardRow key={row.naam} row={row} rank={i + 11} topViews={combined[0]?.views || 1} />
+                    ))}
+                  </tbody>
+                )}
               </table>
             </div>
             {combined.length === 0 && (
               <p className="px-4 py-8 text-center text-zinc-600">No data yet</p>
             )}
-            <div className="flex items-center gap-4 px-4 py-2.5 border-t border-zinc-800 text-xs text-zinc-600">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 px-2 sm:px-4 py-2 border-t border-zinc-800 text-[10px] sm:text-xs text-zinc-600">
               <span><strong className="text-zinc-400">Opens</strong> = page loaded</span>
               <span><strong className="text-emerald-400">Clicks</strong> = via shared link</span>
               <span><strong className="text-orange-400">Shared</strong> = share button pressed</span>
-              <span><strong className="text-zinc-500">Share %</strong> = shares / opens</span>
+              <span className="hidden sm:inline"><strong className="text-zinc-500">Share %</strong> = shares / opens</span>
+              {combined.length > 10 && (
+                <span className="ml-auto">
+                  <LeaderboardToggle total={combined.length} />
+                </span>
+              )}
             </div>
           </div>
         </section>
@@ -434,7 +427,7 @@ function KPICard({
         </div>
       )}
       {tips && tips.length > 0 && (
-        <ul className="mt-2 space-y-0.5">
+        <ul className="mt-2 space-y-0.5 hidden sm:block">
           {tips.map((tip, i) => (
             <li key={i} className="text-[10px] text-zinc-600 leading-tight">
               <span className="text-amber-500 mr-1">&rarr;</span>{tip}
@@ -452,6 +445,52 @@ function MiniCard({ label, value }: { label: string; value: string }) {
       <div className="text-2xl font-bold tabular-nums">{value}</div>
       <div className="mt-1 text-xs text-zinc-500">{label}</div>
     </div>
+  );
+}
+
+function LeaderboardRow({
+  row,
+  rank,
+  topViews,
+}: {
+  row: { naam: string; views: number; clicks: number; shares: number; shareRate: number };
+  rank: number;
+  topViews: number;
+}) {
+  return (
+    <tr className="border-b border-zinc-800/50 hover:bg-zinc-800/30">
+      <td className="px-2 sm:px-4 py-2 sm:py-2.5 text-zinc-600">{rank}</td>
+      <td className="px-2 sm:px-4 py-2 sm:py-2.5 font-medium truncate max-w-30 sm:max-w-none">
+        <a
+          href={`https://${encodeURIComponent(row.naam)}.isnietgrappig.com`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:text-red-400 transition-colors"
+        >
+          {capitalize(row.naam)}
+        </a>
+      </td>
+      <td className="px-2 sm:px-4 py-2 sm:py-2.5 text-right tabular-nums text-zinc-400">
+        {row.views.toLocaleString()}
+      </td>
+      <td className="hidden sm:table-cell px-4 py-2.5 text-right tabular-nums text-emerald-400">
+        {row.clicks.toLocaleString()}
+      </td>
+      <td className="px-2 sm:px-4 py-2 sm:py-2.5 text-right tabular-nums text-orange-400">
+        {row.shares.toLocaleString()}
+      </td>
+      <td className="hidden sm:table-cell px-4 py-2.5 text-right tabular-nums text-zinc-500">
+        {row.shareRate.toFixed(1)}%
+      </td>
+      <td className="hidden sm:table-cell px-4 py-2.5 w-24">
+        <div className="flex h-1.5 rounded-full bg-zinc-800 overflow-hidden">
+          <div
+            className="h-full bg-red-500"
+            style={{ width: `${(row.views / topViews) * 100}%` }}
+          />
+        </div>
+      </td>
+    </tr>
   );
 }
 
