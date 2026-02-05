@@ -96,7 +96,7 @@ export default async function NaamPage({ params, searchParams }: Props) {
           <p className="mt-6 max-w-xl mx-auto text-lg text-zinc-400 leading-relaxed">
             {ui.hero.description}
           </p>
-          <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:gap-3">
+          <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center sm:gap-3">
             <a
               href="#bewijs"
               className="inline-block rounded-full border border-zinc-700 px-8 py-3 text-sm font-medium transition-all hover:bg-white hover:text-black hover:border-white"
