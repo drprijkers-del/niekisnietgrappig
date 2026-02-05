@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { capitalizeName } from "@/lib/utils";
 import { getContent, getUI, Lang } from "@/lib/content";
 import ShareButtons from "@/components/ShareButtons";
+import ShareButton from "@/components/ShareButton";
 import LanguageToggle from "@/components/LanguageToggle";
 
 type Props = {
@@ -95,13 +96,19 @@ export default async function NaamPage({ params, searchParams }: Props) {
           <p className="mt-6 max-w-xl mx-auto text-lg text-zinc-400 leading-relaxed">
             {ui.hero.description}
           </p>
-          <div className="mt-10">
+          <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:gap-3">
             <a
               href="#bewijs"
               className="inline-block rounded-full border border-zinc-700 px-8 py-3 text-sm font-medium transition-all hover:bg-white hover:text-black hover:border-white"
             >
               {ui.hero.cta}
             </a>
+            <ShareButton
+              naam={naam}
+              lang={lang}
+              label={ui.share.shareButton(naam)}
+              copiedLabel={ui.share.copied}
+            />
           </div>
         </div>
         <div className="absolute bottom-10 animate-bounce text-zinc-600">
