@@ -83,7 +83,7 @@ export default async function NaamPage({ params, searchParams }: Props) {
       <LanguageToggle lang={lang} />
 
       {/* Hero */}
-      <section className="relative flex min-h-screen flex-col items-center justify-center px-6 text-center overflow-hidden">
+      <section className="relative flex min-h-svh flex-col items-center justify-center px-6 py-24 text-center overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-red-950/20 via-transparent to-transparent" />
         <div className="absolute top-20 sm:top-8 left-0 right-0 z-10 flex justify-center">
           <TopShared lang={lang} />
@@ -92,7 +92,7 @@ export default async function NaamPage({ params, searchParams }: Props) {
           <p className="mb-4 text-sm font-mono uppercase tracking-[0.3em] text-zinc-500">
             {ui.hero.subtitle}
           </p>
-          <h1 className="text-5xl font-bold tracking-tight sm:text-7xl md:text-8xl">
+          <h1 className="text-4xl font-bold tracking-tight sm:text-7xl md:text-8xl landscape:text-3xl landscape:sm:text-5xl">
             {naam} {ui.hero.is}{" "}
             <span className="animate-pulse-red font-black">{ui.hero.not}</span>{" "}
             {ui.hero.funny}
@@ -107,7 +107,11 @@ export default async function NaamPage({ params, searchParams }: Props) {
             >
               {ui.hero.cta}
             </a>
-            <ShareButton naam={naam} lang={lang} />
+            <ShareButton
+              naam={naam}
+              lang={lang}
+              label={ui.share.shareButton(naam)}
+            />
           </div>
         </div>
         <div className="absolute bottom-10 animate-bounce text-zinc-600">
