@@ -5,6 +5,32 @@ import { getUI, Lang } from "@/lib/content";
 
 function getShareUrl(ref: string) {
   const url = new URL(window.location.href);
+  const hostname = url.hostname;
+
+  // Already on a subdomain (dennis.isnietgrappig.com)
+  const subNL = hostname.match(/^(.+)\.isnietgrappig\.com$/);
+  const subEN = hostname.match(/^(.+)\.isntfunny\.com$/);
+  const sub = subNL || subEN;
+  if (sub && sub[1] !== "www") {
+    const shareUrl = new URL(`https://${hostname}`);
+    shareUrl.searchParams.set("ref", ref);
+    return shareUrl.toString();
+  }
+
+  // Root domain with path-based name (isnietgrappig.com/dennis)
+  const isNL = hostname === "isnietgrappig.com" || hostname === "www.isnietgrappig.com";
+  const isEN = hostname === "isntfunny.com" || hostname === "www.isntfunny.com";
+  if (isNL || isEN) {
+    const naam = url.pathname.split("/").filter(Boolean)[0];
+    if (naam) {
+      const baseDomain = isNL ? "isnietgrappig.com" : "isntfunny.com";
+      const shareUrl = new URL(`https://${decodeURIComponent(naam)}.${baseDomain}`);
+      shareUrl.searchParams.set("ref", ref);
+      return shareUrl.toString();
+    }
+  }
+
+  // Fallback (localhost, vercel preview)
   url.searchParams.delete("ref");
   url.searchParams.set("ref", ref);
   return url.toString();
