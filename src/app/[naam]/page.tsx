@@ -5,6 +5,7 @@ import { getContent, getUI, Lang } from "@/lib/content";
 import ShareButtons from "@/components/ShareButtons";
 import ShareButton from "@/components/ShareButton";
 import LanguageToggle from "@/components/LanguageToggle";
+import TopShared from "@/components/TopShared";
 
 type Props = {
   params: Promise<{ naam: string }>;
@@ -84,6 +85,9 @@ export default async function NaamPage({ params, searchParams }: Props) {
       {/* Hero */}
       <section className="relative flex min-h-screen flex-col items-center justify-center px-6 text-center overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-red-950/20 via-transparent to-transparent" />
+        <div className="absolute top-8 left-0 right-0 z-10 flex justify-center">
+          <TopShared lang={lang} />
+        </div>
         <div className="relative z-10 animate-fade-in-up">
           <p className="mb-4 text-sm font-mono uppercase tracking-[0.3em] text-zinc-500">
             {ui.hero.subtitle}

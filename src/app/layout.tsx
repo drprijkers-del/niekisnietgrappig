@@ -19,6 +19,19 @@ export const metadata: Metadata = {
   },
   description:
     "Ontdek het wetenschappelijk bewijs dat iemand niet grappig is.",
+  metadataBase: new URL("https://isnietgrappig.com"),
+  openGraph: {
+    siteName: "Is Niet Grappig",
+    locale: "nl_NL",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
+  icons: {
+    icon: "/icon.svg",
+    apple: "/icon.svg",
+  },
 };
 
 export default function RootLayout({
