@@ -25,9 +25,11 @@ export function middleware(request: NextRequest) {
   const isRootNL = /^(www\.)?isnietgrappig\.com$/i.test(hostname);
   const isRootEN = /^(www\.)?isntfunny\.com$/i.test(hostname);
 
+  const RESERVED_PATHS = new Set(["stats"]);
+
   if (isRootNL || isRootEN) {
     const pathParts = url.pathname.split("/").filter(Boolean);
-    if (pathParts.length > 0) {
+    if (pathParts.length > 0 && !RESERVED_PATHS.has(pathParts[0])) {
       const naam = pathParts[0];
       const baseDomain = isRootNL ? "isnietgrappig.com" : "isntfunny.com";
       const rest = pathParts.slice(1).join("/");
