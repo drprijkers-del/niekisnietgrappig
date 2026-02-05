@@ -262,7 +262,7 @@ export default async function NaamPage({ params, searchParams }: Props) {
             rel="noopener noreferrer"
             className="text-zinc-400 underline underline-offset-2 transition-colors hover:text-white"
           >
-            pinkpollos_labs
+            Pink Pollos
           </a>
         </p>
       </footer>
