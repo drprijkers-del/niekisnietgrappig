@@ -165,7 +165,7 @@ export function getUI(lang: Lang = "nl") {
         stichting: () =>
           `This is satire. Please don't sue us.`,
         disclaimer: (naam: string) =>
-          `No ${naam}s were harmed in the making of this website. Only their ego.`,
+          `No one named ${naam} was harmed in the making of this website. Only their ego.`,
       },
       landing: {
         subtitle: "A public service announcement",
@@ -213,7 +213,7 @@ export function getUI(lang: Lang = "nl") {
       stichting: () =>
         `Dit is satire. Geen zorgen, geen rechtszaken.`,
       disclaimer: (naam: string) =>
-        `Geen ${naam}s zijn beschadigd bij het maken van deze website. Alleen hun ego.`,
+        `Geen enkele ${naam} is beschadigd bij het maken van deze website. Alleen hun ego.`,
     },
     landing: {
       subtitle: "Een publieke dienstaankondiging",
