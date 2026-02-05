@@ -13,9 +13,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Niek Is Niet Grappig",
+  title: {
+    template: "%s | Is Niet Grappig",
+    default: "Is Niet Grappig",
+  },
   description:
-    "Een wetenschappelijk onderbouwde website over waarom Niek niet grappig is.",
+    "Ontdek het wetenschappelijk bewijs dat iemand niet grappig is.",
 };
 
 export default function RootLayout({
