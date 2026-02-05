@@ -17,8 +17,9 @@ export default function NameForm({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const slug = naam.trim().toLowerCase().replace(/\s+/g, "-");
-    if (slug) {
+    const trimmed = naam.trim();
+    if (trimmed) {
+      const slug = encodeURIComponent(trimmed.toLowerCase().replace(/\s+/g, "-"));
       const langParam = lang === "en" ? "?lang=en" : "";
       router.push(`/${slug}${langParam}`);
     }

@@ -70,7 +70,7 @@ export default async function NaamPage({ params, searchParams }: Props) {
   const lang: Lang = langParam === "en" ? "en" : "nl";
 
   const decoded = decodeURIComponent(rawNaam);
-  if (decoded.length > 50 || !/^[a-zA-Z\s-]+$/.test(decoded)) {
+  if (decoded.length > 50 || !/^[\p{L}\s'.-]+$/u.test(decoded)) {
     notFound();
   }
 
@@ -110,7 +110,7 @@ export default async function NaamPage({ params, searchParams }: Props) {
             <ShareButton
               naam={naam}
               lang={lang}
-              label={ui.share.shareButton(naam)}
+              label={ui.share.shareButton()}
             />
           </div>
         </div>

@@ -155,8 +155,9 @@ export function getUI(lang: Lang = "nl") {
       share: {
         heading: "Know someone else who isn't funny?",
         description: "Spread the truth or pick your next victim.",
-        shareButton: (naam: string) => `Confront ${naam}`,
-        copied: "Evidence copied!",
+        shareButton: () => `Share via WhatsApp`,
+        copied: "Link copied!",
+        copyLink: "Copy link",
         create: "Pick a new victim",
         shareText: (naam: string) =>
           `${naam} is not funny. The proof is here:`,
@@ -203,8 +204,9 @@ export function getUI(lang: Lang = "nl") {
     share: {
       heading: "Ken jij ook iemand die niet grappig is?",
       description: "Verspreid de waarheid of kies je volgende slachtoffer.",
-      shareButton: (naam: string) => `Confronteer ${naam}`,
-      copied: "Bewijs gekopieerd!",
+      shareButton: () => `Deel via WhatsApp`,
+      copied: "Link gekopieerd!",
+      copyLink: "Kopieer link",
       create: "Kies een nieuw slachtoffer",
       shareText: (naam: string) =>
         `${naam} is niet grappig. Het bewijs is hier:`,
