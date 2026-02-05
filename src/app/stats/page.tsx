@@ -62,6 +62,19 @@ export default async function StatsPage({ searchParams }: Props) {
   const totalShares = shares.reduce((sum, s) => sum + s.count, 0);
   const totalRefs = refs.reduce((sum, r) => sum + r.count, 0);
 
+  // Merge views + shares per name
+  const viewsMap = new Map(views.map((v) => [v.naam, v.count]));
+  const sharesMap = new Map(shares.map((s) => [s.naam, s.count]));
+  const allNames = new Set([...viewsMap.keys(), ...sharesMap.keys()]);
+  const combined = [...allNames]
+    .map((naam) => ({
+      naam,
+      views: viewsMap.get(naam) || 0,
+      shares: sharesMap.get(naam) || 0,
+      total: (viewsMap.get(naam) || 0) + (sharesMap.get(naam) || 0),
+    }))
+    .sort((a, b) => b.total - a.total);
+
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-[#ededed] font-sans">
       <div className="mx-auto max-w-4xl px-6 py-12">
@@ -85,49 +98,63 @@ export default async function StatsPage({ searchParams }: Props) {
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 mb-12">
           <Card label="Total views" value={totalViews.toLocaleString()} />
           <Card label="Total shares" value={totalShares.toLocaleString()} />
-          <Card label="Unique names" value={views.length.toString()} />
+          <Card label="Unique names" value={combined.length.toString()} />
           <Card label="Ref clicks" value={totalRefs.toLocaleString()} />
         </div>
 
-        <div className="grid gap-8 md:grid-cols-2">
-          {/* Views */}
-          <section>
-            <h2 className="text-sm font-mono uppercase tracking-widest text-zinc-500 mb-4">
-              Top Views
-            </h2>
-            <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 overflow-hidden">
+        {/* Per-name breakdown */}
+        <section className="mb-8">
+          <h2 className="text-sm font-mono uppercase tracking-widest text-zinc-500 mb-4">
+            Per Name
+          </h2>
+          <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 overflow-hidden">
+            <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-zinc-800 text-zinc-500">
                     <th className="px-4 py-3 text-left font-medium">#</th>
                     <th className="px-4 py-3 text-left font-medium">Name</th>
                     <th className="px-4 py-3 text-right font-medium">Views</th>
-                    <th className="px-4 py-3 text-right font-medium sr-only">Bar</th>
+                    <th className="px-4 py-3 text-right font-medium">Shares</th>
+                    <th className="px-4 py-3 text-right font-medium">Total</th>
+                    <th className="px-4 py-3 w-28 sr-only">Bar</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {views.map((v, i) => (
-                    <tr key={v.naam} className="border-b border-zinc-800/50 hover:bg-zinc-800/30">
+                  {combined.map((row, i) => (
+                    <tr key={row.naam} className="border-b border-zinc-800/50 hover:bg-zinc-800/30">
                       <td className="px-4 py-2.5 text-zinc-600">{i + 1}</td>
                       <td className="px-4 py-2.5 font-medium">
                         <a
-                          href={`https://${v.naam}.isnietgrappig.com`}
+                          href={`https://${row.naam}.isnietgrappig.com`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="hover:text-red-400 transition-colors"
                         >
-                          {capitalize(v.naam)}
+                          {capitalize(row.naam)}
                         </a>
                       </td>
                       <td className="px-4 py-2.5 text-right tabular-nums text-zinc-400">
-                        {v.count.toLocaleString()}
+                        {row.views.toLocaleString()}
                       </td>
-                      <td className="px-4 py-2.5 w-24">
-                        <div className="h-1.5 rounded-full bg-zinc-800 overflow-hidden">
+                      <td className="px-4 py-2.5 text-right tabular-nums text-orange-400">
+                        {row.shares.toLocaleString()}
+                      </td>
+                      <td className="px-4 py-2.5 text-right tabular-nums font-medium">
+                        {row.total.toLocaleString()}
+                      </td>
+                      <td className="px-4 py-2.5 w-28">
+                        <div className="flex h-1.5 rounded-full bg-zinc-800 overflow-hidden">
                           <div
-                            className="h-full rounded-full bg-red-500"
+                            className="h-full bg-red-500"
                             style={{
-                              width: `${(v.count / (views[0]?.count || 1)) * 100}%`,
+                              width: `${(row.views / (combined[0]?.total || 1)) * 100}%`,
+                            }}
+                          />
+                          <div
+                            className="h-full bg-orange-500"
+                            style={{
+                              width: `${(row.shares / (combined[0]?.total || 1)) * 100}%`,
                             }}
                           />
                         </div>
@@ -136,55 +163,20 @@ export default async function StatsPage({ searchParams }: Props) {
                   ))}
                 </tbody>
               </table>
-              {views.length === 0 && (
-                <p className="px-4 py-8 text-center text-zinc-600">No data yet</p>
-              )}
             </div>
-          </section>
-
-          {/* Shares */}
-          <section>
-            <h2 className="text-sm font-mono uppercase tracking-widest text-zinc-500 mb-4">
-              Top Shares
-            </h2>
-            <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 overflow-hidden">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-zinc-800 text-zinc-500">
-                    <th className="px-4 py-3 text-left font-medium">#</th>
-                    <th className="px-4 py-3 text-left font-medium">Name</th>
-                    <th className="px-4 py-3 text-right font-medium">Shares</th>
-                    <th className="px-4 py-3 text-right font-medium sr-only">Bar</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {shares.map((s, i) => (
-                    <tr key={s.naam} className="border-b border-zinc-800/50 hover:bg-zinc-800/30">
-                      <td className="px-4 py-2.5 text-zinc-600">{i + 1}</td>
-                      <td className="px-4 py-2.5 font-medium">{capitalize(s.naam)}</td>
-                      <td className="px-4 py-2.5 text-right tabular-nums text-zinc-400">
-                        {s.count.toLocaleString()}
-                      </td>
-                      <td className="px-4 py-2.5 w-24">
-                        <div className="h-1.5 rounded-full bg-zinc-800 overflow-hidden">
-                          <div
-                            className="h-full rounded-full bg-orange-500"
-                            style={{
-                              width: `${(s.count / (shares[0]?.count || 1)) * 100}%`,
-                            }}
-                          />
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              {shares.length === 0 && (
-                <p className="px-4 py-8 text-center text-zinc-600">No data yet</p>
-              )}
+            {combined.length === 0 && (
+              <p className="px-4 py-8 text-center text-zinc-600">No data yet</p>
+            )}
+            <div className="flex items-center gap-4 px-4 py-2.5 border-t border-zinc-800 text-xs text-zinc-600">
+              <span className="flex items-center gap-1.5">
+                <span className="inline-block h-2 w-2 rounded-full bg-red-500" /> Views
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="inline-block h-2 w-2 rounded-full bg-orange-500" /> Shares
+              </span>
             </div>
-          </section>
-        </div>
+          </div>
+        </section>
 
         {/* Referrals */}
         <section className="mt-8">
