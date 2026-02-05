@@ -77,6 +77,90 @@ export default async function NaamPage({ params, searchParams }: Props) {
   }
 
   const naam = capitalizeName(rawNaam);
+
+  // Easter egg: Trump — always English
+  const lowerName = decoded.toLowerCase();
+  if (lowerName === "trump" || lowerName === "donald trump" || lowerName === "president trump") {
+    return (
+      <div className="min-h-screen bg-[#0a0a0a] text-[#ededed] font-sans">
+        <ViewTracker naam={naam} />
+        <section className="relative flex min-h-svh flex-col items-center justify-center px-6 py-24 text-center overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-red-950/30 via-transparent to-transparent" />
+          <div className="relative z-10 max-w-3xl mx-auto space-y-8">
+            <p className="text-sm font-mono uppercase tracking-[0.3em] text-red-500 animate-pulse">
+              A statement from the least funny president
+            </p>
+            <h1 className="text-4xl font-black tracking-tight sm:text-6xl md:text-7xl uppercase">
+              I am{" "}
+              <span className="text-red-500">not</span>{" "}
+              funny
+            </h1>
+            <div className="space-y-6 text-lg sm:text-xl text-zinc-300 leading-relaxed italic">
+              <p>
+                &quot;Look, everybody knows it. I&apos;m not funny. And frankly, I&apos;m the LEAST funny person you&apos;ve ever met. Nobody is less funny than me. I&apos;m number one at it. The fake news media tries to say other people aren&apos;t funny — wrong. I&apos;m the best at not being funny. Ask anyone.&quot;
+              </p>
+              <p>
+                &quot;People come up to me — big, strong people, tough guys — and they say: &apos;Sir, that was the worst joke I&apos;ve ever heard.&apos; With tears in their eyes! Beautiful tears. I tell the worst jokes, everybody agrees. And I do it naturally. Tremendous talent. Some people study comedy for years. Sad! I just walk in and bomb. Every single time. It&apos;s a gift.&quot;
+              </p>
+              <p>
+                &quot;Crooked comedians try to compete with me. They can&apos;t. My unfunniness is unmatched. It&apos;s probably the greatest unfunniness in the history of this country, maybe the world. We&apos;re looking into it. Many people are saying it.&quot;
+              </p>
+              <p className="not-italic text-red-400 font-bold text-2xl sm:text-3xl uppercase">
+                Make comedy great again.
+              </p>
+            </div>
+            {/* Trump stats */}
+            <div className="grid grid-cols-2 gap-3 w-full max-w-md mx-auto pt-4">
+              <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 text-center">
+                <div className="text-3xl font-bold tabular-nums">∞</div>
+                <div className="mt-1 text-[11px] text-zinc-500">Seconds of silence after his jokes</div>
+              </div>
+              <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 text-center">
+                <div className="text-3xl font-bold tabular-nums">100%</div>
+                <div className="mt-1 text-[11px] text-zinc-500">People laughing AT him</div>
+              </div>
+              <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 text-center">
+                <div className="text-3xl font-bold tabular-nums">0</div>
+                <div className="mt-1 text-[11px] text-zinc-500">Successful punchlines</div>
+              </div>
+              <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 text-center">
+                <div className="text-3xl font-bold text-red-500">HUGE</div>
+                <div className="mt-1 text-[11px] text-zinc-500">Level of unfunniness</div>
+              </div>
+            </div>
+
+            <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6 text-center max-w-md mx-auto">
+              <p className="text-base italic text-zinc-300">
+                &quot;I have to agree. He&apos;s genuinely not funny.&quot;
+              </p>
+              <p className="mt-2 text-xs text-zinc-600">— Mark Rutte, NATO Secretary General</p>
+            </div>
+
+            <div className="flex w-full max-w-sm mx-auto flex-col gap-3 pt-4">
+              <ShareButton
+                naam="Trump"
+                lang="en"
+                label="Share via WhatsApp"
+              />
+            </div>
+          </div>
+        </section>
+        <ShareButtons naam="Trump" lang="en" />
+        <footer className="border-t border-zinc-800 py-12 px-6 text-center">
+          <p className="text-sm text-zinc-600">
+            This is satire. Please don&apos;t sue us.
+          </p>
+          <p className="mt-6 text-xs text-zinc-600">
+            Made by{" "}
+            <a href="https://www.pinkpollos.com/nl/lab" target="_blank" rel="noopener noreferrer" className="text-zinc-400 underline underline-offset-2 transition-colors hover:text-white">
+              Pink Pollos
+            </a>
+          </p>
+        </footer>
+      </div>
+    );
+  }
+
   const spice = validateSpice(w);
   const { redenen, statistieken, getuigenissen, faq } = getContent(naam, lang);
   const ui = getUI(lang);
