@@ -4,7 +4,15 @@ import { NextRequest, NextResponse } from "next/server";
 const DEFAULT_TOP = { naam: "Niek", count: 999 };
 const THRESHOLD = 50;
 const SORTED_SET_KEY = "shares:leaderboard";
+const DOMAIN_SHARES_KEY = "domains:shares";
 const CACHE_TTL = 30; // seconds
+
+function getDomain(request: NextRequest): "nl" | "en" | null {
+  const host = request.headers.get("host") || "";
+  if (host.includes("isnietgrappig.com")) return "nl";
+  if (host.includes("isntfunny.com")) return "en";
+  return null;
+}
 
 function getRedis() {
   return new Redis({
@@ -16,13 +24,31 @@ function getRedis() {
 // POST: increment share count — 1 Redis command (ZINCRBY)
 export async function POST(request: NextRequest) {
   try {
-    const { naam } = await request.json();
+    const { naam, sid, ttShare } = await request.json();
     if (!naam || typeof naam !== "string" || naam.length > 50) {
       return NextResponse.json({ error: "Invalid name" }, { status: 400 });
     }
 
     const redis = getRedis();
-    const count = await redis.zincrby(SORTED_SET_KEY, 1, naam.toLowerCase());
+    const pipeline = redis.pipeline();
+    pipeline.zincrby(SORTED_SET_KEY, 1, naam.toLowerCase());
+
+    if (sid && typeof sid === "string") {
+      pipeline.pfadd("sharers", sid);
+    }
+
+    if (typeof ttShare === "number" && ttShare > 0 && ttShare < 3600) {
+      pipeline.incrbyfloat("share_timing:sum", ttShare);
+      pipeline.incrby("share_timing:count", 1);
+    }
+
+    const domain = getDomain(request);
+    if (domain) {
+      pipeline.zincrby(DOMAIN_SHARES_KEY, 1, domain);
+    }
+
+    const results = await pipeline.exec();
+    const count = results[0] as number;
 
     return NextResponse.json({ naam, count });
   } catch {

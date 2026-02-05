@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { getUI, Lang } from "@/lib/content";
+import { getSessionId } from "@/lib/session";
 
 function getHomeUrl() {
   if (typeof window === "undefined") return "/";
@@ -55,10 +56,12 @@ export default function ShareButtons({
   const ui = getUI(lang).share;
 
   const trackShare = () => {
+    const sid = getSessionId();
+    const ttShare = Math.round(performance.now() / 1000);
     fetch("/api/share", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ naam }),
+      body: JSON.stringify({ naam, sid, ttShare }),
     }).catch(() => {});
   };
 
