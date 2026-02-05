@@ -21,6 +21,11 @@ function getRedis() {
   });
 }
 
+function hourKey() {
+  const d = new Date();
+  return `h:${d.getUTCFullYear()}${String(d.getUTCMonth() + 1).padStart(2, "0")}${String(d.getUTCDate()).padStart(2, "0")}${String(d.getUTCHours()).padStart(2, "0")}`;
+}
+
 // POST: increment share count — 1 Redis command (ZINCRBY)
 export async function POST(request: NextRequest) {
   try {
@@ -31,7 +36,10 @@ export async function POST(request: NextRequest) {
 
     const redis = getRedis();
     const pipeline = redis.pipeline();
+    const hk = hourKey();
+
     pipeline.zincrby(SORTED_SET_KEY, 1, naam.toLowerCase());
+    pipeline.hincrby(hk, "shares", 1);
 
     if (sid && typeof sid === "string") {
       pipeline.pfadd("sharers", sid);
@@ -46,6 +54,8 @@ export async function POST(request: NextRequest) {
     if (domain) {
       pipeline.zincrby(DOMAIN_SHARES_KEY, 1, domain);
     }
+
+    pipeline.expire(hk, 691200);
 
     const results = await pipeline.exec();
     const count = results[0] as number;

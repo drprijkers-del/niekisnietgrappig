@@ -23,6 +23,16 @@ function getRedis() {
   });
 }
 
+function hourKey() {
+  const d = new Date();
+  return `h:${d.getUTCFullYear()}${String(d.getUTCMonth() + 1).padStart(2, "0")}${String(d.getUTCDate()).padStart(2, "0")}${String(d.getUTCHours()).padStart(2, "0")}`;
+}
+
+function dayKey() {
+  const d = new Date();
+  return `dv:${d.getUTCFullYear()}${String(d.getUTCMonth() + 1).padStart(2, "0")}${String(d.getUTCDate()).padStart(2, "0")}`;
+}
+
 export async function POST(request: NextRequest) {
   try {
     const { naam, ref, sid } = await request.json();
@@ -32,10 +42,15 @@ export async function POST(request: NextRequest) {
 
     const redis = getRedis();
     const pipeline = redis.pipeline();
+    const hk = hourKey();
+
     pipeline.zincrby(VIEWS_KEY, 1, naam.toLowerCase());
+    pipeline.hincrby(hk, "views", 1);
 
     if (sid && typeof sid === "string") {
       pipeline.pfadd("visitors", sid);
+      pipeline.pfadd(`hv:${hk.slice(2)}`, sid);
+      pipeline.pfadd(dayKey(), sid);
     }
 
     const domain = getDomain(request);
@@ -46,10 +61,14 @@ export async function POST(request: NextRequest) {
     if (ref && typeof ref === "string" && ALLOWED_REFS.has(ref)) {
       pipeline.zincrby(CLICKS_KEY, 1, naam.toLowerCase());
       pipeline.zincrby(REFS_KEY, 1, ref);
+      pipeline.hincrby(hk, "clicks", 1);
       if (domain) {
         pipeline.zincrby(DOMAIN_CLICKS_KEY, 1, domain);
       }
     }
+
+    // Expire hourly keys after 8 days
+    pipeline.expire(hk, 691200);
 
     await pipeline.exec();
 
