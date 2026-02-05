@@ -46,7 +46,7 @@ export function getContent(naam: string, lang: Lang = "nl") {
         },
         {
           titel: "The self-laugh syndrome",
-          tekst: `${naam} laughs harder at his own jokes than anyone else in the room. This is scientifically proven to be a sign that the joke isn't strong enough to stand on its own.`,
+          tekst: `${naam} laughs harder at their own jokes than anyone else in the room. This is scientifically proven to be a sign that the joke isn't strong enough to stand on its own.`,
         },
         {
           titel: "Puns at the wrong level",
@@ -54,13 +54,13 @@ export function getContent(naam: string, lang: Lang = "nl") {
         },
         {
           titel: "The endless context",
-          tekst: `Before ${naam} gets to the punchline, he first provides 15 minutes of background information. By the time the punchline drops, everyone has forgotten what the story was about. Including ${naam}.`,
+          tekst: `Before ${naam} gets to the punchline, there's first 15 minutes of background information. By the time the punchline drops, everyone has forgotten what the story was about. Including ${naam}.`,
         },
       ],
       statistieken: randomStats(naam, "en"),
       getuigenissen: [
         {
-          quote: "I thought he was asking a question. Apparently it was a joke.",
+          quote: "I thought it was a question. Apparently it was a joke.",
           auteur: "Anonymous colleague",
         },
         {
@@ -83,7 +83,7 @@ export function getContent(naam: string, lang: Lang = "nl") {
         },
         {
           vraag: "Isn't this website a bit mean?",
-          antwoord: `This website is a public service. We believe that honesty is ultimately in everyone's best interest. Besides: if ${naam} reads this and can laugh about it, that would be the funniest thing he's ever done.`,
+          antwoord: `This website is a public service. We believe that honesty is ultimately in everyone's best interest. Besides: if ${naam} reads this and can laugh about it, that would be the funniest thing they've ever done.`,
         },
       ],
     };
@@ -105,7 +105,7 @@ export function getContent(naam: string, lang: Lang = "nl") {
       },
       {
         titel: "Het eigen-lach-syndroom",
-        tekst: `${naam} lacht harder om zijn eigen grappen dan wie dan ook in de ruimte. Dit is wetenschappelijk bewezen een teken dat de grap niet sterk genoeg is om op eigen benen te staan.`,
+        tekst: `${naam} lacht harder om de eigen grappen dan wie dan ook in de ruimte. Dit is wetenschappelijk bewezen een teken dat de grap niet sterk genoeg is om op eigen benen te staan.`,
       },
       {
         titel: "Woordgrappen op het verkeerde niveau",
@@ -113,13 +113,13 @@ export function getContent(naam: string, lang: Lang = "nl") {
       },
       {
         titel: "De eindeloze context",
-        tekst: `Voordat ${naam} bij de clou komt, geeft hij eerst 15 minuten achtergrondinformatie. Tegen de tijd dat de punchline valt, is iedereen vergeten waar het verhaal over ging. Inclusief ${naam} zelf.`,
+        tekst: `Voordat ${naam} bij de clou komt, volgt er eerst 15 minuten achtergrondinformatie. Tegen de tijd dat de punchline valt, is iedereen vergeten waar het verhaal over ging. Inclusief ${naam} zelf.`,
       },
     ],
     statistieken: randomStats(naam, "nl"),
     getuigenissen: [
       {
-        quote: "Ik dacht dat hij een vraag stelde. Blijkbaar was het een grap.",
+        quote: "Ik dacht dat het een vraag was. Blijkbaar was het een grap.",
         auteur: "Anonieme collega",
       },
       {
@@ -142,7 +142,7 @@ export function getContent(naam: string, lang: Lang = "nl") {
       },
       {
         vraag: "Is deze website niet een beetje gemeen?",
-        antwoord: `Deze website is een publieke dienst. Wij geloven dat eerlijkheid uiteindelijk in ieders belang is. Bovendien: als ${naam} dit leest en er om kan lachen, is dat het grappigste dat hij ooit heeft gedaan.`,
+        antwoord: `Deze website is een publieke dienst. Wij geloven dat eerlijkheid uiteindelijk in ieders belang is. Bovendien: als ${naam} dit leest en er om kan lachen, is dat het grappigste dat diegene ooit heeft gedaan.`,
       },
     ],
   };
