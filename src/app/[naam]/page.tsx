@@ -161,6 +161,112 @@ export default async function NaamPage({ params, searchParams }: Props) {
     );
   }
 
+  // Easter egg: Dennis — the creator, the one the algorithm can't touch
+  if (lowerName === "dennis") {
+    const isEN = lang === "en";
+    return (
+      <div className="min-h-screen bg-[#0a0a0a] text-[#ededed] font-sans">
+        <ViewTracker naam={naam} />
+        <LanguageToggle lang={lang} />
+        <section className="relative flex min-h-svh flex-col items-center justify-center px-6 py-24 text-center overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-amber-950/20 via-transparent to-transparent" />
+          <div className="relative z-10 max-w-3xl mx-auto space-y-8">
+            <p className="text-sm font-mono uppercase tracking-[0.3em] text-amber-400 animate-pulse">
+              {isEN ? "ERROR 403 — ACCESS DENIED" : "FOUT 403 — TOEGANG GEWEIGERD"}
+            </p>
+            <div className="w-full max-w-2xl mx-auto">
+              <h1 className="text-4xl font-black tracking-tight sm:text-6xl md:text-7xl">
+                {isEN ? "Nice try." : "Leuk geprobeerd."}
+              </h1>
+              <p className="text-right text-sm sm:text-base text-zinc-500 italic mt-2">
+                {isEN ? "he's actually kind of funny" : "hij is nu net wél grappig"}
+              </p>
+            </div>
+            <div className="space-y-5 text-lg sm:text-xl text-zinc-300 leading-relaxed max-w-2xl mx-auto">
+              <p>
+                {isEN
+                  ? "The algorithm tried to analyze Dennis. The algorithm crashed. Three times. Then it sent an apology email."
+                  : "Het algoritme probeerde Dennis te analyseren. Het algoritme crashte. Drie keer. Daarna stuurde het een excuus-e-mail."}
+              </p>
+              <p>
+                {isEN
+                  ? "Turns out you can't roast the person who built the roast machine. It's not a bug — it's a feature."
+                  : "Je kunt blijkbaar niet iemand roasten die de roast-machine heeft gebouwd. Het is geen bug — het is een feature."}
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 w-full max-w-md mx-auto pt-4">
+              <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 text-center">
+                <div className="text-2xl font-bold font-mono text-amber-400">ERR</div>
+                <div className="mt-1 text-[11px] text-zinc-500">{isEN ? "Humor analysis failed" : "Humoranalyse mislukt"}</div>
+              </div>
+              <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 text-center">
+                <div className="text-2xl font-bold font-mono text-amber-400">N/A</div>
+                <div className="mt-1 text-[11px] text-zinc-500">{isEN ? "Conflict of interest" : "Belangenverstrengeling"}</div>
+              </div>
+              <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 text-center">
+                <div className="text-2xl font-bold font-mono text-amber-400">???</div>
+                <div className="mt-1 text-[11px] text-zinc-500">{isEN ? "Results: classified" : "Resultaten: geheim"}</div>
+              </div>
+              <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 text-center">
+                <div className="text-2xl font-bold text-amber-400">1</div>
+                <div className="mt-1 text-[11px] text-zinc-500">{isEN ? "There can be only one" : "Er kan er maar één zijn"}</div>
+              </div>
+            </div>
+
+            <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6 text-center max-w-md mx-auto">
+              <p className="text-sm font-mono text-zinc-500 mb-3">
+                {isEN ? "// attempted_roasts.log" : "// geprobeerde_roasts.log"}
+              </p>
+              <div className="space-y-2 text-sm text-left font-mono">
+                <p className="text-zinc-500">
+                  <span className="text-red-400">[FAIL]</span>{" "}
+                  {isEN ? "\"Dennis is not funny\" → rejected by system" : "\"Dennis is niet grappig\" → afgewezen door systeem"}
+                </p>
+                <p className="text-zinc-500">
+                  <span className="text-red-400">[FAIL]</span>{" "}
+                  {isEN ? "\"Dennis has bad timing\" → permission denied" : "\"Dennis heeft slechte timing\" → geen toestemming"}
+                </p>
+                <p className="text-zinc-500">
+                  <span className="text-amber-400">[WARN]</span>{" "}
+                  {isEN ? "Creator privilege detected. Aborting." : "Creator privilege gedetecteerd. Afgebroken."}
+                </p>
+              </div>
+            </div>
+
+            <p className="text-xs text-zinc-700 italic">
+              {isEN
+                ? "Is this fair? No. Is this his website? Yes. There can be only one."
+                : "Is dit eerlijk? Nee. Is dit zijn website? Ja. Er kan er maar één zijn."}
+            </p>
+
+            <div className="flex w-full max-w-sm mx-auto flex-col gap-3 pt-4">
+              <ShareButton
+                naam="Dennis"
+                lang={lang}
+                label={isEN ? "Share via WhatsApp" : "Deel via WhatsApp"}
+              />
+            </div>
+          </div>
+        </section>
+        <ShareButtons naam="Dennis" lang={lang} />
+        <footer className="border-t border-zinc-800 py-12 px-6 text-center">
+          <p className="text-sm text-zinc-600">
+            {isEN
+              ? "This website was made by Dennis. Draw your own conclusions."
+              : "Deze website is gemaakt door Dennis. Trek je eigen conclusies."}
+          </p>
+          <p className="mt-6 text-xs text-zinc-600">
+            Made by{" "}
+            <a href="https://www.pinkpollos.com/nl/lab" target="_blank" rel="noopener noreferrer" className="text-zinc-400 underline underline-offset-2 transition-colors hover:text-white">
+              Pink Pollos
+            </a>
+          </p>
+        </footer>
+      </div>
+    );
+  }
+
   const spice = validateSpice(w);
   const { redenen, statistieken, getuigenissen, faq } = getContent(naam, lang);
   const ui = getUI(lang);
