@@ -154,10 +154,10 @@ export function getUI(lang: Lang = "nl") {
       faqSection: { heading: "Frequently asked questions", subheading: "FAQ" },
       share: {
         heading: "Know someone else who isn't funny?",
-        description: "Share the evidence or create your own page.",
-        shareButton: (naam: string) => `Share about ${naam}`,
-        copied: "Link copied!",
-        create: "Create your own",
+        description: "Spread the truth or pick your next victim.",
+        shareButton: (naam: string) => `Confront ${naam}`,
+        copied: "Evidence copied!",
+        create: "Pick a new victim",
         shareText: (naam: string) =>
           `${naam} is not funny. The proof is here:`,
       },
@@ -202,10 +202,10 @@ export function getUI(lang: Lang = "nl") {
     faqSection: { heading: "Veelgestelde vragen", subheading: "FAQ" },
     share: {
       heading: "Ken jij ook iemand die niet grappig is?",
-      description: "Deel het bewijs of maak een eigen pagina aan.",
-      shareButton: (naam: string) => `Deel over ${naam}`,
-      copied: "Link gekopieerd!",
-      create: "Maak je eigen aan",
+      description: "Verspreid de waarheid of kies je volgende slachtoffer.",
+      shareButton: (naam: string) => `Confronteer ${naam}`,
+      copied: "Bewijs gekopieerd!",
+      create: "Kies een nieuw slachtoffer",
       shareText: (naam: string) =>
         `${naam} is niet grappig. Het bewijs is hier:`,
     },
