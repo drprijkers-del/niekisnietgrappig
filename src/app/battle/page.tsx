@@ -68,10 +68,15 @@ export default async function BattlePage({ searchParams }: Props) {
   const capitalize = (s: string) =>
     s.replace(/(^|\s)\S/g, (c) => c.toUpperCase());
 
-  const results = names.map((name, i) => ({
-    name: capitalize(name),
-    score: scores[i] || 0,
-  }));
+  const results = names.map((name, i) => {
+    const isDennis = name.toLowerCase() === "dennis";
+    const realScore = scores[i] || 0;
+    return {
+      name: capitalize(name),
+      score: isDennis ? 0 : realScore,
+      realScore: isDennis ? realScore : undefined,
+    };
+  });
 
   const winner = results[0];
 
@@ -117,7 +122,12 @@ export default async function BattlePage({ searchParams }: Props) {
                       <span className="text-zinc-600 italic text-sm ml-2">(seriously? wat denk je zelf)</span>
                     )}
                   </span>
-                  <span className="text-zinc-600">{r.score}x</span>
+                  <span className="text-zinc-600">
+                    {r.realScore !== undefined && r.realScore > 0 && (
+                      <span className="line-through text-zinc-700 mr-1">{r.realScore}</span>
+                    )}
+                    {r.score}x
+                  </span>
                 </div>
               ))}
             </div>

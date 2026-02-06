@@ -55,8 +55,11 @@ export default function GroupCheck({
     const winnerName = results[0].naam.replace(/(^|\s)\S/g, (c) => c.toUpperCase());
 
     // Build battle page URL with names and scores for OG image
+    // For Dennis, pass the real score so battle page can show strikethrough
     const names = results.slice(0, 5).map(r => r.naam).join(",");
-    const scores = results.slice(0, 5).map(r => r.views).join(",");
+    const scores = results.slice(0, 5).map(r =>
+      r.naam.toLowerCase() === "dennis" && r.realViews !== undefined ? r.realViews : r.views
+    ).join(",");
     const battleUrl = `https://isnietgrappig.com/battle?names=${encodeURIComponent(names)}&scores=${encodeURIComponent(scores)}${isNL ? "" : "&lang=en"}`;
 
     const text = isNL
