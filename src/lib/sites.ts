@@ -163,7 +163,7 @@ export const SITES: Record<SiteId, SiteConfig> = {
 
   honger: {
     siteId: "honger",
-    domain: "heefthonger.nl",
+    domain: "heefthonger.horse",
     domainEn: null,
     redisPrefix: "honger",
     siteName: "Heeft Honger",
@@ -174,7 +174,7 @@ export const SITES: Record<SiteId, SiteConfig> = {
       subtitle: "OFFICIEEL BEWEZEN",
       description: "Officieel onderzocht. Onomstotelijk vastgelegd.",
       footerLabel: "heefthonger",
-      footerTLD: ".nl",
+      footerTLD: ".horse",
       footerCTA: "Deel de waarheid",
     },
     meta: {
@@ -211,8 +211,8 @@ export const SITES: Record<SiteId, SiteConfig> = {
 
   werken: {
     siteId: "werken",
-    domain: "gaeenswerken.nl",
-    domainEn: "youshouldbeworking.com",
+    domain: "gaeenswerken.dog",
+    domainEn: "youshouldbeworking.dog",
     redisPrefix: "werken",
     siteName: "Ga Eens Werken",
     hasEnglish: true,
@@ -222,7 +222,7 @@ export const SITES: Record<SiteId, SiteConfig> = {
       subtitle: "OFFICIEEL BEWEZEN",
       description: "Officieel onderzocht. Onomstotelijk vastgelegd.",
       footerLabel: "gaeenswerken",
-      footerTLD: ".nl",
+      footerTLD: ".dog",
       footerCTA: "Deel de waarheid",
     },
     meta: {
@@ -259,7 +259,7 @@ export const SITES: Record<SiteId, SiteConfig> = {
 
   liefste: {
     siteId: "liefste",
-    domain: "isdeliefste.nl",
+    domain: "isdeliefste.fan",
     domainEn: null,
     redisPrefix: "liefste",
     siteName: "Is De Liefste",
@@ -270,7 +270,7 @@ export const SITES: Record<SiteId, SiteConfig> = {
       subtitle: "OFFICIEEL BEWEZEN",
       description: "Officieel onderzocht. Onomstotelijk vastgelegd.",
       footerLabel: "isdeliefste",
-      footerTLD: ".nl",
+      footerTLD: ".fan",
       footerCTA: "Deel de liefde",
     },
     meta: {
@@ -307,7 +307,7 @@ export const SITES: Record<SiteId, SiteConfig> = {
 
   lief: {
     siteId: "lief",
-    domain: "doefflief.nl",
+    domain: "doefflief.today",
     domainEn: null,
     redisPrefix: "lief",
     siteName: "Doe ff Lief",
@@ -318,7 +318,7 @@ export const SITES: Record<SiteId, SiteConfig> = {
       subtitle: "OFFICIEEL BEWEZEN",
       description: "Officieel onderzocht. Onomstotelijk vastgelegd.",
       footerLabel: "doefflief",
-      footerTLD: ".nl",
+      footerTLD: ".today",
       footerCTA: "Deel de waarheid",
     },
     meta: {
