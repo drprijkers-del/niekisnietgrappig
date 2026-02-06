@@ -113,7 +113,14 @@ export async function GET(request: Request) {
                 >
                   <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
                     <span style={{ fontSize: 18, color: "#52525b", width: 28 }}>{i + 2}.</span>
-                    <span style={{ fontSize: 20, fontWeight: 600 }}>{r.name}</span>
+                    <span style={{ fontSize: 20, fontWeight: 600 }}>
+                      {r.name}
+                      {r.name.toLowerCase() === "dennis" && (
+                        <span style={{ fontSize: 14, color: "#52525b", fontStyle: "italic", marginLeft: 8 }}>
+                          (seriously?)
+                        </span>
+                      )}
+                    </span>
                   </div>
                   <span style={{ fontSize: 18, color: "#71717a" }}>{r.score}x</span>
                 </div>

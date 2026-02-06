@@ -113,6 +113,9 @@ export default async function BattlePage({ searchParams }: Props) {
                   <span className="text-zinc-400">
                     <span className="text-zinc-600 mr-3">{i + 2}.</span>
                     {r.name}
+                    {r.name.toLowerCase() === "dennis" && (
+                      <span className="text-zinc-600 italic text-sm ml-2">(seriously? wat denk je zelf)</span>
+                    )}
                   </span>
                   <span className="text-zinc-600">{r.score}x</span>
                 </div>

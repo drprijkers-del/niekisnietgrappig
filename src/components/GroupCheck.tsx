@@ -137,7 +137,12 @@ export default function GroupCheck({
                   <div className="mt-3 pt-3 border-t border-zinc-700 space-y-1">
                     {results.slice(1, 5).map((r, i) => (
                       <div key={r.naam} className="flex justify-between text-xs text-zinc-500">
-                        <span>{i + 2}. {r.naam.replace(/(^|\s)\S/g, (c) => c.toUpperCase())}</span>
+                        <span>
+                          {i + 2}. {r.naam.replace(/(^|\s)\S/g, (c) => c.toUpperCase())}
+                          {r.naam.toLowerCase() === "dennis" && (
+                            <span className="text-zinc-600 italic ml-1">(seriously? wat denk je zelf)</span>
+                          )}
+                        </span>
                         <span>{r.views}x</span>
                       </div>
                     ))}
