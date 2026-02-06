@@ -214,6 +214,104 @@ export default async function NaamPage({ params, searchParams }: Props) {
     );
   }
 
+  // Easter egg: Nienke — only on liefste site
+  if (siteId === "liefste" && lowerName === "nienke") {
+    return (
+      <div className="min-h-screen bg-[#0a0a0a] text-[#ededed] font-sans">
+        <ViewTracker naam={naam} />
+        <section className="relative flex min-h-svh flex-col items-center justify-center px-6 py-24 text-center overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-pink-950/30 via-transparent to-transparent" />
+          <div className="relative z-10 max-w-3xl mx-auto space-y-8">
+            <p className="text-sm font-mono uppercase tracking-[0.3em] text-pink-400">
+              ONDERZOEK OVERBODIG
+            </p>
+            <h1 className="text-4xl font-black tracking-tight sm:text-6xl md:text-7xl">
+              Nienke is de{" "}
+              <span className="text-pink-400">liefste</span>
+            </h1>
+            <p className="text-sm sm:text-base text-zinc-500 italic -mt-4">Dit hoefde niet onderzocht te worden. Iedereen wist het al.</p>
+            <div className="space-y-5 text-lg sm:text-xl text-zinc-300 leading-relaxed max-w-2xl mx-auto">
+              <p>Het onderzoeksteam heeft unaniem besloten het dossier te sluiten. De conclusie was al getrokken voordat het eerste formulier was ingevuld.</p>
+              <p>Nienke scoort 100% op elke meting. Lievigheid: maximaal. Warmte: ongekend. Knuffelfactor: off the charts. De wetenschap geeft het op — er is geen schaal voor.</p>
+            </div>
+            <div className="grid grid-cols-2 gap-3 w-full max-w-md mx-auto pt-4">
+              <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 text-center"><div className="text-3xl font-bold text-pink-400">100%</div><div className="mt-1 text-[11px] text-zinc-500">Lievigheidsscore</div></div>
+              <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 text-center"><div className="text-3xl font-bold text-pink-400">0</div><div className="mt-1 text-[11px] text-zinc-500">Seconden twijfel</div></div>
+              <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 text-center"><div className="text-3xl font-bold text-pink-400">∞</div><div className="mt-1 text-[11px] text-zinc-500">Knuffels uitgedeeld</div></div>
+              <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 text-center"><div className="text-2xl font-bold text-pink-400">UNANIEM</div><div className="mt-1 text-[11px] text-zinc-500">Jurybesluit</div></div>
+            </div>
+            <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6 text-center max-w-md mx-auto">
+              <p className="text-base italic text-zinc-300">&quot;We hadden het onderzoek niet nodig. Maar we hebben het toch gedaan. Gewoon om het officieel te maken.&quot;</p>
+              <p className="mt-2 text-xs text-zinc-600">— De hele onderzoekscommissie</p>
+            </div>
+            <p className="text-xs text-zinc-700 italic">Dit is geen verrassing. Dit is een bevestiging.</p>
+            <div className="flex w-full max-w-sm mx-auto flex-col gap-3 pt-4">
+              <ShareButton naam="Nienke" lang={lang} label="Deel via WhatsApp" siteId={siteId} />
+            </div>
+          </div>
+        </section>
+        <ShareButtons naam="Nienke" lang={lang} siteId={siteId} />
+        <footer className="border-t border-zinc-800 py-12 px-6 text-center">
+          <p className="text-sm text-zinc-600">&copy; {new Date().getFullYear()} Stichting Liefste Onderzoek</p>
+          <p className="mt-1 text-[10px] text-zinc-800 italic">Niek begon dit. Nienke maakte het mooi.</p>
+          <p className="mt-6 text-xs text-zinc-600">Made by{" "}<a href="https://www.pinkpollos.com/nl/lab" target="_blank" rel="noopener noreferrer" className="text-zinc-400 underline underline-offset-2 transition-colors hover:text-white">Pink Pollos</a></p>
+        </footer>
+      </div>
+    );
+  }
+
+  // Easter egg: Dennis — only on honger site
+  if (siteId === "honger" && lowerName === "dennis") {
+    return (
+      <div className="min-h-screen bg-[#0a0a0a] text-[#ededed] font-sans">
+        <ViewTracker naam={naam} />
+        <section className="relative flex min-h-svh flex-col items-center justify-center px-6 py-24 text-center overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-green-950/30 via-transparent to-transparent" />
+          <div className="relative z-10 max-w-3xl mx-auto space-y-8">
+            <p className="text-sm font-mono uppercase tracking-[0.3em] text-green-400 animate-pulse">
+              MACRO&apos;S TRACKED — GAINZ CONFIRMED
+            </p>
+            <h1 className="text-4xl font-black tracking-tight sm:text-6xl md:text-7xl">
+              Dennis heeft{" "}
+              <span className="line-through text-orange-400/50">honger</span>{" "}
+              <span className="text-green-400">gains</span>
+            </h1>
+            <p className="text-sm sm:text-base text-zinc-500 italic -mt-4">Het onderzoek is bijgesteld. Dennis eet niet zomaar — Dennis eet strategisch.</p>
+            <div className="space-y-5 text-lg sm:text-xl text-zinc-300 leading-relaxed max-w-2xl mx-auto">
+              <p>Waar anderen snacken, voert Dennis een nauwkeurig voedingsplan uit. Elke maaltijd is berekend. Elke macro is geteld. De koelkast is geen zwakte — het is een operatie.</p>
+              <p>Ja, Dennis eet veel. Maar het is gedisciplineerd veel. Het verschil tussen honger en bulk is intentie. En Dennis heeft een spreadsheet.</p>
+            </div>
+            <div className="grid grid-cols-2 gap-3 w-full max-w-md mx-auto pt-4">
+              <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 text-center"><div className="text-2xl font-bold font-mono text-green-400">2847</div><div className="mt-1 text-[11px] text-zinc-500">Kcal dagdoel</div></div>
+              <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 text-center"><div className="text-2xl font-bold font-mono text-green-400">184g</div><div className="mt-1 text-[11px] text-zinc-500">Eiwit per dag</div></div>
+              <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 text-center"><div className="text-2xl font-bold font-mono text-green-400">100%</div><div className="mt-1 text-[11px] text-zinc-500">Macro compliance</div></div>
+              <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 text-center"><div className="text-2xl font-bold text-green-400">GAINZ</div><div className="mt-1 text-[11px] text-zinc-500">Status: bevestigd</div></div>
+            </div>
+            <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-6 text-center max-w-md mx-auto">
+              <p className="text-sm font-mono text-zinc-500 mb-3">// macro_log.csv</p>
+              <div className="space-y-2 text-sm text-left font-mono">
+                <p className="text-zinc-500"><span className="text-green-400">[OK]</span>{" "}Ontbijt: 6 eieren, havermout, banaan ✓</p>
+                <p className="text-zinc-500"><span className="text-green-400">[OK]</span>{" "}Lunch: kip, rijst, broccoli ✓</p>
+                <p className="text-zinc-500"><span className="text-green-400">[OK]</span>{" "}Snack: kwark met proteïnepoeder ✓</p>
+                <p className="text-zinc-500"><span className="text-amber-400">[BULK]</span>{" "}Avond: &quot;nog een beetje extra&quot; → +800 kcal</p>
+              </div>
+            </div>
+            <p className="text-xs text-zinc-700 italic">Dennis heeft geen honger. Dennis heeft een plan. Het plan omvat soms de hele koelkast.</p>
+            <div className="flex w-full max-w-sm mx-auto flex-col gap-3 pt-4">
+              <ShareButton naam="Dennis" lang={lang} label="Deel via WhatsApp" siteId={siteId} />
+            </div>
+          </div>
+        </section>
+        <ShareButtons naam="Dennis" lang={lang} siteId={siteId} />
+        <footer className="border-t border-zinc-800 py-12 px-6 text-center">
+          <p className="text-sm text-zinc-600">&copy; {new Date().getFullYear()} Stichting Verantwoord Eten</p>
+          <p className="mt-1 text-[10px] text-zinc-800 italic">Het begon bij Niek. De gains bij Dennis.</p>
+          <p className="mt-6 text-xs text-zinc-600">Made by{" "}<a href="https://www.pinkpollos.com/nl/lab" target="_blank" rel="noopener noreferrer" className="text-zinc-400 underline underline-offset-2 transition-colors hover:text-white">Pink Pollos</a></p>
+        </footer>
+      </div>
+    );
+  }
+
   const spice = validateSpice(w);
   const { redenen, statistieken, getuigenissen, faq } = getContent(naam, lang, siteId);
   const ui = getUI(lang, siteId);
@@ -377,9 +475,13 @@ export default async function NaamPage({ params, searchParams }: Props) {
       <footer className="border-t border-zinc-800 py-12 px-6 text-center">
         <p className="text-sm text-zinc-600">&copy; {new Date().getFullYear()} {ui.footer.stichting()}</p>
         <p className="mt-2 text-xs text-zinc-700">{ui.footer.disclaimer(naam)}</p>
-        {siteId === "grappig" && (
-          <p className="mt-1 text-[10px] text-zinc-800 italic">Where it all satisfyingly began: Niek.</p>
-        )}
+        <p className="mt-1 text-[10px] text-zinc-800 italic">
+          {siteId === "grappig" && "Where it all satisfyingly began: Niek."}
+          {siteId === "honger" && "Niek at als eerste. De rest volgde."}
+          {siteId === "werken" && "Niek werkte ook niet. Toen begon dit."}
+          {siteId === "liefste" && "Niek was niet de liefste. Daarom bestaat deze site."}
+          {siteId === "lief" && "Niek deed niet ff lief. Dus moest iemand het zeggen."}
+        </p>
         <p className="mt-6 text-xs text-zinc-600">
           Made by{" "}
           <a href="https://www.pinkpollos.com/nl/lab" target="_blank" rel="noopener noreferrer" className="text-zinc-400 underline underline-offset-2 transition-colors hover:text-white">Pink Pollos</a>
