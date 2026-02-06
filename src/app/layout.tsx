@@ -39,13 +39,18 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const { headers } = await import("next/headers");
+  const hdrs = await headers();
+  const host = (hdrs.get("host") || "").toLowerCase();
+  const isEnglish = host.includes("isntfunny.com") || host.includes("youshouldbeworking.dog");
+
   return (
-    <html lang="nl">
+    <html lang={isEnglish ? "en" : "nl"}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

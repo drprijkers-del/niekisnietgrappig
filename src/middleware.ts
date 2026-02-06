@@ -40,7 +40,7 @@ export function middleware(request: NextRequest) {
   let subdomainName: string | null = null;
   let isEnglishDomain = false;
 
-  for (const s of ALL_SITES) {
+  for (const s of ALL_SITES.filter((x) => x.enabled)) {
     const nlMatch = hostname.match(new RegExp(`^([^.]+)\\.${s.domain.replace(/\./g, "\\.")}$`, "i"));
     if (nlMatch && nlMatch[1] !== "www") {
       subdomainName = nlMatch[1];

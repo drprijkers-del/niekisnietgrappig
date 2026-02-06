@@ -121,6 +121,8 @@ function getContentForSite(naam: string, siteId: SiteId) {
         { quote: `${naam} stond bij de deur en vroeg of dit een openbare kroeg was.`, auteur: "Commissielid" },
         { quote: `Ik heb ${naam} drie keer een aanmeldformulier gegeven. Drie keer 'verloren'.`, auteur: "Secretaris" },
         { quote: `${naam} is de definitie van een knor.`, auteur: "Anoniem bestuurslid" },
+        { quote: `${naam} kwam naar de borrel, dronk 4 biertjes en zei: "Leuke kroeg." Het was de ALV.`, auteur: "Penningmeester" },
+        { quote: `Ik heb ${naam} uitgenodigd voor de introweek. ${naam} dacht dat het een festival was.`, auteur: "Eerstejaars" },
       ],
       faq: [
         { vraag: `Kan ${naam} nog lid worden?`, antwoord: `Theoretisch wel. Praktisch: nee. De motivatie ontbreekt al jaren.` },
@@ -144,6 +146,8 @@ function getContentForSite(naam: string, siteId: SiteId) {
         { quote: `${naam} at mijn lunch op terwijl ik nog aan het uitleggen was dat het mijn lunch was.`, auteur: "Collega" },
         { quote: `We bestelden voor 6. ${naam} at voor 4. De rest deelde wat overbleef.`, auteur: "Restauranteigenaar" },
         { quote: `${naam} vroeg of er nog wat was. De hele tafel was al leeg.`, auteur: "Huisgenoot" },
+        { quote: `${naam} zei "ik heb geen honger." Vijf minuten later was de hele koelkast leeg.`, auteur: "Huisgenoot #2" },
+        { quote: `We hadden een taart voor 12 personen. ${naam} vroeg of er ook een voor hemzelf was.`, auteur: "Verjaardagsganger" },
       ],
       faq: [
         { vraag: `Heeft ${naam} echt áltijd honger?`, antwoord: `Ja. Wetenschappers hebben geprobeerd ${naam} vol te krijgen. Ze zijn gestopt met proberen.` },
@@ -167,6 +171,8 @@ function getContentForSite(naam: string, siteId: SiteId) {
         { quote: `${naam} vroeg hoe laat het was. Ik zei 14:00. ${naam} zei "oh, dan ga ik zo beginnen."`, auteur: "Collega" },
         { quote: `Ik heb ${naam} één keer zien werken. Achteraf bleek het een loading screen.`, auteur: "Teamleider" },
         { quote: `${naam} heeft 'out of office' aan. Al 3 maanden.`, auteur: "HR" },
+        { quote: `${naam} zei "ik werk vanuit huis." De PS5 stond aan. De laptop niet.`, auteur: "Huisgenoot" },
+        { quote: `${naam} had een deadline van 3 weken. Na 2,5 week vroeg ${naam}: "Welke deadline?"`, auteur: "Projectmanager" },
       ],
       faq: [
         { vraag: `Werkt ${naam} echt nooit?`, antwoord: `Soms. Maar het openen van de koelkast telt technisch gezien niet.` },
@@ -190,6 +196,8 @@ function getContentForSite(naam: string, siteId: SiteId) {
         { quote: `${naam} stuurde me een berichtje alleen om te zeggen dat ik geweldig ben. Mijn hele week was gemaakt.`, auteur: "Dankbare vriend" },
         { quote: `Ik was verdrietig. ${naam} kwam langs met taart. Zonder te vragen.`, auteur: "Collega" },
         { quote: `Als iedereen was als ${naam}, hadden we geen problemen.`, auteur: "Iedereen" },
+        { quote: `${naam} onthield mijn verjaardag terwijl ik het zelf bijna was vergeten.`, auteur: "Verraste vriendin" },
+        { quote: `Ik had een slechte dag. ${naam} stuurde een playlist met alleen maar feelgood-nummers. Precies wat ik nodig had.`, auteur: "Collega #2" },
       ],
       faq: [
         { vraag: `Is ${naam} echt zo lief?`, antwoord: `Ja. En deze website doet het nog tekort. In het echt is ${naam} nóg liever.` },
@@ -213,6 +221,8 @@ function getContentForSite(naam: string, siteId: SiteId) {
         { quote: `${naam} zei goedemorgen en de hele kamer voelde zich aangevallen.`, auteur: "Collega" },
         { quote: `Ik vroeg hoe het ging. Het antwoord was een zucht van 8 seconden.`, auteur: "Bezorgde vriend" },
         { quote: `${naam} moet ff lief doen. Dat is alles.`, auteur: "Iedereen" },
+        { quote: `${naam} gaf een compliment. Iedereen keek om of er iemand anders stond.`, auteur: "Verbijsterde collega" },
+        { quote: `Ik stuurde ${naam} een hartje. Ik kreeg een punt terug. Letterlijk: "."`, auteur: "Vriendin" },
       ],
       faq: [
         { vraag: `Is ${naam} altijd zo?`, antwoord: `Helaas wel. Het is geen fase. Het is een patroon.` },
@@ -236,6 +246,8 @@ function getContentForSite(naam: string, siteId: SiteId) {
       { quote: "Ik dacht dat het een vraag was. Blijkbaar was het een grap.", auteur: "Anonieme collega" },
       { quote: `${naam} vertelde een grap op een feestje. Het feestje was daarna afgelopen.`, auteur: "Ex-feestganger" },
       { quote: `Ik heb een keer gelachen om een grap van ${naam}. Achteraf bleek ik te lachen om iets anders.`, auteur: "Vriend van een vriend" },
+      { quote: `${naam} zei "wacht, ik heb er nog eentje." Drie mensen stonden op en gingen weg.`, auteur: "Ooggetuige" },
+      { quote: `Mijn telefoon autocorrecte "${naam}" naar "niet grappig." Zelfs technologie weet het.`, auteur: "Groepsapp-lid" },
     ],
     faq: [
       { vraag: `Maar soms lachen mensen toch om ${naam}?`, antwoord: `Dat klopt. Dit fenomeen staat bekend als "medelachten" \u2014 een sociaal overlevingsmechanisme waarbij mensen lachen om een ongemakkelijke stilte te doorbreken. Het heeft niets met humor te maken.` },
@@ -262,6 +274,8 @@ export function getContent(naam: string, lang: Lang = "nl", siteId: SiteId = "gr
         { quote: `${naam} asked what time it was. I said 2 PM. ${naam} said "cool, I'll start soon."`, auteur: "Colleague" },
         { quote: `I once saw ${naam} working. Turns out it was a loading screen.`, auteur: "Team lead" },
         { quote: `${naam} has been 'out of office' for 3 months.`, auteur: "HR" },
+        { quote: `${naam} said "I'm working from home." The PS5 was on. The laptop wasn't.`, auteur: "Roommate" },
+        { quote: `${naam} had a 3-week deadline. After 2.5 weeks: "What deadline?"`, auteur: "Project manager" },
       ],
       faq: [
         { vraag: `Does ${naam} ever actually work?`, antwoord: `Sometimes. But opening the fridge doesn't technically count.` },
@@ -287,6 +301,8 @@ export function getContent(naam: string, lang: Lang = "nl", siteId: SiteId = "gr
         { quote: "I thought it was a question. Apparently it was a joke.", auteur: "Anonymous colleague" },
         { quote: `${naam} told a joke at a party. The party was over after that.`, auteur: "Former party-goer" },
         { quote: `I once laughed at a joke from ${naam}. Turns out I was laughing at something else.`, auteur: "Friend of a friend" },
+        { quote: `${naam} said "wait, I have another one." Three people stood up and left.`, auteur: "Eyewitness" },
+        { quote: `My phone autocorrected "${naam}" to "not funny." Even technology knows.`, auteur: "Group chat member" },
       ],
       faq: [
         { vraag: `But sometimes people do laugh at ${naam}?`, antwoord: `That's correct. This phenomenon is known as "sympathy laughing" \u2014 a social survival mechanism where people laugh to break an awkward silence. It has nothing to do with humor.` },

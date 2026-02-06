@@ -10,6 +10,7 @@ export interface SiteConfig {
   redisPrefix: string; // "" for grappig (backward compat), "knor" etc for new sites
   siteName: string;
   hasEnglish: boolean;
+  enabled: boolean; // false = parked, hidden from discovery & public UI
   accentColor: string; // hex for highlight in OG images etc
 
   // Phrase display: "{naam} is niet grappig" or "{naam}, ga eens werken"
@@ -73,6 +74,7 @@ export const SITES: Record<SiteId, SiteConfig> = {
     redisPrefix: "", // backward compat — no migration needed
     siteName: "Is Niet Grappig",
     hasEnglish: true,
+    enabled: true,
     accentColor: "#ef4444",
     phrase: { before: "is", highlight: "niet", after: "grappig" },
     og: {
@@ -121,11 +123,12 @@ export const SITES: Record<SiteId, SiteConfig> = {
     redisPrefix: "knor",
     siteName: "Is Een Knor",
     hasEnglish: false,
+    enabled: false, // parked — no domain live yet
     accentColor: "#f59e0b",
     phrase: { before: "is een", highlight: "knor", after: "" },
     og: {
       subtitle: "OFFICIEEL BEWEZEN",
-      description: "Officieel onderzocht. Onomstotelijk vastgelegd.",
+      description: "Officieel vastgesteld. Het lidmaatschap is afgewezen.",
       footerLabel: "iseenknor",
       footerTLD: ".nl",
       footerCTA: "Deel de waarheid",
@@ -169,6 +172,7 @@ export const SITES: Record<SiteId, SiteConfig> = {
     redisPrefix: "honger",
     siteName: "Heeft Honger",
     hasEnglish: false,
+    enabled: true,
     accentColor: "#f97316",
     phrase: { before: "heeft", highlight: "honger", after: "" },
     og: {
@@ -217,6 +221,7 @@ export const SITES: Record<SiteId, SiteConfig> = {
     redisPrefix: "werken",
     siteName: "Ga Eens Werken",
     hasEnglish: true,
+    enabled: true,
     accentColor: "#22c55e",
     phrase: { before: ", ga eens", highlight: "werken", after: "" },
     og: {
@@ -265,6 +270,7 @@ export const SITES: Record<SiteId, SiteConfig> = {
     redisPrefix: "liefste",
     siteName: "Is De Liefste",
     hasEnglish: false,
+    enabled: true,
     accentColor: "#ec4899",
     phrase: { before: "is de", highlight: "liefste", after: "" },
     og: {
@@ -313,6 +319,7 @@ export const SITES: Record<SiteId, SiteConfig> = {
     redisPrefix: "lief",
     siteName: "Doe ff Lief",
     hasEnglish: false,
+    enabled: true,
     accentColor: "#a855f7",
     phrase: { before: ", doe ff", highlight: "lief", after: "" },
     og: {

@@ -10,6 +10,7 @@ import LanguageToggle from "@/components/LanguageToggle";
 import TopShared from "@/components/TopShared";
 import ViewTracker from "@/components/ViewTracker";
 import GroupCheck from "@/components/GroupCheck";
+import SiteDiscovery from "@/components/SiteDiscovery";
 
 // Simple group ID validation (alphanumeric + hyphens, max 24 chars)
 function validateGroupId(g: unknown): string | null {
@@ -368,6 +369,9 @@ export default async function NaamPage({ params, searchParams }: Props) {
 
       {/* CTA */}
       <ShareButtons naam={naam} lang={lang} groupId={groupId || undefined} siteId={siteId} />
+
+      {/* Cross-site discovery */}
+      <SiteDiscovery naam={naam} lang={lang} siteId={siteId} />
 
       {/* Footer */}
       <footer className="border-t border-zinc-800 py-12 px-6 text-center">
