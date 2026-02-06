@@ -65,42 +65,42 @@ function randomStats(naam: string, lang: Lang, siteId: SiteId) {
     return [
       { label: "Snacks per dag", waarde: `${r(8, 35)}` },
       { label: "Keer 'ik heb honger' gezegd", waarde: `${r(20, 80)}` },
-      { label: "Lege koelkasten achtergelaten", waarde: `${r(3, 25)}` },
-      { label: "Minuten tot volgende maaltijd", waarde: `${r(1, 15)}` },
+      { label: "Koelkasten leeggeroofd", waarde: `${r(3, 25)}` },
+      { label: "Minuten tot volgend hapje", waarde: `${r(1, 15)}` },
     ];
   }
 
   if (siteId === "werken") {
     if (lang === "en") {
       return [
-        { label: "Hours of Netflix per workday", waarde: `${r(4, 12)}` },
-        { label: "Excuses to avoid work", waarde: `${r(15, 60)}` },
+        { label: "Netflix hours per workday", waarde: `${r(4, 12)}` },
+        { label: "Excuses used today", waarde: `${r(15, 60)}` },
         { label: "Unread work emails", waarde: `${r(200, 5000)}` },
-        { label: "Productivity", waarde: `${r(1, 8)}%` },
+        { label: "Productivity score", waarde: `${r(1, 8)}%` },
       ];
     }
     return [
-      { label: "Uur Netflix per werkdag", waarde: `${r(4, 12)}` },
-      { label: "Excuses om niet te werken", waarde: `${r(15, 60)}` },
-      { label: "Ongelezen werk-e-mails", waarde: `${r(200, 5000)}` },
-      { label: "Productiviteit", waarde: `${r(1, 8)}%` },
+      { label: "Netflix-uren per werkdag", waarde: `${r(4, 12)}` },
+      { label: "Smoesjes vandaag", waarde: `${r(15, 60)}` },
+      { label: "Ongelezen e-mails", waarde: `${r(200, 5000)}` },
+      { label: "Productiviteitscore", waarde: `${r(1, 8)}%` },
     ];
   }
 
   if (siteId === "liefste") {
     return [
-      { label: "Knuffels per dag", waarde: `${r(8, 30)}` },
-      { label: "Mensen die blij worden", waarde: `${r(90, 100)}%` },
-      { label: "Complimenten uitgedeeld", waarde: `${r(15, 50)}` },
+      { label: "Knuffels uitgedeeld", waarde: `${r(8, 30)}` },
+      { label: "Mensen blij gemaakt", waarde: `${r(90, 100)}%` },
+      { label: "Complimenten vandaag", waarde: `${r(15, 50)}` },
       { label: "Liefste-score", waarde: `${r(95, 100)}/100` },
     ];
   }
 
   // lief
   return [
-    { label: "Keer onaardig geweest", waarde: `${r(15, 80)}` },
+    { label: "Keer onaardig vandaag", waarde: `${r(5, 25)}` },
     { label: "Mensen die boos zijn", waarde: `${r(60, 95)}%` },
-    { label: "Welgemeende sorry's", waarde: `${r(0, 3)}` },
+    { label: "Welgemeende sorry's ooit", waarde: `${r(0, 3)}` },
     { label: "Lief-score", waarde: `${r(1, 12)}/100` },
   ];
 }
@@ -133,22 +133,22 @@ function getContentForSite(naam: string, siteId: SiteId) {
   if (siteId === "honger") {
     return {
       redenen: [
-        { titel: `${naam} heeft altijd honger`, tekst: `Het maakt niet uit wanneer, waar, of wat er net gegeten is. ${naam} heeft honger. Continu. Het is geen eetbuien — het is een levensstijl.` },
-        { titel: "De koelkast is nooit veilig", tekst: `Als ${naam} langskomt, is de koelkast binnen 10 minuten leeg. Resten van gisteren? Weg. Die dure kaas? Weg. De hoop op een rustige avond? Ook weg.` },
-        { titel: `${naam} denkt in maaltijden`, tekst: `Terwijl anderen denken in uren, denkt ${naam} in maaltijden. "Hoe laat is het?" "Bijna lunch." "Maar het is 10 uur." "Bijna lunch."` },
-        { titel: "Altijd snacks bij de hand", tekst: `De tas van ${naam} bevat altijd minimaal drie noodsnacks. Niet voor noodgevallen — voor het half uur tussen maaltijden.` },
-        { titel: "Restaurants vrezen de naam", tekst: `Bij all-you-can-eat buffetten staat er inmiddels een foto van ${naam} bij de deur met de tekst "Let op: maximaal 3 borden."` },
-        { titel: "Het is wetenschappelijk bewezen", tekst: `Na uitgebreid onderzoek is vastgesteld dat de maag van ${naam} een bodemloze put is. Er is geen einde. Er is alleen honger.` },
+        { titel: `${naam} heeft altijd honger. Altijd.`, tekst: `Net gegeten? Honger. Drie borden op? Honger. Het is 3 uur 's nachts? Honger. Het is geen fase — het is een levensstijl.` },
+        { titel: "De koelkast heeft PTSD", tekst: `Elke keer als ${naam} de keuken binnenloopt, trilt de koelkast. Resten van gisteren? Weg. Die dure kaas? Weg. De hoop op een rustig avondje? Ook weg.` },
+        { titel: `${naam} denkt in maaltijden`, tekst: `"Hoe laat is het?" "Bijna lunch." "Het is 9 uur." "Pre-lunch." Terwijl de rest in uren denkt, denkt ${naam} in gangen.` },
+        { titel: "Snacks zijn een levensstijl", tekst: `${naam} heeft altijd minimaal 3 noodsnacks bij zich. Niet voor noodgevallen. Voor het kwartier tussen lunch en tussendoortje.` },
+        { titel: "Restaurants kennen de naam", tekst: `Bij de all-you-can-eat hangt een foto van ${naam} bij de kassa. Niet als werknemer van de maand.` },
+        { titel: "Het is wetenschappelijk bewezen", tekst: `Na uitgebreid onderzoek: de maag van ${naam} is een zwart gat. Er gaat eten in. Er komt niks uit. Alleen meer honger.` },
       ],
       getuigenissen: [
-        { quote: `${naam} at mijn lunch op terwijl ik nog aan het uitleggen was dat het mijn lunch was.`, auteur: "Anonieme collega" },
-        { quote: `We bestelden voor 6 personen. ${naam} at het voor 4.`, auteur: "Restauranteigenaar" },
-        { quote: `Ik heb ${naam} een keer zien eten. Ik heb sindsdien altijd extra koken.`, auteur: "Huisgenoot" },
+        { quote: `${naam} at mijn lunch op terwijl ik nog aan het uitleggen was dat het mijn lunch was.`, auteur: "Collega" },
+        { quote: `We bestelden voor 6. ${naam} at voor 4. De rest deelde wat overbleef.`, auteur: "Restauranteigenaar" },
+        { quote: `${naam} vroeg of er nog wat was. De hele tafel was al leeg.`, auteur: "Huisgenoot" },
       ],
       faq: [
-        { vraag: `Heeft ${naam} een eetstoornis?`, antwoord: `Nee. ${naam} heeft gewoon altijd honger. Het is geen stoornis, het is een superkracht met bijwerkingen.` },
-        { vraag: `Kan ${naam} ooit vol raken?`, antwoord: `De wetenschap twijfelt. Tot op heden is er geen bewijs gevonden van een "vol" moment.` },
-        { vraag: `Is deze website niet gemeen?`, antwoord: `${naam} is nu waarschijnlijk aan het eten en heeft dit nog niet gezien. Geen zorgen.` },
+        { vraag: `Heeft ${naam} echt áltijd honger?`, antwoord: `Ja. Wetenschappers hebben geprobeerd ${naam} vol te krijgen. Ze zijn gestopt met proberen.` },
+        { vraag: `Is dit een eetstoornis?`, antwoord: `Nee. Het is een superkracht met bijwerkingen. Vooral voor de koelkast.` },
+        { vraag: `Is dit niet gemeen?`, antwoord: `${naam} leest dit waarschijnlijk niet. Die is aan het eten.` },
       ],
     };
   }
@@ -156,22 +156,22 @@ function getContentForSite(naam: string, siteId: SiteId) {
   if (siteId === "werken") {
     return {
       redenen: [
-        { titel: `${naam} moet echt eens gaan werken`, tekst: `Iedereen om ${naam} heen is productief bezig. ${naam}? Die ligt op de bank. Al de hele dag. Structureel.` },
-        { titel: "Netflix telt niet als werk", tekst: `${naam} claimt "research" te doen, maar de watchlist zegt iets anders. 8 seizoenen in een week is geen cv-bullet.` },
-        { titel: "De wekker gaat, maar het werk niet", tekst: `Elke ochtend gaat de wekker van ${naam} om 7 uur. Om 7:01 is de snooze-knop ingedrukt. Het werk begint... morgen.` },
-        { titel: `${naam}'s excuses zijn legendarisch`, tekst: `"Ik wacht op inspiratie." "Ik werk beter onder druk." "Ik ben bezig met persoonlijke ontwikkeling." Spoiler: de ontwikkeling is stilgevallen.` },
-        { titel: "Productiviteit: een abstract concept", tekst: `Als productiviteit een sport was, zou ${naam} niet eens in het stadion zitten. Misschien in de parkeergarage. Slapend.` },
-        { titel: "Het is echt tijd", tekst: `Lieve ${naam}, dit is geen grap. Ga. Eens. Werken. De maatschappij wacht. Je bankrekening ook.` },
+        { titel: `${naam} en productiviteit hebben een LAT-relatie`, tekst: `Ze zien elkaar af en toe. Op afstand. Met grote twijfel. Ondertussen ligt ${naam} op de bank. Structureel.` },
+        { titel: "De snooze-knop is versleten", tekst: `7:00 wekker. 7:01 snooze. 7:02 snooze. 11:30 "ik begin zo." ${naam}'s ochtend in vier stappen.` },
+        { titel: `"Ik werk beter onder druk" — ${naam}`, tekst: `Spoiler: de druk is er al maanden. Er is nog niks gebeurd. De deadline was gisteren. ${naam} heeft het niet gemerkt.` },
+        { titel: `${naam}'s LinkedIn liegt`, tekst: `"Hard worker. Go-getter. Resultaatgericht." De bank in de woonkamer vertelt een ander verhaal.` },
+        { titel: "Netflix is geen beroep", tekst: `${naam} heeft meer series afgekeken dan taken afgerond. De ratio is niet gezond. HR maakt zich zorgen.` },
+        { titel: `Dit is je interventie, ${naam}`, tekst: `Je vrienden. De maatschappij. Je bankrekening. Iedereen roept hetzelfde: ga eens werken. Het is tijd.` },
       ],
       getuigenissen: [
-        { quote: `${naam} vroeg me wanneer de deadline was. Het was gisteren.`, auteur: "Projectleider" },
-        { quote: `Ik heb ${naam} een keer aan het werk gezien. Het was per ongeluk.`, auteur: "Collega" },
-        { quote: `${naam}'s LinkedIn zegt 'hard worker'. Ik heb bewijs van het tegendeel.`, auteur: "Ex-werkgever" },
+        { quote: `${naam} vroeg hoe laat het was. Ik zei 14:00. ${naam} zei "oh, dan ga ik zo beginnen."`, auteur: "Collega" },
+        { quote: `Ik heb ${naam} één keer zien werken. Achteraf bleek het een loading screen.`, auteur: "Teamleider" },
+        { quote: `${naam} heeft 'out of office' aan. Al 3 maanden.`, auteur: "HR" },
       ],
       faq: [
-        { vraag: `Werkt ${naam} echt nooit?`, antwoord: `Soms. Maar dan bedoelen we het openen van de laptop om Netflix te starten.` },
-        { vraag: `Kan ${naam} veranderen?`, antwoord: `In theorie wel. Maar de bank is comfortabel en de motivatie ver te zoeken.` },
-        { vraag: `Is deze website niet gemeen?`, antwoord: `Dit is een interventie. Soms heeft de waarheid een website nodig.` },
+        { vraag: `Werkt ${naam} echt nooit?`, antwoord: `Soms. Maar het openen van de koelkast telt technisch gezien niet.` },
+        { vraag: `Is er hoop voor ${naam}?`, antwoord: `De wetenschap is voorzichtig pessimistisch. De bank is te comfortabel.` },
+        { vraag: `Is dit niet gemeen?`, antwoord: `Dit is liefde. Harde, eerlijke, werkgerelateerde liefde.` },
       ],
     };
   }
@@ -179,22 +179,22 @@ function getContentForSite(naam: string, siteId: SiteId) {
   if (siteId === "liefste") {
     return {
       redenen: [
-        { titel: `${naam} is gewoon de allerliefste`, tekst: `Dit is geen mening. Het is een feit. Wetenschappelijk onderbouwd met jaren aan knuffels, complimenten en lieve berichtjes.` },
-        { titel: "Altijd daar voor anderen", tekst: `Als iemand een slecht dag heeft, is ${naam} de eerste die belt. Of appt. Of gewoon langskomt met chocolade. Gewoon omdat het kan.` },
-        { titel: `${naam} maakt iedereen blij`, tekst: `Het is een talent. Een gave. ${naam} hoeft maar een kamer binnen te lopen en de sfeer wordt beter. Wetenschappers noemen dit het "${naam}-effect".` },
-        { titel: "De complimenten-machine", tekst: `${naam} deelt complimenten uit als confetti. Oprecht, warm, en altijd precies wat je nodig hebt. Niemand doet het beter.` },
-        { titel: "Knuffels op niveau", tekst: `De knuffels van ${naam} zijn legendarisch. Warm, stevig, en precies lang genoeg. Het soort knuffel waar je de hele dag blij van bent.` },
-        { titel: "Het is officieel", tekst: `Na uitgebreid onderzoek, duizenden getuigenissen en een berg bewijs: ${naam} is de liefste. Punt.` },
+        { titel: `${naam} is de liefste. Punt.`, tekst: `Geen discussie. Geen nuance. Gewoon een feit. De wetenschap heeft het bevestigd en wij ook.` },
+        { titel: `Het ${naam}-effect`, tekst: `${naam} loopt een kamer in en de sfeer stijgt met 200%. Wetenschappers kunnen het niet verklaren. Wij wel: ${naam} is gewoon de liefste.` },
+        { titel: "Complimenten als confetti", tekst: `${naam} deelt complimenten uit als confetti op Koningsdag. Oprecht. Warm. Altijd precies wat je nodig hebt.` },
+        { titel: "De knuffels zijn legendarisch", tekst: `Warm. Stevig. Precies lang genoeg. Het soort knuffel waar je de rest van de dag van glimlacht.` },
+        { titel: "Altijd daar als het nodig is", tekst: `Slechte dag? ${naam} belt. Stressweek? ${naam} stuurt iets liefs. Geen reden? ${naam} komt langs met chocola. Gewoon omdat.` },
+        { titel: "Het is officieel", tekst: `Na duizenden getuigenissen, uitgebreid onderzoek en een berg aan bewijs: ${naam} is de liefste. Altijd geweest. Altijd zal zijn.` },
       ],
       getuigenissen: [
-        { quote: `${naam} stuurde me een berichtje alleen om te zeggen dat ik geweldig ben. Mijn dag was gemaakt.`, auteur: "Dankbare vriend" },
-        { quote: `Ik was verdrietig. ${naam} kwam langs met taart. Gewoon omdat.`, auteur: "Gelukkige collega" },
-        { quote: `Als iedereen was als ${naam}, was de wereld perfect.`, auteur: "Iedereen" },
+        { quote: `${naam} stuurde me een berichtje alleen om te zeggen dat ik geweldig ben. Mijn hele week was gemaakt.`, auteur: "Dankbare vriend" },
+        { quote: `Ik was verdrietig. ${naam} kwam langs met taart. Zonder te vragen.`, auteur: "Collega" },
+        { quote: `Als iedereen was als ${naam}, hadden we geen problemen.`, auteur: "Iedereen" },
       ],
       faq: [
-        { vraag: `Is ${naam} echt zo lief?`, antwoord: `Ja. Sterker nog: deze website doet het nog tekort. ${naam} is in het echt nog liever.` },
-        { vraag: `Kan iemand liever zijn dan ${naam}?`, antwoord: `Theoretisch misschien. Maar niemand heeft het tot nu toe bewezen.` },
-        { vraag: `Is deze website niet overdreven?`, antwoord: `Nee. ${naam} verdient dit. En meer. Verspreid de liefde.` },
+        { vraag: `Is ${naam} echt zo lief?`, antwoord: `Ja. En deze website doet het nog tekort. In het echt is ${naam} nóg liever.` },
+        { vraag: `Kan iemand liever zijn?`, antwoord: `Theoretisch misschien. Maar het bewijs wijst één kant op.` },
+        { vraag: `Is dit niet overdreven?`, antwoord: `Nee. ${naam} verdient dit en meer. Deel de liefde.` },
       ],
     };
   }
@@ -202,22 +202,22 @@ function getContentForSite(naam: string, siteId: SiteId) {
   if (siteId === "lief") {
     return {
       redenen: [
-        { titel: `${naam} moet echt ff lief doen`, tekst: `Het is genoeg geweest. ${naam} loopt al de hele dag chagrijnig rond. Iedereen heeft het gemerkt. Het wordt tijd voor een attitude-aanpassing.` },
-        { titel: "Die opmerking was niet nodig", tekst: `We kennen het allemaal. ${naam} zegt iets en de hele kamer is stil. Niet van bewondering. Van verbazing. Was dat nou nodig?` },
-        { titel: `${naam} en empathie: het is ingewikkeld`, tekst: `Empathie is een vaardigheid die de meeste mensen beheersen. ${naam} is nog in de beginfase. Heel erg in de beginfase.` },
-        { titel: "Het gezucht moet stoppen", tekst: `Elke keer als iemand iets vraagt, zucht ${naam}. Alsof het een persoonlijke aanval is. Spoiler: dat is het niet. Doe ff lief.` },
-        { titel: "Complimenten geven: een handleiding", tekst: `Stap 1: open je mond. Stap 2: zeg iets aardigs. ${naam} is vastgelopen bij stap 1.` },
-        { titel: "Dit is een interventie", tekst: `${naam}, dit is je teken. Het universum, je vrienden, en deze website zeggen het allemaal: doe ff lief. Het is niet zo moeilijk.` },
+        { titel: `${naam} moet echt ff lief doen`, tekst: `Het is genoeg geweest. De chagrijnigheid is structureel. Iedereen heeft het gemerkt. Tijd voor een interventie.` },
+        { titel: "Dat zuchtje was niet nodig", tekst: `Iemand stelt een normale vraag. ${naam} zucht alsof het een persoonlijke aanval is. Dat was het niet. Doe ff lief.` },
+        { titel: "De goedemorgen die als dreigement klinkt", tekst: `${naam} zegt goedemorgen en het klinkt als een waarschuwing. Zelfs de koffie schrikt ervan.` },
+        { titel: "Complimenten geven: een handleiding", tekst: `Stap 1: open je mond. Stap 2: zeg iets aardigs. ${naam} is vastgelopen bij stap 1. Al weken.` },
+        { titel: `${naam} en empathie: het is ingewikkeld`, tekst: `Empathie is een vaardigheid die de meeste mensen beheersen. ${naam} staat nog in de wachtrij voor de tutorial.` },
+        { titel: "Dit is je interventie", tekst: `${naam}, dit is je teken. Het universum, je vrienden en deze website zeggen hetzelfde: doe ff lief. Het kost niks.` },
       ],
       getuigenissen: [
-        { quote: `${naam} zei 'goedemorgen' en het klonk als een dreigement.`, auteur: "Collega" },
-        { quote: `Ik vroeg ${naam} hoe het ging. Het antwoord was een zucht van 8 seconden.`, auteur: "Bezorgde vriend" },
-        { quote: `${naam} moet echt ff lief doen. Echt.`, auteur: "Iedereen" },
+        { quote: `${naam} zei goedemorgen en de hele kamer voelde zich aangevallen.`, auteur: "Collega" },
+        { quote: `Ik vroeg hoe het ging. Het antwoord was een zucht van 8 seconden.`, auteur: "Bezorgde vriend" },
+        { quote: `${naam} moet ff lief doen. Dat is alles.`, auteur: "Iedereen" },
       ],
       faq: [
         { vraag: `Is ${naam} altijd zo?`, antwoord: `Helaas wel. Het is geen fase. Het is een patroon.` },
-        { vraag: `Kan ${naam} lief leren doen?`, antwoord: `In theorie wel. De wetenschap is voorzichtig optimistisch. De omgeving minder.` },
-        { vraag: `Is dit gemeen?`, antwoord: `${naam} is degene die ff lief moet doen, niet wij.` },
+        { vraag: `Kan ${naam} lief leren doen?`, antwoord: `De wetenschap is voorzichtig optimistisch. De omgeving minder.` },
+        { vraag: `Is dit gemeen?`, antwoord: `Nee. ${naam} is degene die ff lief moet doen. Wij helpen alleen.` },
       ],
     };
   }
@@ -250,23 +250,23 @@ export function getContent(naam: string, lang: Lang = "nl", siteId: SiteId = "gr
   if (lang === "en" && siteId === "werken") {
     return {
       redenen: [
-        { titel: `${naam} really needs to get a job`, tekst: `Everyone around ${naam} is being productive. ${naam}? On the couch. All day. Every day. It's structural at this point.` },
-        { titel: "Netflix doesn't count as work", tekst: `${naam} claims to be doing "research," but the watchlist tells a different story. Eight seasons in one week is not a resume bullet point.` },
-        { titel: "The alarm goes off, but work doesn't", tekst: `Every morning ${naam}'s alarm rings at 7 AM. By 7:01 the snooze button has been pressed. Work starts... tomorrow.` },
-        { titel: `${naam}'s excuses are legendary`, tekst: `"I'm waiting for inspiration." "I work better under pressure." "I'm focusing on personal growth." Spoiler: the growth has stalled.` },
-        { titel: "Productivity: an abstract concept", tekst: `If productivity were a sport, ${naam} wouldn't even be in the stadium. Maybe in the parking garage. Sleeping.` },
-        { titel: "It's really time", tekst: `Dear ${naam}, this is not a joke. Get. A. Job. Society is waiting. So is your bank account.` },
+        { titel: `${naam} and productivity are not on speaking terms`, tekst: `They tried couples therapy. ${naam} slept through it. Everyone else is being productive. ${naam}? On the couch. Structurally.` },
+        { titel: "The snooze button fears ${naam}", tekst: `7:00 alarm. 7:01 snooze. Repeat until noon. "I'm a slow starter" is not a personality trait.` },
+        { titel: `"I work better under pressure"`, tekst: `The pressure has been here for months. Nothing has happened. The deadline was yesterday. ${naam} didn't notice.` },
+        { titel: `${naam}'s LinkedIn is fiction`, tekst: `"Hard worker. Results-driven. Go-getter." The couch tells a different story. HR has questions.` },
+        { titel: "Netflix is not a career", tekst: `${naam} has finished more series than tasks. The ratio is concerning. The watchlist is longer than the CV.` },
+        { titel: "This is your intervention", tekst: `Your friends. Society. Your bank account. Everyone is saying the same thing: get to work. It's time.` },
       ],
       statistieken: randomStats(naam, "en", siteId),
       getuigenissen: [
-        { quote: `${naam} asked me when the deadline was. It was yesterday.`, auteur: "Project manager" },
-        { quote: `I once saw ${naam} working. It was by accident.`, auteur: "Colleague" },
-        { quote: `${naam}'s LinkedIn says 'hard worker'. I have evidence to the contrary.`, auteur: "Former employer" },
+        { quote: `${naam} asked what time it was. I said 2 PM. ${naam} said "cool, I'll start soon."`, auteur: "Colleague" },
+        { quote: `I once saw ${naam} working. Turns out it was a loading screen.`, auteur: "Team lead" },
+        { quote: `${naam} has been 'out of office' for 3 months.`, auteur: "HR" },
       ],
       faq: [
-        { vraag: `Does ${naam} really never work?`, antwoord: `Sometimes. But by that we mean opening the laptop to start Netflix.` },
-        { vraag: `Can ${naam} change?`, antwoord: `In theory, yes. But the couch is comfortable and motivation is nowhere to be found.` },
-        { vraag: "Isn't this website a bit mean?", antwoord: `This is an intervention. Sometimes the truth needs a website.` },
+        { vraag: `Does ${naam} ever actually work?`, antwoord: `Sometimes. But opening the fridge doesn't technically count.` },
+        { vraag: `Is there hope?`, antwoord: `Science is cautiously pessimistic. The couch is too comfortable.` },
+        { vraag: "Isn't this mean?", antwoord: `This is love. Hard, honest, work-related love.` },
       ],
     };
   }
@@ -309,11 +309,11 @@ export function getUI(lang: Lang = "nl", siteId: SiteId = "grappig") {
   if (lang === "en" && siteId === "werken") {
     return {
       hero: {
-        subtitle: "A public service announcement",
+        subtitle: "A professional intervention",
         before: ", you should be",
         highlight: "working",
         after: "",
-        description: "This website was created to inform the world about an uncomfortable truth that has been kept quiet for far too long.",
+        description: "This website exists because someone close to you is concerned about your productivity. Or lack thereof.",
         cta: "See the evidence",
       },
       stats: { heading: "The numbers don't lie" },
@@ -325,25 +325,25 @@ export function getUI(lang: Lang = "nl", siteId: SiteId = "grappig") {
       faqSection: { heading: "Frequently asked questions", subheading: "FAQ" },
       share: {
         heading: "Know someone else who should be working?",
-        description: "Spread the truth or pick your next victim.",
+        description: "Send this intervention or pick your next target.",
         shareButton: () => `Share via WhatsApp`,
         copied: "Link copied!",
         copyLink: "Copy link",
-        create: "Pick a new victim",
-        shareText: (naam: string) => `Lmaooo ${naam} look 😂`,
+        create: "Pick a new target",
+        shareText: (naam: string) => `${naam} get to work 😂`,
       },
       footer: {
         stichting: () => `This is satire. Please don't sue us.`,
-        disclaimer: (naam: string) => `No one named ${naam} was harmed in the making of this website. Only their ego.`,
+        disclaimer: (naam: string) => `No one named ${naam} was harmed in the making of this website. Only their productivity.`,
       },
       landing: {
-        subtitle: "A public service announcement",
+        subtitle: "A professional intervention",
         title: "Who should be",
         highlight: "working",
         after: "?",
-        description: "Enter a name and discover the scientific evidence.",
+        description: "Enter a name and discover why the couch is not a workplace.",
         placeholder: "Enter a name...",
-        button: "Prove it",
+        button: "Expose them",
       },
     };
   }
@@ -392,13 +392,43 @@ export function getUI(lang: Lang = "nl", siteId: SiteId = "grappig") {
 
   const phraseParts = site.phrase;
 
+  // Site-specific hero subtitles (name result page)
+  const heroSubtitle: Record<SiteId, string> = {
+    grappig: "Een publieke dienstaankondiging",
+    knor: "Een publieke dienstaankondiging",
+    honger: "Een gastronomische noodmelding",
+    werken: "Een professionele interventie",
+    liefste: "Een hartverwarmend onderzoek",
+    lief: "Een dringende lief-interventie",
+  };
+
+  // Site-specific hero descriptions (name result page)
+  const heroDescription: Record<SiteId, string> = {
+    grappig: "Deze website is opgezet om de wereld te informeren over een ongemakkelijke waarheid die al veel te lang verzwegen wordt.",
+    knor: "Deze website is opgezet om de wereld te informeren over een ongemakkelijke waarheid die al veel te lang verzwegen wordt.",
+    honger: "Deze website bestaat omdat iemand in je omgeving zich ernstig zorgen maakt over de inhoud van de koelkast.",
+    werken: "Deze website bestaat omdat iemand in je omgeving zich ernstig zorgen maakt over je productiviteit. Of het gebrek daaraan.",
+    liefste: "Deze website bestaat om de wereld te vertellen wat iedereen al wist. Maar nu met wetenschappelijk bewijs.",
+    lief: "Deze website bestaat omdat iemand in je omgeving vindt dat je ff lief moet doen. En ze hebben gelijk.",
+  };
+
+  // Site-specific footer disclaimers
+  const footerDisclaimer: Record<SiteId, (naam: string) => string> = {
+    grappig: (naam) => `Geen enkele ${naam} is beschadigd bij het maken van deze website. Alleen hun ego.`,
+    knor: (naam) => `Geen enkele ${naam} is beschadigd bij het maken van deze website. Alleen hun ego.`,
+    honger: (naam) => `Geen enkele ${naam} is beschadigd bij het maken van deze website. Alleen de koelkast.`,
+    werken: (naam) => `Geen enkele ${naam} is beschadigd bij het maken van deze website. Alleen hun productiviteit.`,
+    liefste: (naam) => `Geen enkele ${naam} is beschadigd bij het maken van deze website. Integendeel.`,
+    lief: (naam) => `Geen enkele ${naam} is beschadigd bij het maken van deze website. Alleen hun reputatie.`,
+  };
+
   return {
     hero: {
-      subtitle: "Een publieke dienstaankondiging",
+      subtitle: heroSubtitle[siteId],
       before: phraseParts.before,
       highlight: phraseParts.highlight,
       after: phraseParts.after,
-      description: `Deze website is opgezet om de wereld te informeren over een ongemakkelijke waarheid die al veel te lang verzwegen wordt.`,
+      description: heroDescription[siteId],
       cta: "Bekijk het bewijs",
     },
     stats: { heading: "De cijfers liegen niet" },
@@ -422,12 +452,12 @@ export function getUI(lang: Lang = "nl", siteId: SiteId = "grappig") {
       shareButton: () => `Deel via WhatsApp`,
       copied: "Link gekopieerd!",
       copyLink: "Kopieer link",
-      create: siteId === "liefste" ? "Kies een nieuwe lieverd" : "Kies een nieuw slachtoffer",
+      create: siteId === "liefste" ? "Kies een nieuwe lieverd" : "Kies een nieuw doelwit",
       shareText: (naam: string) => site.share.whatsappText(naam),
     },
     footer: {
       stichting: () => `Dit is satire. Geen zorgen, geen rechtszaken.`,
-      disclaimer: (naam: string) => `Geen enkele ${naam} is beschadigd bij het maken van deze website. Alleen hun ego.`,
+      disclaimer: footerDisclaimer[siteId],
     },
     landing: {
       subtitle: site.landing.subtitle,
