@@ -5,6 +5,7 @@ import { useState } from "react";
 type Result = {
   naam: string;
   views: number;
+  realViews?: number; // Only for Dennis Easter egg
 };
 
 export default function GroupCheck({
@@ -143,7 +144,12 @@ export default function GroupCheck({
                             <span className="text-zinc-600 italic ml-1">(seriously? wat denk je zelf)</span>
                           )}
                         </span>
-                        <span>{r.views}x</span>
+                        <span>
+                          {r.realViews !== undefined && r.realViews > 0 && (
+                            <span className="line-through text-zinc-700 mr-1">{r.realViews}</span>
+                          )}
+                          {r.views}x
+                        </span>
                       </div>
                     ))}
                   </div>

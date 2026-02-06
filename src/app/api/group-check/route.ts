@@ -41,12 +41,17 @@ export async function POST(request: NextRequest) {
     const scores = pipelineResults.slice(1); // Skip the incr result
 
     // Build results array
-    // Easter egg: Dennis is the creator, always funny → 0 views
+    // Easter egg: Dennis is the creator, always funny → 0 views (but show real count crossed out)
     const results = validNames
-      .map((naam, i) => ({
-        naam,
-        views: naam === "dennis" ? 0 : ((scores[i] as number | null) ?? 0),
-      }))
+      .map((naam, i) => {
+        const realViews = (scores[i] as number | null) ?? 0;
+        const isDennis = naam === "dennis";
+        return {
+          naam,
+          views: isDennis ? 0 : realViews,
+          realViews: isDennis ? realViews : undefined, // Only include for Dennis
+        };
+      })
       .sort((a, b) => b.views - a.views);
 
     return NextResponse.json({ results });
