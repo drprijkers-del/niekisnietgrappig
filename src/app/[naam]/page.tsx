@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { capitalizeName, validateSpice } from "@/lib/utils";
-import { getContent, getUI, Lang } from "@/lib/content";
+import { getContent, getUI, Lang, getCustomSubtitle } from "@/lib/content";
 import { getSpiceLines } from "@/lib/spice";
 import ShareButtons from "@/components/ShareButtons";
 import ShareButton from "@/components/ShareButton";
@@ -284,6 +284,7 @@ export default async function NaamPage({ params, searchParams }: Props) {
   const { redenen, statistieken, getuigenissen, faq } = getContent(naam, lang);
   const ui = getUI(lang);
   const lines = getSpiceLines(naam, spice, lang);
+  const customSubtitle = getCustomSubtitle(naam);
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-[#ededed] font-sans">
@@ -305,6 +306,11 @@ export default async function NaamPage({ params, searchParams }: Props) {
             <span className="animate-pulse-red font-black">{ui.hero.not}</span>{" "}
             {ui.hero.funny}
           </h1>
+          {customSubtitle && (
+            <p className="mt-2 text-sm sm:text-base text-zinc-500 italic">
+              {customSubtitle}
+            </p>
+          )}
           <p className="mt-6 max-w-xl mx-auto text-lg text-zinc-400 leading-relaxed">
             {ui.hero.description}
           </p>

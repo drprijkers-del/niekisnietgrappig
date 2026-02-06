@@ -2,6 +2,28 @@ import { hashString, seededRng } from "./utils";
 
 export type Lang = "nl" | "en";
 
+// Custom subtitles for specific friends — only shown for exact name matches
+const CUSTOM_SUBTITLES: Record<string, string> = {
+  luuk: "...wel altijd met een goede vraag!",
+  max: "...maar altijd wel ergens meer kennis over (vindt hij) of een goed algoritme ervoor",
+  koen: "...maar dat boeit hem niet, zolang hij maar grappiger is dan de gemiddelde Max",
+  emiel: "zéker niet grappig... behalve tegen bootschoonmakendeduitsersindeochtend",
+  niek: "...kan wel goed fietsen (op een rollerbank)",
+  cevdet: "ok... misschien een beetje grappig",
+  chris: "...behalve in het Zweeds misschien. Dan wel...",
+  casper: "...wel het meest relaxt niet grappig",
+  tijn: "...zeker niet bij krabbende ankers",
+};
+
+/**
+ * Get custom subtitle for a name (if it exists).
+ * Returns null for names without a custom subtitle.
+ */
+export function getCustomSubtitle(naam: string): string | null {
+  const key = naam.toLowerCase().trim();
+  return CUSTOM_SUBTITLES[key] ?? null;
+}
+
 function randomStats(naam: string, lang: Lang) {
   const rng = seededRng(hashString(`stats|${naam}|${lang}`));
   const r = (min: number, max: number) =>
