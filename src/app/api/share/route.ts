@@ -7,11 +7,11 @@ const SORTED_SET_KEY = "shares:leaderboard";
 const DOMAIN_SHARES_KEY = "domains:shares";
 const CACHE_TTL = 30; // seconds
 
-function getDomain(request: NextRequest): "nl" | "en" | null {
+function getDomain(request: NextRequest): "nl" | "en" {
   const host = request.headers.get("host") || "";
-  if (host.includes("isnietgrappig.com")) return "nl";
-  if (host.includes("isntfunny.com")) return "en";
-  return null;
+  if (host.includes("isntfunny")) return "en";
+  // Default to "nl" for isnietgrappig.com, localhost, lvh.me, etc.
+  return "nl";
 }
 
 function getRedis() {

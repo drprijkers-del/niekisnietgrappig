@@ -8,10 +8,19 @@ import ShareButton from "@/components/ShareButton";
 import LanguageToggle from "@/components/LanguageToggle";
 import TopShared from "@/components/TopShared";
 import ViewTracker from "@/components/ViewTracker";
+import GroupCheck from "@/components/GroupCheck";
+
+// Simple group ID validation (alphanumeric + hyphens, max 24 chars)
+function validateGroupId(g: unknown): string | null {
+  if (typeof g !== "string") return null;
+  const lower = g.toLowerCase().trim();
+  if (!/^[a-z0-9-]{1,24}$/.test(lower)) return null;
+  return lower;
+}
 
 type Props = {
   params: Promise<{ naam: string }>;
-  searchParams: Promise<{ lang?: string; w?: string; ref?: string }>;
+  searchParams: Promise<{ lang?: string; w?: string; ref?: string; g?: string }>;
 };
 
 export async function generateMetadata({
@@ -19,14 +28,25 @@ export async function generateMetadata({
   searchParams,
 }: Props): Promise<Metadata> {
   const { naam: rawNaam } = await params;
-  const { lang: langParam, ref } = await searchParams;
+  const { lang: langParam, ref, g } = await searchParams;
   const lang: Lang = langParam === "en" ? "en" : "nl";
   const naam = capitalizeName(rawNaam);
+  const groupId = validateGroupId(g);
 
   const isEN = lang === "en";
 
-  // Vary OG description based on referral source
+  // Format group name for display
+  const groupName = groupId
+    ? groupId.split(/-+/).map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")
+    : null;
+
+  // Vary OG description based on referral source and group
   const ogDescription = (() => {
+    if (groupName) {
+      return isEN
+        ? `Who in ${groupName} is least funny? Open to find out!`
+        : `Wie in ${groupName} is het minst grappig? Open om te ontdekken!`;
+    }
     if (ref === "wa") {
       return isEN
         ? `Someone shared this with you — for good reason. Know someone who isn't funny?`
@@ -46,6 +66,11 @@ export async function generateMetadata({
     ? `Is ${naam} funny? Science says no.`
     : `Is ${naam} grappig? De wetenschap zegt nee.`;
 
+  // Include group in OG image URL if present
+  const ogImageUrl = groupId
+    ? `/api/og?naam=${encodeURIComponent(rawNaam)}&lang=${lang}&g=${encodeURIComponent(groupId)}`
+    : `/api/og?naam=${encodeURIComponent(rawNaam)}&lang=${lang}`;
+
   return {
     title: isEN
       ? `${naam} Is Not Funny`
@@ -59,7 +84,7 @@ export async function generateMetadata({
       siteName: isEN ? "Is Not Funny" : "Is Niet Grappig",
       images: [
         {
-          url: `/api/og?naam=${encodeURIComponent(rawNaam)}&lang=${lang}`,
+          url: ogImageUrl,
           width: 1200,
           height: 630,
           alt: ogTitle,
@@ -73,7 +98,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title: ogTitle,
       description: ogDescription,
-      images: [`/api/og?naam=${encodeURIComponent(rawNaam)}&lang=${lang}`],
+      images: [ogImageUrl],
     },
     other: {
       "og:image:type": "image/png",
@@ -83,7 +108,7 @@ export async function generateMetadata({
 
 export default async function NaamPage({ params, searchParams }: Props) {
   const { naam: rawNaam } = await params;
-  const { lang: langParam, w } = await searchParams;
+  const { lang: langParam, w, g } = await searchParams;
   const lang: Lang = langParam === "en" ? "en" : "nl";
 
   const decoded = decodeURIComponent(rawNaam);
@@ -92,6 +117,7 @@ export default async function NaamPage({ params, searchParams }: Props) {
   }
 
   const naam = capitalizeName(rawNaam);
+  const groupId = validateGroupId(g);
 
   // Easter egg: Trump — always English
   const lowerName = decoded.toLowerCase();
@@ -291,6 +317,7 @@ export default async function NaamPage({ params, searchParams }: Props) {
       <ViewTracker naam={naam} />
       <LanguageToggle lang={lang} />
 
+
       {/* Hero */}
       <section className="relative flex min-h-svh flex-col items-center justify-center px-6 py-24 text-center overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-red-950/20 via-transparent to-transparent" />
@@ -325,8 +352,10 @@ export default async function NaamPage({ params, searchParams }: Props) {
               naam={naam}
               lang={lang}
               label={ui.share.shareButton()}
+              groupId={groupId || undefined}
             />
           </div>
+          <GroupCheck lang={lang} currentNaam={naam} compact />
         </div>
         <div className="absolute bottom-10 animate-bounce text-zinc-600">
           <svg
@@ -483,8 +512,13 @@ export default async function NaamPage({ params, searchParams }: Props) {
         </div>
       </section>
 
+      {/* Battle check - bottom */}
+      <section className="border-t border-zinc-800 py-12 px-6 text-center">
+        <GroupCheck lang={lang} currentNaam={naam} />
+      </section>
+
       {/* CTA */}
-      <ShareButtons naam={naam} lang={lang} />
+      <ShareButtons naam={naam} lang={lang} groupId={groupId || undefined} />
 
       {/* Footer */}
       <footer className="border-t border-zinc-800 py-12 px-6 text-center">

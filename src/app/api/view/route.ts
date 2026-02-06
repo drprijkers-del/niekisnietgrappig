@@ -13,11 +13,11 @@ const DAILY_CLICKS_TTL = 2764800;
 
 const ALLOWED_REFS = new Set(["wa", "copy", "x", "ig", "tiktok", "fb", "email"]);
 
-function getDomain(request: NextRequest): "nl" | "en" | null {
+function getDomain(request: NextRequest): "nl" | "en" {
   const host = request.headers.get("host") || "";
-  if (host.includes("isnietgrappig.com")) return "nl";
-  if (host.includes("isntfunny.com")) return "en";
-  return null;
+  if (host.includes("isntfunny")) return "en";
+  // Default to "nl" for isnietgrappig.com, localhost, lvh.me, etc.
+  return "nl";
 }
 
 function getRedis() {

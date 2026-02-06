@@ -25,7 +25,7 @@ export function middleware(request: NextRequest) {
   const isRootNL = /^(www\.)?isnietgrappig\.com$/i.test(hostname);
   const isRootEN = /^(www\.)?isntfunny\.com$/i.test(hostname);
 
-  const RESERVED_PATHS = new Set(["stats"]);
+  const RESERVED_PATHS = new Set(["stats", "battle"]);
 
   if (isRootNL || isRootEN) {
     const pathParts = url.pathname.split("/").filter(Boolean);

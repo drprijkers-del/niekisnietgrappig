@@ -12,14 +12,16 @@ function getHomeUrl() {
   return "/";
 }
 
-function getShareUrl(ref: string) {
+function getShareUrl(ref: string, groupId?: string) {
   const url = new URL(window.location.href);
   const hostname = url.hostname;
   const w = url.searchParams.get("w");
+  const g = groupId || url.searchParams.get("g");
 
   const applyParams = (u: URL) => {
     u.searchParams.set("ref", ref);
     if (w) u.searchParams.set("w", w);
+    if (g) u.searchParams.set("g", g);
   };
 
   // Already on a subdomain (dennis.isnietgrappig.com)
@@ -45,7 +47,15 @@ function getShareUrl(ref: string) {
     }
   }
 
-  // Fallback (localhost, vercel preview)
+  // Fallback (localhost, vercel preview) — generate production subdomain URL
+  const naam = url.pathname.split("/").filter(Boolean)[0];
+  if (naam) {
+    const shareUrl = new URL(`https://${decodeURIComponent(naam)}.isnietgrappig.com`);
+    applyParams(shareUrl);
+    return shareUrl.toString();
+  }
+
+  // Ultimate fallback
   url.searchParams.delete("ref");
   url.searchParams.set("ref", ref);
   return url.toString();
@@ -54,9 +64,11 @@ function getShareUrl(ref: string) {
 export default function ShareButtons({
   naam,
   lang,
+  groupId,
 }: {
   naam: string;
   lang: Lang;
+  groupId?: string;
 }) {
   const [copied, setCopied] = useState(false);
   const ui = getUI(lang).share;
@@ -64,16 +76,17 @@ export default function ShareButtons({
   const trackShare = () => {
     const sid = getSessionId();
     const ttShare = Math.round(performance.now() / 1000);
+    const g = groupId || (typeof window !== "undefined" ? new URL(window.location.href).searchParams.get("g") : null);
     fetch("/api/share", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ naam, sid, ttShare }),
+      body: JSON.stringify({ naam, sid, ttShare, g }),
     }).catch(() => {});
   };
 
   const handleWhatsApp = () => {
     trackShare();
-    const shareUrl = getShareUrl("wa");
+    const shareUrl = getShareUrl("wa", groupId);
     window.open(
       `https://wa.me/?text=${encodeURIComponent(`${ui.shareText(naam)} ${shareUrl}`)}`,
       "_blank"
@@ -82,7 +95,7 @@ export default function ShareButtons({
 
   const handleCopy = async () => {
     trackShare();
-    const shareUrl = getShareUrl("copy");
+    const shareUrl = getShareUrl("copy", groupId);
     const copyText = lang === "en"
       ? `${naam} is not funny and it's now official 😂 Check the evidence: ${shareUrl}`
       : `${naam} is niet grappig en het is nu officieel 😂 Check hier de feiten: ${shareUrl}`;

@@ -244,12 +244,13 @@ export default async function StatsPage({ searchParams }: Props) {
           <h2 className="text-sm font-mono uppercase tracking-widest text-zinc-500 mb-4">
             Volume (all time)
           </h2>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-6">
             <MiniCard label="Page opens" value={d.totalViews.toLocaleString()} />
             <MiniCard label="Link clicks" value={d.totalClicks.toLocaleString()} />
             <MiniCard label="Shared" value={d.totalShares.toLocaleString()} />
             <MiniCard label="Unique names" value={combined.length.toString()} />
             <MiniCard label="Sources" value={d.totalRefs.toLocaleString()} />
+            <MiniCard label="Battle checks" value={d.groupChecks.toLocaleString()} highlight={d.groupChecks > 0} />
           </div>
         </section>
 
@@ -464,10 +465,10 @@ function KPICard({
   );
 }
 
-function MiniCard({ label, value }: { label: string; value: string }) {
+function MiniCard({ label, value, highlight }: { label: string; value: string; highlight?: boolean }) {
   return (
-    <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4">
-      <div className="text-2xl font-bold tabular-nums">{value}</div>
+    <div className={`rounded-xl border bg-zinc-900/50 p-4 ${highlight ? "border-amber-800/50" : "border-zinc-800"}`}>
+      <div className={`text-2xl font-bold tabular-nums ${highlight ? "text-amber-400" : ""}`}>{value}</div>
       <div className="mt-1 text-xs text-zinc-500">{label}</div>
     </div>
   );

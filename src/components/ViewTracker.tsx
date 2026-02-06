@@ -9,11 +9,12 @@ export default function ViewTracker({ naam }: { naam: string }) {
 
   useEffect(() => {
     const ref = searchParams.get("ref") || undefined;
+    const g = searchParams.get("g") || undefined;
     const sid = getSessionId();
     fetch("/api/view", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ naam, ref, sid }),
+      body: JSON.stringify({ naam, ref, sid, g }),
     }).catch(() => {});
   }, [naam, searchParams]);
 

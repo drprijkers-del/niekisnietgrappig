@@ -116,6 +116,7 @@ export interface DashboardData {
   uniqueVisitorsAllTime: number;
   uniqueSharersAllTime: number;
   avgTimeToShare: number | null;
+  groupChecks: number;
 
   // Time-range data
   range: TimeRange;
@@ -156,6 +157,7 @@ export async function fetchDashboard(
     domViewsRaw, domClicksRaw, domSharesRaw,
     uniqueVisitorsAll, uniqueSharersAll,
     timingSum, timingCount,
+    groupChecksRaw,
     hourly, rangeVisitors,
   ] = await Promise.all([
     redis.zrange<string[]>("views:leaderboard", 0, 49, { rev: true, withScores: true }),
@@ -169,6 +171,7 @@ export async function fetchDashboard(
     redis.pfcount("sharers"),
     redis.get<string>("share_timing:sum"),
     redis.get<string>("share_timing:count"),
+    redis.get<string>("group_checks:total"),
     fetchHourlyData(redis, range),
     fetchUniqueVisitors(redis, range),
   ]);
@@ -190,6 +193,7 @@ export async function fetchDashboard(
   const sharers = uniqueSharersAll ?? 0;
   const tSum = Number(timingSum) || 0;
   const tCount = Number(timingCount) || 0;
+  const groupChecks = Number(groupChecksRaw) || 0;
 
   const rangeViews = hourly.reduce((s, h) => s + h.views, 0);
   const rangeClicks = hourly.reduce((s, h) => s + h.clicks, 0);
@@ -208,6 +212,7 @@ export async function fetchDashboard(
     uniqueVisitorsAllTime: visitors,
     uniqueSharersAllTime: sharers,
     avgTimeToShare: tCount > 0 ? Math.round(tSum / tCount) : null,
+    groupChecks,
     range,
     hourly,
     rangeViews,
