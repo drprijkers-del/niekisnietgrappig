@@ -1,4 +1,5 @@
 import { Lang } from "./content";
+import { SiteId, SITES } from "./sites";
 import { hashString, seededRng } from "./utils";
 
 export interface SpiceLines {
@@ -13,7 +14,16 @@ function pick<T>(arr: T[], rng: () => number): T {
   return arr[Math.floor(rng() * arr.length)];
 }
 
-const nl = {
+type SpiceTemplates = {
+  openings: string[];
+  verdicts: string[];
+  contextWith: string[];
+  contextWithout: string[];
+  fakeStats: string[];
+  closings: string[];
+};
+
+const nl: SpiceTemplates = {
   openings: [
     "Breaking news uit het humor-laboratorium.",
     "Na uitgebreid onderzoek kunnen we bevestigen:",
@@ -88,7 +98,7 @@ const nl = {
   ],
 };
 
-const en = {
+const en: SpiceTemplates = {
   openings: [
     "Breaking news from the humor laboratory.",
     "After extensive research, we can confirm:",
@@ -163,21 +173,80 @@ const en = {
   ],
 };
 
+// Site-specific verdict templates for non-grappig sites
+const siteVerdicts: Partial<Record<string, string[]>> = {
+  knor: [
+    "Het is officieel: {naam} is een knor.",
+    "{naam} stond bij de deur. De deur bleef dicht.",
+    "Als lidmaatschap een sport was, stond {naam} niet eens op de reservebank.",
+    "{naam} en lid worden? Twee werelden die nooit botsen.",
+    "Het bestuur bevestigt: {naam} is allergisch voor aanmeldformulieren.",
+    "{naam} is zo knor dat het bijna een statement is. Bijna.",
+    "{naam}: de reden dat ze 'niet-lid' als categorie uitvonden.",
+  ],
+  honger: [
+    "Het is officieel: {naam} heeft honger. Altijd.",
+    "{naam} at een driegangenmenu. Vroeg om een vierde gang.",
+    "Als eten een sport was, is {naam} olympisch kampioen.",
+    "{naam} en vol zijn? Twee werelden die nooit botsen.",
+    "De maag van {naam} is een zwart gat. Wetenschappelijk bewezen.",
+    "{naam}: de reden dat restaurants een maximum instelden.",
+  ],
+  werken: [
+    "Het is officieel: {naam} moet eens gaan werken.",
+    "{naam} lag op de bank. Weer. De hele dag.",
+    "Als productiviteit een sport was, zou {naam} gediskwalificeerd zijn.",
+    "{naam} en werken? Twee werelden die nooit botsen.",
+    "LinkedIn bevestigt: {naam} is allergisch voor deadlines.",
+    "{naam}: de reden dat ze de snooze-knop uitvonden.",
+  ],
+  werken_en: [
+    "It's official: {naam} should be working.",
+    "{naam} was on the couch. Again. All day.",
+    "If productivity were a sport, {naam} would be disqualified.",
+    "{naam} and working? Two worlds that never collide.",
+    "LinkedIn confirms: {naam} is allergic to deadlines.",
+    "{naam}: the reason they invented the snooze button.",
+  ],
+  liefste: [
+    "Het is officieel: {naam} is de liefste.",
+    "{naam} liep een kamer in. Iedereen voelde zich beter.",
+    "Als lief zijn een sport was, wint {naam} goud. Elke keer.",
+    "{naam} en lief zijn? Onafscheidelijk.",
+    "Wetenschappers bevestigen: {naam} is de liefste mens op aarde.",
+    "{naam}: de reden dat mensen weer in het goede geloven.",
+  ],
+  lief: [
+    "Het is officieel: {naam} moet ff lief doen.",
+    "{naam} zei goedemorgen. Het klonk als een dreigement.",
+    "Als lief doen een sport was, zou {naam} gediskwalificeerd zijn.",
+    "{naam} en lief doen? Twee werelden die nooit botsen.",
+    "De omgeving bevestigt: {naam} is allergisch voor aardig zijn.",
+    "{naam}: de reden dat mensen zuchten uitvonden.",
+  ],
+};
+
 const templates = { nl, en };
 
 export function getSpiceLines(
   naam: string,
   spice: string | null,
-  lang: Lang
+  lang: Lang,
+  siteId: SiteId = "grappig"
 ): SpiceLines {
-  const seed = hashString(`${naam}|${spice || ""}|${lang}`);
+  const seed = hashString(`${naam}|${spice || ""}|${lang}|${siteId}`);
   const rng = seededRng(seed);
 
-  const t = templates[lang];
+  // Use English templates for grappig EN and werken EN
+  const useEnglish = lang === "en" && (siteId === "grappig" || siteId === "werken");
+  const t = useEnglish ? templates.en : templates.nl;
 
   const opening = pick(t.openings, rng);
-  const verdict = pick(t.verdicts, rng)
-    .replace(/\{naam\}/g, naam);
+
+  // Use site-specific verdicts if available (with EN variant for werken)
+  const verdictKey = useEnglish && siteId === "werken" ? "werken_en" : siteId;
+  const verdictPool = siteVerdicts[verdictKey] || t.verdicts;
+  const verdict = pick(verdictPool, rng).replace(/\{naam\}/g, naam);
 
   let context: string;
   if (spice) {

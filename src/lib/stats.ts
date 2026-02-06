@@ -1,4 +1,5 @@
 import { Redis } from "@upstash/redis";
+import { type SiteConfig, type SiteId, SITES, ALL_SITES, redisKey } from "@/lib/sites";
 
 // ── Redis ──────────────────────────────────────────────────────────
 export function getRedis() {
@@ -72,14 +73,15 @@ export interface HourBucket {
 
 export async function fetchHourlyData(
   redis: Redis,
-  range: TimeRange
+  range: TimeRange,
+  site: SiteConfig = SITES.grappig
 ): Promise<HourBucket[]> {
   const hours = hoursForRange(range);
   const keys = hourKeys(hours);
   const pipeline = redis.pipeline();
 
   for (const k of keys) {
-    pipeline.hgetall(`h:${k}`);
+    pipeline.hgetall(redisKey(site, `h:${k}`));
   }
 
   const results = await pipeline.exec();
@@ -97,10 +99,11 @@ export async function fetchHourlyData(
 /** Sum unique visitors from hourly HyperLogLogs using PFCOUNT with multiple keys. */
 export async function fetchUniqueVisitors(
   redis: Redis,
-  range: TimeRange
+  range: TimeRange,
+  site: SiteConfig = SITES.grappig
 ): Promise<number> {
   const hours = hoursForRange(range);
-  const keys = hourKeys(hours).map((k) => `hv:${k}`);
+  const keys = hourKeys(hours).map((k) => redisKey(site, `hv:${k}`));
   if (keys.length === 0) return 0;
   // PFCOUNT with multiple keys gives the union cardinality
   return (await redis.pfcount(...(keys as [string, ...string[]]))) ?? 0;
@@ -149,7 +152,8 @@ export interface DashboardData {
 
 export async function fetchDashboard(
   redis: Redis,
-  range: TimeRange
+  range: TimeRange,
+  site: SiteConfig = SITES.grappig
 ): Promise<DashboardData> {
   // Fetch everything in parallel
   const [
@@ -160,20 +164,20 @@ export async function fetchDashboard(
     groupChecksRaw,
     hourly, rangeVisitors,
   ] = await Promise.all([
-    redis.zrange<string[]>("views:leaderboard", 0, 49, { rev: true, withScores: true }),
-    redis.zrange<string[]>("clicks:leaderboard", 0, 49, { rev: true, withScores: true }),
-    redis.zrange<string[]>("shares:leaderboard", 0, 49, { rev: true, withScores: true }),
-    redis.zrange<string[]>("refs:leaderboard", 0, -1, { rev: true, withScores: true }),
-    redis.zrange<string[]>("domains:views", 0, -1, { rev: true, withScores: true }),
-    redis.zrange<string[]>("domains:clicks", 0, -1, { rev: true, withScores: true }),
-    redis.zrange<string[]>("domains:shares", 0, -1, { rev: true, withScores: true }),
-    redis.pfcount("visitors"),
-    redis.pfcount("sharers"),
-    redis.get<string>("share_timing:sum"),
-    redis.get<string>("share_timing:count"),
-    redis.get<string>("group_checks:total"),
-    fetchHourlyData(redis, range),
-    fetchUniqueVisitors(redis, range),
+    redis.zrange<string[]>(redisKey(site, "views:leaderboard"), 0, 49, { rev: true, withScores: true }),
+    redis.zrange<string[]>(redisKey(site, "clicks:leaderboard"), 0, 49, { rev: true, withScores: true }),
+    redis.zrange<string[]>(redisKey(site, "shares:leaderboard"), 0, 49, { rev: true, withScores: true }),
+    redis.zrange<string[]>(redisKey(site, "refs:leaderboard"), 0, -1, { rev: true, withScores: true }),
+    redis.zrange<string[]>(redisKey(site, "domains:views"), 0, -1, { rev: true, withScores: true }),
+    redis.zrange<string[]>(redisKey(site, "domains:clicks"), 0, -1, { rev: true, withScores: true }),
+    redis.zrange<string[]>(redisKey(site, "domains:shares"), 0, -1, { rev: true, withScores: true }),
+    redis.pfcount(redisKey(site, "visitors")),
+    redis.pfcount(redisKey(site, "sharers")),
+    redis.get<string>(redisKey(site, "share_timing:sum")),
+    redis.get<string>(redisKey(site, "share_timing:count")),
+    redis.get<string>(redisKey(site, "group_checks:total")),
+    fetchHourlyData(redis, range, site),
+    fetchUniqueVisitors(redis, range, site),
   ]);
 
   const views = parsePairs(viewsRaw || []);
@@ -235,6 +239,89 @@ export async function fetchDashboard(
 
   data.alerts = generateAlerts(data);
   return data;
+}
+
+// ── Overview (all sites) ──────────────────────────────────────────
+export interface SiteSummary {
+  siteId: SiteId;
+  siteName: string;
+  accentColor: string;
+  domain: string;
+  domainEn: string | null;
+  totalViews: number;
+  totalClicks: number;
+  totalShares: number;
+  uniqueVisitors: number;
+  uniqueSharers: number;
+  shareRate: number;
+  viralCoeff: number;
+  uniqueNames: number;
+  topName: string | null;
+  topNameViews: number;
+}
+
+export interface OverviewData {
+  sites: SiteSummary[];
+  grandTotalViews: number;
+  grandTotalClicks: number;
+  grandTotalShares: number;
+  grandTotalVisitors: number;
+  grandTotalSharers: number;
+}
+
+export async function fetchOverview(redis: Redis): Promise<OverviewData> {
+  const pipeline = redis.pipeline();
+
+  // 5 commands per site: views, clicks, shares, visitors HLL, sharers HLL
+  for (const site of ALL_SITES) {
+    pipeline.zrange(redisKey(site, "views:leaderboard"), 0, -1, { rev: true, withScores: true });
+    pipeline.zrange(redisKey(site, "clicks:leaderboard"), 0, -1, { rev: true, withScores: true });
+    pipeline.zrange(redisKey(site, "shares:leaderboard"), 0, -1, { rev: true, withScores: true });
+    pipeline.pfcount(redisKey(site, "visitors"));
+    pipeline.pfcount(redisKey(site, "sharers"));
+  }
+
+  const results = await pipeline.exec();
+
+  const sites: SiteSummary[] = ALL_SITES.map((site, i) => {
+    const base = i * 5;
+    const viewsPairs = parsePairs((results[base] as string[]) || []);
+    const clicksPairs = parsePairs((results[base + 1] as string[]) || []);
+    const sharesPairs = parsePairs((results[base + 2] as string[]) || []);
+    const visitors = (results[base + 3] as number) ?? 0;
+    const sharers = (results[base + 4] as number) ?? 0;
+
+    const totalViews = viewsPairs.reduce((s, v) => s + v.count, 0);
+    const totalClicks = clicksPairs.reduce((s, c) => s + c.count, 0);
+    const totalShares = sharesPairs.reduce((s, v) => s + v.count, 0);
+
+    return {
+      siteId: site.siteId,
+      siteName: site.siteName,
+      accentColor: site.accentColor,
+      domain: site.domain,
+      domainEn: site.domainEn,
+      totalViews,
+      totalClicks,
+      totalShares,
+      uniqueVisitors: visitors,
+      uniqueSharers: sharers,
+      shareRate: visitors > 0 ? (sharers / visitors) * 100 : 0,
+      viralCoeff: sharers > 0 ? totalClicks / sharers : 0,
+      uniqueNames: viewsPairs.length,
+      topName: viewsPairs[0]?.naam ?? null,
+      topNameViews: viewsPairs[0]?.count ?? 0,
+    };
+  });
+
+  return {
+    sites,
+    grandTotalViews: sites.reduce((s, x) => s + x.totalViews, 0),
+    grandTotalClicks: sites.reduce((s, x) => s + x.totalClicks, 0),
+    grandTotalShares: sites.reduce((s, x) => s + x.totalShares, 0),
+    grandTotalVisitors: sites.reduce((s, x) => s + x.uniqueVisitors, 0),
+    grandTotalSharers: sites.reduce((s, x) => s + x.uniqueSharers, 0),
+  };
 }
 
 // ── Status bands ───────────────────────────────────────────────────

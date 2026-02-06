@@ -1,8 +1,6 @@
 import { Redis } from "@upstash/redis";
 import { NextRequest, NextResponse } from "next/server";
-
-const VIEWS_KEY = "views:leaderboard";
-const GROUP_CHECK_KEY = "group_checks:total";
+import { getSiteFromRequest, redisKey } from "@/lib/sites";
 
 function getRedis() {
   return new Redis({
@@ -28,13 +26,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Need at least 2 names" }, { status: 400 });
     }
 
+    const site = getSiteFromRequest(request);
     const redis = getRedis();
 
     // Get scores for all names in one pipeline + track usage
     const pipeline = redis.pipeline();
-    pipeline.incr(GROUP_CHECK_KEY); // Track group check usage
+    pipeline.incr(redisKey(site, "group_checks:total")); // Track group check usage
     for (const name of validNames) {
-      pipeline.zscore(VIEWS_KEY, name);
+      pipeline.zscore(redisKey(site, "views:leaderboard"), name);
     }
 
     const pipelineResults = await pipeline.exec();
@@ -42,10 +41,11 @@ export async function POST(request: NextRequest) {
 
     // Build results array
     // Easter egg: Dennis is the creator, always funny → 0 views (but show real count crossed out)
+    // Only on the "grappig" site
     const results = validNames
       .map((naam, i) => {
         const realViews = (scores[i] as number | null) ?? 0;
-        const isDennis = naam === "dennis";
+        const isDennis = naam === "dennis" && site.siteId === "grappig";
         return {
           naam,
           views: isDennis ? 0 : realViews,

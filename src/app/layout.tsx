@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { getCurrentSite } from "@/lib/sites";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -12,27 +13,31 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: {
-    template: "%s | Is Niet Grappig",
-    default: "Is Niet Grappig",
-  },
-  description:
-    "Ontdek het wetenschappelijk bewijs dat iemand niet grappig is.",
-  metadataBase: new URL("https://isnietgrappig.com"),
-  openGraph: {
-    siteName: "Is Niet Grappig",
-    locale: "nl_NL",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-  },
-  icons: {
-    icon: "/icon.svg",
-    apple: "/icon.svg",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const site = await getCurrentSite();
+  const baseUrl = `https://${site.domain}`;
+
+  return {
+    title: {
+      template: site.meta.titleTemplate,
+      default: site.meta.defaultTitle,
+    },
+    description: site.meta.description,
+    metadataBase: new URL(baseUrl),
+    openGraph: {
+      siteName: site.siteName,
+      locale: "nl_NL",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+    },
+    icons: {
+      icon: "/icon.svg",
+      apple: "/icon.svg",
+    },
+  };
+}
 
 export default function RootLayout({
   children,

@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
+import { getCurrentSite } from "@/lib/sites";
 
 type Props = {
   searchParams: Promise<{ names?: string; scores?: string; lang?: string }>;
@@ -7,7 +8,8 @@ type Props = {
 
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
   const { names: namesParam, scores: scoresParam, lang: langParam } = await searchParams;
-  const isEN = langParam === "en";
+  const site = await getCurrentSite();
+  const isEN = langParam === "en" && site.hasEnglish;
 
   const names = (namesParam || "").split(",").filter(Boolean);
   const scores = (scoresParam || "").split(",").map(Number);
@@ -20,13 +22,13 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
 
   const title = isEN
     ? `${winner} is the least funny!`
-    : `${winner} is het minst grappig!`;
+    : `${winner} — ${site.siteName}`;
 
   const description = isEN
     ? `With ${winnerScore} views, ${winner}'s humor is the most meh... Who do you know that's even less funny?`
-    : `Met ${winnerScore}x bekeken is de humor van ${winner} het meest meh... Ken jij iemand die nog minder grappig is?`;
+    : site.battle.ogDescription(winner, winnerScore);
 
-  const baseUrl = isEN ? "https://isntfunny.com" : "https://isnietgrappig.com";
+  const baseUrl = isEN ? `https://${site.domainEn}` : `https://${site.domain}`;
   const pageUrl = `${baseUrl}/battle?names=${encodeURIComponent(namesParam || "")}&scores=${encodeURIComponent(scoresParam || "")}&lang=${langParam || "nl"}`;
   const ogImageUrl = `${baseUrl}/api/og/battle?names=${encodeURIComponent(namesParam || "")}&scores=${encodeURIComponent(scoresParam || "")}&lang=${langParam || "nl"}`;
 
@@ -37,15 +39,8 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
       title,
       description,
       url: pageUrl,
-      siteName: isEN ? "Is Not Funny" : "Is Niet Grappig",
-      images: [
-        {
-          url: ogImageUrl,
-          width: 1200,
-          height: 630,
-          alt: title,
-        },
-      ],
+      siteName: isEN ? "Is Not Funny" : site.siteName,
+      images: [{ url: ogImageUrl, width: 1200, height: 630, alt: title }],
       locale: isEN ? "en_US" : "nl_NL",
       type: "website",
     },
@@ -60,7 +55,8 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
 
 export default async function BattlePage({ searchParams }: Props) {
   const { names: namesParam, scores: scoresParam, lang: langParam } = await searchParams;
-  const isEN = langParam === "en";
+  const site = await getCurrentSite();
+  const isEN = langParam === "en" && site.hasEnglish;
 
   const names = (namesParam || "").split(",").filter(Boolean);
   const scores = (scoresParam || "").split(",").map(Number);
@@ -69,7 +65,7 @@ export default async function BattlePage({ searchParams }: Props) {
     s.replace(/(^|\s)\S/g, (c) => c.toUpperCase());
 
   const results = names.map((name, i) => {
-    const isDennis = name.toLowerCase() === "dennis";
+    const isDennis = name.toLowerCase() === "dennis" && site.siteId === "grappig";
     const realScore = scores[i] || 0;
     return {
       name: capitalize(name),
@@ -79,6 +75,7 @@ export default async function BattlePage({ searchParams }: Props) {
   });
 
   const winner = results[0];
+  const accentColor = site.accentColor;
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-[#ededed] font-sans flex flex-col items-center justify-center px-6 py-12">
@@ -86,8 +83,8 @@ export default async function BattlePage({ searchParams }: Props) {
         {/* Header */}
         <div className="flex items-center justify-center gap-3 mb-8">
           <span className="text-3xl">🔥</span>
-          <h1 className="text-xl font-bold text-amber-400 uppercase tracking-wider">
-            {isEN ? "Battle Results" : "Battle Resultaten"}
+          <h1 className="text-xl font-bold uppercase tracking-wider" style={{ color: accentColor }}>
+            {isEN ? "Battle Results" : site.battle.resultTitle}
           </h1>
         </div>
 
@@ -95,13 +92,13 @@ export default async function BattlePage({ searchParams }: Props) {
         {winner && (
           <div className="mb-8">
             <p className="text-sm text-zinc-500 mb-2">
-              {isEN ? "Least funny:" : "Minst grappig:"}
+              {isEN ? "Least funny:" : site.battle.leastLabel}
             </p>
-            <p className="text-4xl font-black text-amber-400 mb-2">
+            <p className="text-4xl font-black mb-2" style={{ color: accentColor }}>
               {winner.name}
             </p>
             <p className="text-zinc-500">
-              {winner.score}x {isEN ? "views" : "bekeken"}
+              {winner.score}x {isEN ? "views" : site.battle.viewsLabel}
             </p>
           </div>
         )}
@@ -118,7 +115,7 @@ export default async function BattlePage({ searchParams }: Props) {
                   <span className="text-zinc-400">
                     <span className="text-zinc-600 mr-3">{i + 2}.</span>
                     {r.name}
-                    {r.name.toLowerCase() === "dennis" && (
+                    {r.name.toLowerCase() === "dennis" && site.siteId === "grappig" && (
                       <span className="text-zinc-600 italic text-sm ml-2">(seriously? wat denk je zelf)</span>
                     )}
                   </span>
@@ -137,21 +134,20 @@ export default async function BattlePage({ searchParams }: Props) {
         {/* CTA - continue the loop */}
         <div className="space-y-4">
           <p className="text-zinc-500 text-sm">
-            {isEN
-              ? "Know someone who's even less funny?"
-              : "Ken jij iemand die nog minder grappig is?"}
+            {isEN ? "Know someone who's even less funny?" : site.battle.ctaQuestion}
           </p>
           <Link
             href={isEN ? "/?lang=en" : "/"}
-            className="inline-flex items-center justify-center gap-2 w-full rounded-full bg-red-600 px-8 py-3 font-medium text-white transition-all hover:bg-red-500"
+            className="inline-flex items-center justify-center gap-2 w-full rounded-full px-8 py-3 font-medium text-white transition-all hover:opacity-90"
+            style={{ backgroundColor: accentColor }}
           >
-            {isEN ? "Choose your next victim" : "Kies je volgende slachtoffer"}
+            {isEN ? "Choose your next victim" : site.battle.cta}
           </Link>
         </div>
 
         {/* Footer */}
         <p className="mt-12 text-xs text-zinc-700">
-          {isEN ? "isntfunny.com" : "isnietgrappig.com"}
+          {isEN && site.domainEn ? site.domainEn : site.domain}
         </p>
       </div>
     </div>

@@ -2,21 +2,25 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { SiteId, SITES } from "@/lib/sites";
 
 export default function NameForm({
   placeholder,
   button,
   lang,
+  siteId = "grappig",
 }: {
   placeholder: string;
   button: string;
   lang: string;
+  siteId?: SiteId;
 }) {
   const [naam, setNaam] = useState("");
   const [spice, setSpice] = useState("");
   const [groep, setGroep] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
+  const site = SITES[siteId];
 
   // Validate name: only letters, spaces, apostrophes, dots, hyphens
   const isValidName = (name: string) => /^[\p{L}\s'.-]+$/u.test(name);
@@ -77,14 +81,16 @@ export default function NameForm({
           <p className="mt-1.5 text-xs text-red-400 text-center">{error}</p>
         )}
       </div>
-      <input
-        type="text"
-        value={spice}
-        onChange={(e) => setSpice(e.target.value.replace(/\s/g, ""))}
-        placeholder={lang === "en" ? "🌶️  Add spice — work, gym, cooking..." : "🌶️  Add spice — werk, gym, koken..."}
-        className="w-full rounded-full border border-zinc-800 bg-zinc-900/50 px-6 py-2.5 text-sm text-white placeholder-zinc-600 focus:border-zinc-600 focus:outline-none"
-        maxLength={20}
-      />
+      {siteId === "grappig" && (
+        <input
+          type="text"
+          value={spice}
+          onChange={(e) => setSpice(e.target.value.replace(/\s/g, ""))}
+          placeholder={lang === "en" ? "🌶️  Add spice — work, gym, cooking..." : "🌶️  Add spice — werk, gym, koken..."}
+          className="w-full rounded-full border border-zinc-800 bg-zinc-900/50 px-6 py-2.5 text-sm text-white placeholder-zinc-600 focus:border-zinc-600 focus:outline-none"
+          maxLength={20}
+        />
+      )}
       <input
         type="text"
         value={groep}
@@ -95,7 +101,8 @@ export default function NameForm({
       />
       <button
         type="submit"
-        className="w-full rounded-full bg-red-600 px-8 py-3 font-medium text-white transition-all hover:bg-red-500"
+        className="w-full rounded-full px-8 py-3 font-medium text-white transition-all hover:opacity-90"
+        style={{ backgroundColor: site.accentColor }}
       >
         {button}
       </button>

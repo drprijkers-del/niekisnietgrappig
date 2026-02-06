@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 import { Redis } from "@upstash/redis";
+import { getSiteByDomain, redisKey } from "@/lib/sites";
 
 export const runtime = "edge";
 
@@ -23,26 +24,6 @@ function getDayKeys(days: number): string[] {
   return keys;
 }
 
-function getPeriodTitle(period: Period): string {
-  switch (period) {
-    case "today": return "Wie is vandaag het minst grappig?";
-    case "week": return "Wie is deze week het minst grappig?";
-    case "month": return "Wie is deze maand het minst grappig?";
-    case "year": return "Wie is dit jaar het minst grappig?";
-    case "all": return "Wie is het minst grappig?";
-  }
-}
-
-function getPeriodSubtitle(period: Period): string {
-  switch (period) {
-    case "today": return "Vandaag";
-    case "week": return "Deze week";
-    case "month": return "Deze maand";
-    case "year": return "Dit jaar";
-    case "all": return "Leaderboard";
-  }
-}
-
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const key = searchParams.get("key");
@@ -55,6 +36,31 @@ export async function GET(request: Request) {
     return new Response("Unauthorized", { status: 401 });
   }
 
+  const host = request.headers.get("host") || "";
+  const site = getSiteByDomain(host);
+  const accentColor = site.accentColor;
+
+  function getPeriodTitle(p: Period): string {
+    const label = site.battle.leastLabel.replace(":", "");
+    switch (p) {
+      case "today": return `Wie is vandaag ${label.toLowerCase()}?`;
+      case "week": return `Wie is deze week ${label.toLowerCase()}?`;
+      case "month": return `Wie is deze maand ${label.toLowerCase()}?`;
+      case "year": return `Wie is dit jaar ${label.toLowerCase()}?`;
+      case "all": return `Wie is het meest ${label.toLowerCase()}?`;
+    }
+  }
+
+  function getPeriodSubtitle(p: Period): string {
+    switch (p) {
+      case "today": return "Vandaag";
+      case "week": return "Deze week";
+      case "month": return "Deze maand";
+      case "year": return "Dit jaar";
+      case "all": return "Leaderboard";
+    }
+  }
+
   const redis = new Redis({
     url: process.env.KV_REST_API_URL!,
     token: process.env.KV_REST_API_TOKEN!,
@@ -63,23 +69,20 @@ export async function GET(request: Request) {
   let entries: { naam: string; views: number }[] = [];
 
   if (period === "all") {
-    // All-time leaderboard
     const viewsRaw = await redis.zrange<string[]>(
-      "views:leaderboard", 0, 9, { rev: true, withScores: true }
+      redisKey(site, "views:leaderboard"), 0, 9, { rev: true, withScores: true }
     );
     for (let i = 0; i < (viewsRaw?.length || 0); i += 2) {
       entries.push({ naam: viewsRaw[i], views: Number(viewsRaw[i + 1]) });
     }
   } else {
-    // Period-based leaderboard - aggregate daily keys
     const days = period === "today" ? 1 : period === "week" ? 7 : period === "month" ? 30 : 365;
     const dayKeys = getDayKeys(days);
 
-    // Use ZUNIONSTORE to combine daily leaderboards, or fall back to manual aggregation
     const totals = new Map<string, number>();
 
     for (const dk of dayKeys) {
-      const dayData = await redis.zrange<string[]>(dk, 0, -1, { withScores: true });
+      const dayData = await redis.zrange<string[]>(redisKey(site, dk), 0, -1, { withScores: true });
       if (dayData) {
         for (let i = 0; i < dayData.length; i += 2) {
           const naam = dayData[i];
@@ -112,10 +115,8 @@ export async function GET(request: Request) {
           color: "#ededed",
         }}
       >
-        {/* Top red accent bar */}
-        <div style={{ width: "100%", height: 6, backgroundColor: "#ef4444", display: "flex" }} />
+        <div style={{ width: "100%", height: 6, backgroundColor: accentColor, display: "flex" }} />
 
-        {/* Header */}
         <div
           style={{
             display: "flex",
@@ -128,14 +129,7 @@ export async function GET(request: Request) {
           }}
         >
           <div style={{ display: "flex", flexDirection: "column" }}>
-            <div
-              style={{
-                fontSize: 18,
-                color: "#71717a",
-                textTransform: "uppercase",
-                letterSpacing: "0.25em",
-              }}
-            >
+            <div style={{ fontSize: 18, color: "#71717a", textTransform: "uppercase", letterSpacing: "0.25em" }}>
               {getPeriodSubtitle(period)}
             </div>
             <div style={{ fontSize: 36, fontWeight: 900, color: "#ffffff", marginTop: 6, display: "flex" }}>
@@ -147,10 +141,8 @@ export async function GET(request: Request) {
           </div>
         </div>
 
-        {/* Divider */}
         <div style={{ width: "100%", height: 1, backgroundColor: "#27272a", display: "flex" }} />
 
-        {/* Leaderboard rows — only top 5 for readability */}
         <div
           style={{
             display: "flex",
@@ -173,20 +165,17 @@ export async function GET(request: Request) {
                 paddingBottom: i === 0 ? 14 : 10,
               }}
             >
-              {/* Rank */}
               <div
                 style={{
                   fontSize: i === 0 ? 48 : 32,
                   fontWeight: 900,
-                  color: i === 0 ? "#ef4444" : i < 3 ? "#a1a1aa" : "#52525b",
+                  color: i === 0 ? accentColor : i < 3 ? "#a1a1aa" : "#52525b",
                   width: 70,
                   display: "flex",
                 }}
               >
                 {i + 1}
               </div>
-
-              {/* Name */}
               <div
                 style={{
                   fontSize: i === 0 ? 48 : 32,
@@ -198,8 +187,6 @@ export async function GET(request: Request) {
               >
                 {capitalize(entry.naam)}
               </div>
-
-              {/* Bar + count */}
               <div style={{ display: "flex", alignItems: "center", gap: 20, width: 380 }}>
                 <div
                   style={{
@@ -215,9 +202,10 @@ export async function GET(request: Request) {
                     style={{
                       width: `${(entry.views / topViews) * 100}%`,
                       height: "100%",
-                      backgroundColor: i === 0 ? "#ef4444" : i < 3 ? "#dc2626" : "#7f1d1d",
+                      backgroundColor: accentColor,
                       borderRadius: 99,
                       display: "flex",
+                      opacity: i === 0 ? 1 : i < 3 ? 0.7 : 0.4,
                     }}
                   />
                 </div>
@@ -225,7 +213,7 @@ export async function GET(request: Request) {
                   style={{
                     fontSize: i === 0 ? 32 : 24,
                     fontWeight: 700,
-                    color: i === 0 ? "#ef4444" : "#71717a",
+                    color: i === 0 ? accentColor : "#71717a",
                     width: 100,
                     textAlign: "right",
                     display: "flex",
@@ -239,7 +227,6 @@ export async function GET(request: Request) {
           ))}
         </div>
 
-        {/* Footer */}
         <div
           style={{
             display: "flex",
@@ -253,9 +240,8 @@ export async function GET(request: Request) {
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-            {/* Favicon inline */}
             <svg width="36" height="36" viewBox="0 0 512 512">
-              <rect width="512" height="512" rx="96" fill="#f59e0b"/>
+              <rect width="512" height="512" rx="96" fill={accentColor}/>
               <line x1="136" y1="148" x2="216" y2="164" stroke="#0a0a0a" strokeWidth="16" strokeLinecap="round"/>
               <line x1="376" y1="132" x2="296" y2="164" stroke="#0a0a0a" strokeWidth="16" strokeLinecap="round"/>
               <circle cx="176" cy="208" r="28" fill="#0a0a0a"/>
@@ -263,11 +249,11 @@ export async function GET(request: Request) {
               <rect x="144" y="328" width="224" height="24" rx="12" fill="#0a0a0a"/>
             </svg>
             <div style={{ display: "flex", fontSize: 22, fontWeight: 700, color: "#52525b" }}>
-              isnietgrappig<span style={{ color: "#ef4444" }}>.com</span>
+              {site.og.footerLabel}<span style={{ color: accentColor }}>{site.og.footerTLD}</span>
             </div>
           </div>
           <div style={{ fontSize: 18, color: "#52525b" }}>
-            Deel de waarheid
+            {site.og.footerCTA}
           </div>
         </div>
       </div>

@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { getSiteByDomain } from "@/lib/sites";
 
 export const runtime = "edge";
 
@@ -7,7 +8,10 @@ export async function GET(request: Request) {
   const rawNaam = searchParams.get("naam") || "Iemand";
   const lang = searchParams.get("lang") === "en" ? "en" : "nl";
   const rawGroup = searchParams.get("g");
-  const isEN = lang === "en";
+
+  const host = request.headers.get("host") || "";
+  const site = getSiteByDomain(host);
+  const isEN = lang === "en" && site.hasEnglish;
 
   // Capitalize first letter of each word
   const naam = rawNaam
@@ -25,6 +29,9 @@ export async function GET(request: Request) {
   const mainSize = len > 20 ? 52 : len > 12 ? 64 : 80;
   const subSize = Math.round(mainSize * 0.85);
 
+  const accentColor = site.accentColor;
+  const phrase = site.phrase;
+
   return new ImageResponse(
     (
       <div
@@ -38,11 +45,11 @@ export async function GET(request: Request) {
           color: "#ededed",
         }}
       >
-        {/* Top bar with red accent and optional group tag */}
-        <div style={{ width: "100%", height: 6, backgroundColor: "#ef4444", display: "flex" }} />
+        {/* Top bar with accent color */}
+        <div style={{ width: "100%", height: 6, backgroundColor: accentColor, display: "flex" }} />
 
         {/* Group tag - right aligned */}
-        {groupName && (
+        {groupName ? (
           <div
             style={{
               position: "absolute",
@@ -66,11 +73,9 @@ export async function GET(request: Request) {
               <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
               <path d="M16 3.13a4 4 0 0 1 0 7.75" />
             </svg>
-            <span style={{ fontSize: 16, fontWeight: 600, color: "#f59e0b" }}>
-              {groupName}
-            </span>
+            <span style={{ fontSize: 16, fontWeight: 600, color: "#f59e0b" }}>{groupName}</span>
           </div>
-        )}
+        ) : null}
 
         {/* Main content */}
         <div
@@ -96,52 +101,35 @@ export async function GET(request: Request) {
               marginBottom: 28,
             }}
           >
-            {isEN ? "OFFICIAL ANNOUNCEMENT" : "OFFICIEEL BEWEZEN"}
+            {isEN ? "OFFICIAL ANNOUNCEMENT" : site.og.subtitle}
           </div>
 
           {/* Name — large and white */}
-          <div
-            style={{
-              fontSize: mainSize,
-              fontWeight: 900,
-              color: "#ffffff",
-              lineHeight: 1.1,
-              marginBottom: 12,
-            }}
-          >
+          <div style={{ fontSize: mainSize, fontWeight: 900, color: "#ffffff", lineHeight: 1.1, marginBottom: 12 }}>
             {naam}
           </div>
 
-          {/* "is niet grappig" */}
-          <div
-            style={{
-              display: "flex",
-              fontSize: subSize,
-              fontWeight: 900,
-              lineHeight: 1.1,
-            }}
-          >
-            <span style={{ color: "#a1a1aa" }}>is </span>
-            <span style={{ color: "#ef4444", marginLeft: 12, marginRight: 12 }}>
-              {isEN ? "not" : "niet"}
+          {/* Phrase: "{before} {highlight} {after}" */}
+          <div style={{ display: "flex", fontSize: subSize, fontWeight: 900, lineHeight: 1.1 }}>
+            <span style={{ color: "#a1a1aa" }}>
+              {isEN ? "is " : `${phrase.before} `}
             </span>
-            <span style={{ color: "#a1a1aa" }}>{isEN ? "funny" : "grappig"}</span>
+            <span style={{ color: accentColor, marginLeft: 12, marginRight: 12 }}>
+              {isEN ? "not" : phrase.highlight}
+            </span>
+            {(isEN ? "funny" : phrase.after) ? (
+              <span style={{ color: "#a1a1aa" }}>{isEN ? "funny" : phrase.after}</span>
+            ) : null}
           </div>
 
-          {/* Red divider */}
-          <div style={{ width: 120, height: 2, backgroundColor: "#ef4444", marginTop: 36, marginBottom: 28, display: "flex" }} />
+          {/* Accent divider */}
+          <div style={{ width: 120, height: 2, backgroundColor: accentColor, marginTop: 36, marginBottom: 28, display: "flex" }} />
 
-          {/* Description with name */}
-          <div
-            style={{
-              fontSize: 24,
-              color: "#52525b",
-              textAlign: "center",
-            }}
-          >
+          {/* Description */}
+          <div style={{ fontSize: 24, color: "#52525b", textAlign: "center" }}>
             {isEN
               ? `Officially researched. Irrefutably documented.`
-              : `Officieel onderzocht. Onomstotelijk vastgelegd.`}
+              : site.og.description}
           </div>
         </div>
 
@@ -159,9 +147,8 @@ export async function GET(request: Request) {
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            {/* Favicon inline */}
             <svg width="32" height="32" viewBox="0 0 512 512">
-              <rect width="512" height="512" rx="96" fill="#f59e0b"/>
+              <rect width="512" height="512" rx="96" fill={accentColor}/>
               <line x1="136" y1="148" x2="216" y2="164" stroke="#0a0a0a" strokeWidth="16" strokeLinecap="round"/>
               <line x1="376" y1="132" x2="296" y2="164" stroke="#0a0a0a" strokeWidth="16" strokeLinecap="round"/>
               <circle cx="176" cy="208" r="28" fill="#0a0a0a"/>
@@ -169,12 +156,12 @@ export async function GET(request: Request) {
               <rect x="144" y="328" width="224" height="24" rx="12" fill="#0a0a0a"/>
             </svg>
             <div style={{ display: "flex", fontSize: 18, fontWeight: 700, color: "#52525b" }}>
-              {isEN ? "isntfunny" : "isnietgrappig"}
-              <span style={{ color: "#ef4444" }}>.com</span>
+              {isEN && site.domainEn ? site.domainEn.replace(/\.[^.]+$/, "") : site.og.footerLabel}
+              <span style={{ color: accentColor }}>{isEN && site.domainEn ? site.domainEn.replace(/^[^.]+/, "") : site.og.footerTLD}</span>
             </div>
           </div>
           <div style={{ fontSize: 14, color: "#3f3f46" }}>
-            {isEN ? "Share the truth" : "Deel de waarheid"}
+            {isEN ? "Share the truth" : site.og.footerCTA}
           </div>
         </div>
       </div>

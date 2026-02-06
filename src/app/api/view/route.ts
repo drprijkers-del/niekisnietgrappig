@@ -1,24 +1,12 @@
 import { Redis } from "@upstash/redis";
 import { NextRequest, NextResponse } from "next/server";
-
-const VIEWS_KEY = "views:leaderboard";
-const CLICKS_KEY = "clicks:leaderboard";
-const REFS_KEY = "refs:leaderboard";
-const DOMAIN_VIEWS_KEY = "domains:views";
-const DOMAIN_CLICKS_KEY = "domains:clicks";
+import { getSiteFromRequest, redisKey } from "@/lib/sites";
 
 // Daily leaderboard keys (expire after 32 days)
 const DAILY_VIEWS_TTL = 2764800; // 32 days
 const DAILY_CLICKS_TTL = 2764800;
 
 const ALLOWED_REFS = new Set(["wa", "copy", "x", "ig", "tiktok", "fb", "email"]);
-
-function getDomain(request: NextRequest): "nl" | "en" {
-  const host = request.headers.get("host") || "";
-  if (host.includes("isntfunny")) return "en";
-  // Default to "nl" for isnietgrappig.com, localhost, lvh.me, etc.
-  return "nl";
-}
 
 function getRedis() {
   return new Redis({
@@ -54,41 +42,38 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid" }, { status: 400 });
     }
 
+    const site = getSiteFromRequest(request);
     const redis = getRedis();
     const pipeline = redis.pipeline();
     const hk = hourKey();
     const dvk = dailyViewsKey();
     const dck = dailyClicksKey();
 
-    pipeline.zincrby(VIEWS_KEY, 1, naam.toLowerCase());
-    pipeline.zincrby(dvk, 1, naam.toLowerCase());
-    pipeline.hincrby(hk, "views", 1);
-    pipeline.expire(dvk, DAILY_VIEWS_TTL);
+    pipeline.zincrby(redisKey(site, "views:leaderboard"), 1, naam.toLowerCase());
+    pipeline.zincrby(redisKey(site, dvk), 1, naam.toLowerCase());
+    pipeline.hincrby(redisKey(site, hk), "views", 1);
+    pipeline.expire(redisKey(site, dvk), DAILY_VIEWS_TTL);
 
     if (sid && typeof sid === "string") {
-      pipeline.pfadd("visitors", sid);
-      pipeline.pfadd(`hv:${hk.slice(2)}`, sid);
-      pipeline.pfadd(dayKey(), sid);
+      pipeline.pfadd(redisKey(site, "visitors"), sid);
+      pipeline.pfadd(redisKey(site, `hv:${hk.slice(2)}`), sid);
+      pipeline.pfadd(redisKey(site, dayKey()), sid);
     }
 
-    const domain = getDomain(request);
-    if (domain) {
-      pipeline.zincrby(DOMAIN_VIEWS_KEY, 1, domain);
-    }
+    // Track which site this view came from
+    pipeline.zincrby("domains:views", 1, site.siteId);
 
     if (ref && typeof ref === "string" && ALLOWED_REFS.has(ref)) {
-      pipeline.zincrby(CLICKS_KEY, 1, naam.toLowerCase());
-      pipeline.zincrby(dck, 1, naam.toLowerCase());
-      pipeline.zincrby(REFS_KEY, 1, ref);
-      pipeline.hincrby(hk, "clicks", 1);
-      pipeline.expire(dck, DAILY_CLICKS_TTL);
-      if (domain) {
-        pipeline.zincrby(DOMAIN_CLICKS_KEY, 1, domain);
-      }
+      pipeline.zincrby(redisKey(site, "clicks:leaderboard"), 1, naam.toLowerCase());
+      pipeline.zincrby(redisKey(site, dck), 1, naam.toLowerCase());
+      pipeline.zincrby(redisKey(site, "refs:leaderboard"), 1, ref);
+      pipeline.hincrby(redisKey(site, hk), "clicks", 1);
+      pipeline.expire(redisKey(site, dck), DAILY_CLICKS_TTL);
+      pipeline.zincrby("domains:clicks", 1, site.siteId);
     }
 
     // Expire hourly keys after 8 days
-    pipeline.expire(hk, 691200);
+    pipeline.expire(redisKey(site, hk), 691200);
 
     await pipeline.exec();
 
