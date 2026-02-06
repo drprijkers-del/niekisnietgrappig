@@ -41,10 +41,11 @@ export async function POST(request: NextRequest) {
     const scores = pipelineResults.slice(1); // Skip the incr result
 
     // Build results array
+    // Easter egg: Dennis is the creator, always funny → 0 views
     const results = validNames
       .map((naam, i) => ({
         naam,
-        views: (scores[i] as number | null) ?? 0,
+        views: naam === "dennis" ? 0 : ((scores[i] as number | null) ?? 0),
       }))
       .sort((a, b) => b.views - a.views);
 
