@@ -27,6 +27,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     : `Met ${winnerScore}x bekeken pakt ${winner} de kroon. Ken jij iemand die nog minder grappig is?`;
 
   const baseUrl = isEN ? "https://isntfunny.com" : "https://isnietgrappig.com";
+  const pageUrl = `${baseUrl}/battle?names=${encodeURIComponent(namesParam || "")}&scores=${encodeURIComponent(scoresParam || "")}&lang=${langParam || "nl"}`;
   const ogImageUrl = `${baseUrl}/api/og/battle?names=${encodeURIComponent(namesParam || "")}&scores=${encodeURIComponent(scoresParam || "")}&lang=${langParam || "nl"}`;
 
   return {
@@ -35,6 +36,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     openGraph: {
       title,
       description,
+      url: pageUrl,
       siteName: isEN ? "Is Not Funny" : "Is Niet Grappig",
       images: [
         {
