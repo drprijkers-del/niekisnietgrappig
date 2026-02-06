@@ -433,7 +433,7 @@ export function getUI(lang: Lang = "nl", siteId: SiteId = "grappig") {
       subtitle: site.landing.subtitle,
       title: site.landing.title,
       highlight: phraseParts.highlight,
-      after: phraseParts.after ? `${phraseParts.after}?` : "?",
+      after: site.landing.landingAfter ? `${site.landing.landingAfter}?` : (phraseParts.after ? `${phraseParts.after}?` : "?"),
       description: site.landing.description,
       placeholder: site.landing.placeholder,
       button: site.landing.button,

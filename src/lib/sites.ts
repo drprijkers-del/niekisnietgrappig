@@ -39,6 +39,7 @@ export interface SiteConfig {
   landing: {
     subtitle: string;
     title: string; // "Wie is" / "Wie is een"
+    landingAfter?: string; // optional text after highlight (e.g. "doen" → "lief doen?")
     description: string;
     placeholder: string;
     button: string;
@@ -329,6 +330,7 @@ export const SITES: Record<SiteId, SiteConfig> = {
     landing: {
       subtitle: "Een publieke dienstaankondiging",
       title: "Wie moet ff",
+      landingAfter: "doen",
       description: "Vul een naam in en ontdek het wetenschappelijk bewijs.",
       placeholder: "Vul een naam in...",
       button: "Bewijs het",
