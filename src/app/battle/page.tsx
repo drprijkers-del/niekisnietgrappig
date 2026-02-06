@@ -23,8 +23,8 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     : `${winner} is het minst grappig!`;
 
   const description = isEN
-    ? `With ${winnerScore} views, ${winner} takes the crown. Who do you know that's even less funny?`
-    : `Met ${winnerScore}x bekeken pakt ${winner} de kroon. Ken jij iemand die nog minder grappig is?`;
+    ? `With ${winnerScore} views, ${winner}'s humor is the most meh... Who do you know that's even less funny?`
+    : `Met ${winnerScore}x bekeken is de humor van ${winner} het meest meh... Ken jij iemand die nog minder grappig is?`;
 
   const baseUrl = isEN ? "https://isntfunny.com" : "https://isnietgrappig.com";
   const pageUrl = `${baseUrl}/battle?names=${encodeURIComponent(namesParam || "")}&scores=${encodeURIComponent(scoresParam || "")}&lang=${langParam || "nl"}`;
