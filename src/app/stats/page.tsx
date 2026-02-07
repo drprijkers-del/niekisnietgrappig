@@ -475,51 +475,26 @@ function PerSiteView({ d, activeSite, range, secretKey }: { d: DashboardData; ac
         <h2 className="text-sm font-mono uppercase tracking-widest text-zinc-500 mb-4">
           Acquisition
         </h2>
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-          <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-5">
-            <h3 className="text-xs font-mono uppercase text-zinc-600 mb-3">Traffic Sources</h3>
-            {d.refs.length > 0 ? (
-              <div className="space-y-2">
-                {d.refs.map((r) => {
-                  const pct = d.totalRefs > 0 ? (r.count / d.totalRefs) * 100 : 0;
-                  return (
-                    <div key={r.naam} className="flex items-center gap-3">
-                      <span className="text-xs text-zinc-500 w-20 shrink-0">{refLabel(r.naam)}</span>
-                      <div className="flex-1 h-2 rounded-full bg-zinc-800 overflow-hidden">
-                        <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: activeSite.accentColor }} />
-                      </div>
-                      <span className="text-xs tabular-nums text-zinc-400 w-12 text-right">{r.count}</span>
-                    </div>
-                  );
-                })}
-              </div>
-            ) : (
-              <p className="text-sm text-zinc-600">No referral data yet</p>
-            )}
-          </div>
-
-          <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-5">
-            <h3 className="text-xs font-mono uppercase text-zinc-600 mb-3">Per Domain</h3>
-            <div className="space-y-3">
-              {d.domViews.map((dom) => {
-                const dc = d.domClicks.find((x) => x.naam === dom.naam)?.count || 0;
-                const ds = d.domShares.find((x) => x.naam === dom.naam)?.count || 0;
+        <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-5">
+          <h3 className="text-xs font-mono uppercase text-zinc-600 mb-3">Traffic Sources</h3>
+          {d.refs.length > 0 ? (
+            <div className="space-y-2">
+              {d.refs.map((r) => {
+                const pct = d.totalRefs > 0 ? (r.count / d.totalRefs) * 100 : 0;
                 return (
-                  <div key={dom.naam} className="flex flex-wrap items-center gap-x-4 gap-y-1">
-                    <span className="text-xs font-medium w-full sm:w-36 sm:shrink-0">
-                      {dom.naam}
-                    </span>
-                    <span className="text-xs tabular-nums text-zinc-400">{dom.count} opens</span>
-                    <span className="text-xs tabular-nums text-emerald-400">{dc} clicks</span>
-                    <span className="text-xs tabular-nums text-orange-400">{ds} shares</span>
+                  <div key={r.naam} className="flex items-center gap-3">
+                    <span className="text-xs text-zinc-500 w-20 shrink-0">{refLabel(r.naam)}</span>
+                    <div className="flex-1 h-2 rounded-full bg-zinc-800 overflow-hidden">
+                      <div className="h-full rounded-full" style={{ width: `${pct}%`, backgroundColor: activeSite.accentColor }} />
+                    </div>
+                    <span className="text-xs tabular-nums text-zinc-400 w-12 text-right">{r.count}</span>
                   </div>
                 );
               })}
             </div>
-            {d.domViews.length === 0 && (
-              <p className="text-sm text-zinc-600">No domain data yet</p>
-            )}
-          </div>
+          ) : (
+            <p className="text-sm text-zinc-600">No referral data yet</p>
+          )}
         </div>
       </section>
 

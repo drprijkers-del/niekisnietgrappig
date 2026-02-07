@@ -135,11 +135,6 @@ export interface DashboardData {
   shares: { naam: string; count: number }[];
   refs: { naam: string; count: number }[];
 
-  // Domain breakdown (all time)
-  domViews: { naam: string; count: number }[];
-  domClicks: { naam: string; count: number }[];
-  domShares: { naam: string; count: number }[];
-
   // Derived metrics
   shareRate: number;
   viralCoeff: number;
@@ -158,7 +153,6 @@ export async function fetchDashboard(
   // Fetch everything in parallel
   const [
     viewsRaw, clicksRaw, sharesRaw, refsRaw,
-    domViewsRaw, domClicksRaw, domSharesRaw,
     uniqueVisitorsAll, uniqueSharersAll,
     timingSum, timingCount,
     groupChecksRaw,
@@ -168,9 +162,6 @@ export async function fetchDashboard(
     redis.zrange<string[]>(redisKey(site, "clicks:leaderboard"), 0, 49, { rev: true, withScores: true }),
     redis.zrange<string[]>(redisKey(site, "shares:leaderboard"), 0, 49, { rev: true, withScores: true }),
     redis.zrange<string[]>(redisKey(site, "refs:leaderboard"), 0, -1, { rev: true, withScores: true }),
-    redis.zrange<string[]>(redisKey(site, "domains:views"), 0, -1, { rev: true, withScores: true }),
-    redis.zrange<string[]>(redisKey(site, "domains:clicks"), 0, -1, { rev: true, withScores: true }),
-    redis.zrange<string[]>(redisKey(site, "domains:shares"), 0, -1, { rev: true, withScores: true }),
     redis.pfcount(redisKey(site, "visitors")),
     redis.pfcount(redisKey(site, "sharers")),
     redis.get<string>(redisKey(site, "share_timing:sum")),
@@ -184,9 +175,6 @@ export async function fetchDashboard(
   const clicks = parsePairs(clicksRaw || []);
   const shares = parsePairs(sharesRaw || []);
   const refs = parsePairs(refsRaw || []);
-  const domViews = parsePairs(domViewsRaw || []);
-  const domClicks = parsePairs(domClicksRaw || []);
-  const domShares = parsePairs(domSharesRaw || []);
 
   const totalViews = views.reduce((s, v) => s + v.count, 0);
   const totalClicks = clicks.reduce((s, c) => s + c.count, 0);
@@ -227,9 +215,6 @@ export async function fetchDashboard(
     clicks,
     shares,
     refs,
-    domViews,
-    domClicks,
-    domShares,
     shareRate,
     viralCoeff,
     clicksPerShare,
