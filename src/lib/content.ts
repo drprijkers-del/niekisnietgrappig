@@ -129,6 +129,11 @@ function getContentForSite(naam: string, siteId: SiteId) {
         { vraag: `Is knor zijn erg?`, antwoord: `Het is niet dodelijk, maar het is wel sociaal onhandig. Je mist borrels, tradities en bovenal: het gevoel erbij te horen.` },
         { vraag: `Is dit niet een beetje gemeen?`, antwoord: `${naam} had gewoon lid kunnen worden. Dit is een publieke dienst.` },
       ],
+      tips: [
+        `Sleep ${naam} mee naar de eerstvolgende borrel. Desnoods onder dwang.`,
+        `Print het aanmeldformulier uit en plak het op de koelkast.`,
+        `Stuur dit bewijs naar de rest. Groepsdruk is een bewezen methode.`,
+      ],
     };
   }
 
@@ -153,6 +158,11 @@ function getContentForSite(naam: string, siteId: SiteId) {
         { vraag: `Heeft ${naam} echt áltijd honger?`, antwoord: `Ja. Wetenschappers hebben geprobeerd ${naam} vol te krijgen. Ze zijn gestopt met proberen.` },
         { vraag: `Is dit een eetstoornis?`, antwoord: `Nee. Het is een superkracht met bijwerkingen. Vooral voor de koelkast.` },
         { vraag: `Is dit niet gemeen?`, antwoord: `${naam} leest dit waarschijnlijk niet. Die is aan het eten.` },
+      ],
+      tips: [
+        `Geef ${naam} een tosti. Probleem opgelost. Voor nu.`,
+        `Verstop de snacks niet. ${naam} vindt ze toch.`,
+        `Bestel een pizza. Eentje voor ${naam}, eentje voor de rest.`,
       ],
     };
   }
@@ -179,6 +189,11 @@ function getContentForSite(naam: string, siteId: SiteId) {
         { vraag: `Is er hoop voor ${naam}?`, antwoord: `De wetenschap is voorzichtig pessimistisch. De bank is te comfortabel.` },
         { vraag: `Is dit niet gemeen?`, antwoord: `Dit is liefde. Harde, eerlijke, werkgerelateerde liefde.` },
       ],
+      tips: [
+        `Zet de WiFi uit. Kijk wat er gebeurt.`,
+        `Stuur ${naam} een vacature. Elke dag. Als reminder.`,
+        `Verplaats de bank naar buiten. Subtiel maar effectief.`,
+      ],
     };
   }
 
@@ -203,6 +218,11 @@ function getContentForSite(naam: string, siteId: SiteId) {
         { vraag: `Is ${naam} echt zo lief?`, antwoord: `Ja. En deze website doet het nog tekort. In het echt is ${naam} nóg liever.` },
         { vraag: `Kan iemand liever zijn?`, antwoord: `Theoretisch misschien. Maar het bewijs wijst één kant op.` },
         { vraag: `Is dit niet overdreven?`, antwoord: `Nee. ${naam} verdient dit en meer. Deel de liefde.` },
+      ],
+      tips: [
+        `Geef ${naam} een knuffel. Nu. Niet straks. Nu.`,
+        `Stuur bloemen. Of gewoon dit bewijs. Dat is eigenlijk mooier.`,
+        `Zeg het hardop. Doe het vandaag. ${naam} verdient het.`,
       ],
     };
   }
@@ -229,6 +249,11 @@ function getContentForSite(naam: string, siteId: SiteId) {
         { vraag: `Kan ${naam} lief leren doen?`, antwoord: `De wetenschap is voorzichtig optimistisch. De omgeving minder.` },
         { vraag: `Is dit gemeen?`, antwoord: `Nee. ${naam} is degene die ff lief moet doen. Wij helpen alleen.` },
       ],
+      tips: [
+        `Geef ${naam} een kopje thee. Kalmte is besmettelijk.`,
+        `Stuur ${naam} een hartje. Eentje per uur tot het effect heeft.`,
+        `Negeer het niet. Lief doen begint bij confrontatie.`,
+      ],
     };
   }
 
@@ -253,6 +278,11 @@ function getContentForSite(naam: string, siteId: SiteId) {
       { vraag: `Maar soms lachen mensen toch om ${naam}?`, antwoord: `Dat klopt. Dit fenomeen staat bekend als "medelachten" \u2014 een sociaal overlevingsmechanisme waarbij mensen lachen om een ongemakkelijke stilte te doorbreken. Het heeft niets met humor te maken.` },
       { vraag: `Kan ${naam} ooit grappig worden?`, antwoord: `De wetenschap is hier niet optimistisch over. Hoewel humor theoretisch aangeleerd kan worden, vereist dit een mate van zelfbewustzijn die ${naam} op dit moment niet bezit.` },
       { vraag: "Is deze website niet een beetje gemeen?", antwoord: `Deze website is een publieke dienst. Wij geloven dat eerlijkheid uiteindelijk in ieders belang is. Bovendien: als ${naam} dit leest en er om kan lachen, is dat het grappigste dat diegene ooit heeft gedaan.` },
+    ],
+    tips: [
+      `Geef ${naam} een koekje. Niet omdat het helpt, maar als afleidingsmanoeuvre.`,
+      `Stuur ${naam} naar een comedy workshop. Of beter: stuur het bewijs en laat het inzinken.`,
+      `Zeg het hardop op een verjaardag. Liefst als ${naam} net een mop vertelt.`,
     ],
   };
 }
@@ -282,6 +312,11 @@ export function getContent(naam: string, lang: Lang = "nl", siteId: SiteId = "gr
         { vraag: `Is there hope?`, antwoord: `Science is cautiously pessimistic. The couch is too comfortable.` },
         { vraag: "Isn't this mean?", antwoord: `This is love. Hard, honest, work-related love.` },
       ],
+      tips: [
+        `Turn off the WiFi. See what happens.`,
+        `Send ${naam} a job listing. Every day. As a reminder.`,
+        `Move the couch outside. Subtle but effective.`,
+      ],
     };
   }
 
@@ -308,6 +343,11 @@ export function getContent(naam: string, lang: Lang = "nl", siteId: SiteId = "gr
         { vraag: `But sometimes people do laugh at ${naam}?`, antwoord: `That's correct. This phenomenon is known as "sympathy laughing" \u2014 a social survival mechanism where people laugh to break an awkward silence. It has nothing to do with humor.` },
         { vraag: `Can ${naam} ever become funny?`, antwoord: `Science is not optimistic about this. While humor can theoretically be learned, it requires a level of self-awareness that ${naam} currently does not possess.` },
         { vraag: "Isn't this website a bit mean?", antwoord: `This website is a public service. We believe that honesty is ultimately in everyone's best interest. Besides: if ${naam} reads this and can laugh about it, that would be the funniest thing they've ever done.` },
+      ],
+      tips: [
+        `Give ${naam} a cookie. Not because it helps, but as a distraction maneuver.`,
+        `Send ${naam} to a comedy workshop. Or better: send the evidence and let it sink in.`,
+        `Say it out loud at a birthday party. Preferably while ${naam} is telling a joke.`,
       ],
     };
   }
@@ -339,6 +379,7 @@ export function getUI(lang: Lang = "nl", siteId: SiteId = "grappig") {
       },
       testimonials: { heading: "Eyewitness accounts", subheading: "What others say" },
       faqSection: { heading: "Frequently asked questions", subheading: "FAQ" },
+      tipsSection: { heading: "What can you do?", subheading: "Tips" },
       share: {
         heading: "Know someone else who should be working?",
         description: "Send this intervention or pick your next target.",
@@ -381,6 +422,7 @@ export function getUI(lang: Lang = "nl", siteId: SiteId = "grappig") {
       },
       testimonials: { heading: "Eyewitness accounts", subheading: "What others say" },
       faqSection: { heading: "Frequently asked questions", subheading: "FAQ" },
+      tipsSection: { heading: "What can you do?", subheading: "Tips" },
       share: {
         heading: "Know someone else who isn't funny?",
         description: "Spread the truth or pick your next victim.",
@@ -462,6 +504,7 @@ export function getUI(lang: Lang = "nl", siteId: SiteId = "grappig") {
     },
     testimonials: { heading: "Ooggetuigenverslagen", subheading: "Wat anderen zeggen" },
     faqSection: { heading: "Veelgestelde vragen", subheading: "FAQ" },
+    tipsSection: { heading: "Wat kun je doen?", subheading: "Tips" },
     share: {
       heading: site.share.heading,
       description: site.share.description,

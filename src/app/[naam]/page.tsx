@@ -404,7 +404,7 @@ export default async function NaamPage({ params, searchParams }: Props) {
   }
 
   const spice = validateSpice(w);
-  const { redenen, statistieken, getuigenissen, faq } = getContent(naam, lang, siteId);
+  const { redenen, statistieken, getuigenissen, faq, tips } = getContent(naam, lang, siteId);
   const ui = getUI(lang, siteId);
   const lines = getSpiceLines(naam, spice, lang, siteId);
   const customSubtitle = getCustomSubtitle(naam, siteId);
@@ -550,6 +550,24 @@ export default async function NaamPage({ params, searchParams }: Props) {
           </div>
         </div>
       </section>
+
+      {/* Tips */}
+      {tips && tips.length > 0 && (
+        <section className="border-t border-zinc-800 bg-zinc-950/50 py-20 px-6">
+          <div className="mx-auto max-w-3xl">
+            <h2 className="mb-4 text-center text-sm font-mono uppercase tracking-[0.3em] text-zinc-500">{ui.tipsSection.heading}</h2>
+            <h3 className="text-center text-3xl font-bold sm:text-4xl">{ui.tipsSection.subheading}</h3>
+            <div className="mt-12 space-y-4">
+              {tips.map((tip, i) => (
+                <div key={i} className="flex items-start gap-4 rounded-xl border border-zinc-800 bg-zinc-900/50 p-5 transition-all hover:border-zinc-600">
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold" style={{ backgroundColor: `${accentColor}20`, color: accentColor }}>{i + 1}</span>
+                  <p className="text-zinc-300 leading-relaxed">{tip}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Battle check - bottom */}
       <section className="border-t border-zinc-800 py-12 px-6 text-center">
