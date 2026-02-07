@@ -19,7 +19,7 @@ export default function SuggestBox({
   placeholder: string;
   button: string;
   success: string;
-  countLabel: (n: number) => string;
+  countLabel: string;
 }) {
   const [text, setText] = useState("");
   const [submitted, setSubmitted] = useState(false);
@@ -70,7 +70,7 @@ export default function SuggestBox({
                 {success}
               </p>
               {count > 0 && (
-                <p className="text-xs text-zinc-600">{countLabel(count)}</p>
+                <p className="text-xs text-zinc-600">{countLabel.replace("{n}", String(count))}</p>
               )}
             </>
           ) : (
@@ -112,7 +112,7 @@ export default function SuggestBox({
               </div>
               {count > 0 && (
                 <p className="text-[10px] text-zinc-700">
-                  {countLabel(count)}
+                  {countLabel.replace("{n}", String(count))}
                 </p>
               )}
             </>

@@ -385,7 +385,7 @@ export function getUI(lang: Lang = "nl", siteId: SiteId = "grappig") {
         placeholder: (naam: string) => `${naam} once pretended to...`,
         button: "Add to the file",
         success: "Added to the file.",
-        countLabel: (n: number) => `${n} tips received`,
+        countLabel: "{n} tips received",
       },
       share: {
         heading: "Know someone else who should be working?",
@@ -435,7 +435,7 @@ export function getUI(lang: Lang = "nl", siteId: SiteId = "grappig") {
         placeholder: (naam: string) => `That time ${naam}...`,
         button: "Add to the file",
         success: "Added to the file.",
-        countLabel: (n: number) => `${n} tips received`,
+        countLabel: "{n} tips received",
       },
       share: {
         heading: "Know someone else who isn't funny?",
@@ -531,7 +531,7 @@ export function getUI(lang: Lang = "nl", siteId: SiteId = "grappig") {
       },
       button: "Toevoegen aan dossier",
       success: "Toegevoegd aan het dossier.",
-      countLabel: (n: number) => `${n} tips al ontvangen`,
+      countLabel: "{n} tips al ontvangen",
     },
     share: {
       heading: site.share.heading,
