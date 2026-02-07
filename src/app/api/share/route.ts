@@ -1,6 +1,7 @@
 import { Redis } from "@upstash/redis";
 import { NextRequest, NextResponse } from "next/server";
 import { getSiteFromRequest, redisKey } from "@/lib/sites";
+import { getIP, isRateLimited } from "@/lib/ratelimit";
 
 const THRESHOLD = 3;
 const CACHE_TTL = 30; // seconds
@@ -27,6 +28,12 @@ export async function POST(request: NextRequest) {
 
     const site = getSiteFromRequest(request);
     const redis = getRedis();
+
+    // Rate limit: max 30 shares per IP per minute
+    if (await isRateLimited(redis, `rl:share:${getIP(request)}`, 30, 60)) {
+      return NextResponse.json({ naam, count: 0 }); // silent drop
+    }
+
     const pipeline = redis.pipeline();
     const hk = hourKey();
 

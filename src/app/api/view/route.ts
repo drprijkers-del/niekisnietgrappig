@@ -1,6 +1,7 @@
 import { Redis } from "@upstash/redis";
 import { NextRequest, NextResponse } from "next/server";
 import { getSiteFromRequest, redisKey } from "@/lib/sites";
+import { getIP, isRateLimited } from "@/lib/ratelimit";
 
 // Daily leaderboard keys (expire after 32 days)
 const DAILY_VIEWS_TTL = 2764800; // 32 days
@@ -44,6 +45,12 @@ export async function POST(request: NextRequest) {
 
     const site = getSiteFromRequest(request);
     const redis = getRedis();
+
+    // Rate limit: max 200 per IP per minute
+    if (await isRateLimited(redis, `rl:view:${getIP(request)}`, 200, 60)) {
+      return NextResponse.json({ ok: true }); // silent drop
+    }
+
     const pipeline = redis.pipeline();
     const hk = hourKey();
     const dvk = dailyViewsKey();
