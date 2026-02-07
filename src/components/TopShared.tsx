@@ -9,7 +9,7 @@ export default function TopShared({ lang }: { lang: string }) {
     fetch("/api/share")
       .then((res) => res.json())
       .then((data) => setTop(data.top))
-      .catch(() => setTop({ naam: "Niek", count: 999 }));
+      .catch(() => {});
   }, []);
 
   if (!top) return null;

@@ -2,8 +2,7 @@ import { Redis } from "@upstash/redis";
 import { NextRequest, NextResponse } from "next/server";
 import { getSiteFromRequest, redisKey } from "@/lib/sites";
 
-const DEFAULT_TOP = { naam: "Niek", count: 999 };
-const THRESHOLD = 50;
+const THRESHOLD = 3;
 const CACHE_TTL = 30; // seconds
 
 function getRedis() {
@@ -71,14 +70,14 @@ export async function GET(request: NextRequest) {
 
     // result = [name, score] or []
     if (!result || result.length < 2) {
-      return cachedResponse({ top: DEFAULT_TOP });
+      return cachedResponse({ top: null });
     }
 
     const topNaam = result[0];
     const topCount = Number(result[1]);
 
     if (topCount < THRESHOLD) {
-      return cachedResponse({ top: DEFAULT_TOP });
+      return cachedResponse({ top: null });
     }
 
     const naam = topNaam
@@ -86,7 +85,7 @@ export async function GET(request: NextRequest) {
 
     return cachedResponse({ top: { naam, count: topCount } });
   } catch {
-    return cachedResponse({ top: DEFAULT_TOP });
+    return cachedResponse({ top: null });
   }
 }
 

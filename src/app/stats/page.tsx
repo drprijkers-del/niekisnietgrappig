@@ -105,13 +105,15 @@ export default async function StatsPage({ searchParams }: Props) {
               key={s.siteId}
               href={`/stats?key=${key}&range=${range}&site=${s.siteId}`}
               className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
-                s.siteId === activeSiteId
-                  ? "text-white"
-                  : "text-zinc-500 hover:text-white border border-zinc-800 hover:bg-zinc-800"
+                !s.enabled
+                  ? "text-zinc-700 border border-zinc-800/50 opacity-50"
+                  : s.siteId === activeSiteId
+                    ? "text-white"
+                    : "text-zinc-500 hover:text-white border border-zinc-800 hover:bg-zinc-800"
               }`}
-              style={s.siteId === activeSiteId ? { backgroundColor: s.accentColor } : {}}
+              style={s.siteId === activeSiteId && s.enabled ? { backgroundColor: s.accentColor } : {}}
             >
-              {s.siteName}
+              {s.siteName}{!s.enabled && <span className="ml-1 text-[9px] text-zinc-600">(parked)</span>}
             </a>
           ))}
         </div>
@@ -162,6 +164,7 @@ function OverviewView({ data, secretKey, range }: { data: OverviewData; secretKe
               <thead>
                 <tr className="border-b border-zinc-800 text-zinc-500">
                   <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-medium">Site</th>
+                  <th className="px-2 py-2 sm:py-3 text-center font-medium w-10">Health</th>
                   <th className="px-3 sm:px-4 py-2 sm:py-3 text-right font-medium">Views</th>
                   <th className="px-3 sm:px-4 py-2 sm:py-3 text-right font-medium">Clicks</th>
                   <th className="px-3 sm:px-4 py-2 sm:py-3 text-right font-medium">Shares</th>
@@ -173,21 +176,28 @@ function OverviewView({ data, secretKey, range }: { data: OverviewData; secretKe
                 </tr>
               </thead>
               <tbody>
-                {data.sites.map((s) => (
-                  <tr key={s.siteId} className="border-b border-zinc-800/50 hover:bg-zinc-800/30">
+                {data.sites.map((s) => {
+                  const siteConf = SITES[s.siteId as SiteId];
+                  const isParked = siteConf && !siteConf.enabled;
+                  return (
+                  <tr key={s.siteId} className={`border-b border-zinc-800/50 hover:bg-zinc-800/30 ${isParked ? "opacity-40" : ""}`}>
                     <td className="px-3 sm:px-4 py-2 sm:py-2.5 font-medium">
                       <a
                         href={`/stats?key=${secretKey}&range=${range}&site=${s.siteId}`}
                         className="hover:text-white transition-colors flex items-center gap-2"
                       >
-                        <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: s.accentColor }} />
+                        <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: isParked ? "#3f3f46" : s.accentColor }} />
                         <span>
                           <span className="truncate">{s.domain}</span>
+                          {isParked && <span className="ml-1 text-[9px] text-zinc-600">(parked)</span>}
                           {s.domainEn && (
                             <span className="block text-[10px] text-zinc-600 font-normal">{s.domainEn}</span>
                           )}
                         </span>
                       </a>
+                    </td>
+                    <td className="px-2 py-2 sm:py-2.5 text-center">
+                      <SiteHealth views={s.totalViews} shareRate={s.shareRate} viralK={s.viralCoeff} parked={!!isParked} />
                     </td>
                     <td className="px-3 sm:px-4 py-2 sm:py-2.5 text-right tabular-nums text-zinc-400">{s.totalViews.toLocaleString()}</td>
                     <td className="px-3 sm:px-4 py-2 sm:py-2.5 text-right tabular-nums text-emerald-400">{s.totalClicks.toLocaleString()}</td>
@@ -215,7 +225,8 @@ function OverviewView({ data, secretKey, range }: { data: OverviewData; secretKe
                       </div>
                     </td>
                   </tr>
-                ))}
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -231,16 +242,20 @@ function OverviewView({ data, secretKey, range }: { data: OverviewData; secretKe
           Details
         </h2>
         <div className="space-y-3">
-          {data.sites.map((s) => (
+          {data.sites.map((s) => {
+            const sc = SITES[s.siteId as SiteId];
+            const parked = sc && !sc.enabled;
+            return (
             <a
               key={s.siteId}
               href={`/stats?key=${secretKey}&range=${range}&site=${s.siteId}`}
-              className="block rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 hover:border-zinc-700 transition-colors"
+              className={`block rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 hover:border-zinc-700 transition-colors ${parked ? "opacity-40" : ""}`}
             >
               <div className="flex items-center gap-2 mb-3">
-                <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: s.accentColor }} />
+                <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: parked ? "#3f3f46" : s.accentColor }} />
                 <div>
                   <span className="font-medium text-sm">{s.domain}</span>
+                  {parked && <span className="ml-1 text-[9px] text-zinc-600">(parked)</span>}
                   {s.domainEn && (
                     <span className="block text-[10px] text-zinc-600">{s.domainEn}</span>
                   )}
@@ -260,13 +275,15 @@ function OverviewView({ data, secretKey, range }: { data: OverviewData; secretKe
                   <div className="text-[10px] text-zinc-500">shares</div>
                 </div>
               </div>
-              <div className="flex justify-between mt-3 text-[10px] text-zinc-500">
+              <div className="flex items-center justify-between mt-3 text-[10px] text-zinc-500">
+                <SiteHealth views={s.totalViews} shareRate={s.shareRate} viralK={s.viralCoeff} parked={!!parked} />
                 <span>Share rate: <span className={statusColor(shareRateStatus(s.shareRate)).split(" ")[0]}>{s.shareRate.toFixed(1)}%</span></span>
                 <span>K: <span className={statusColor(viralCoeffStatus(s.viralCoeff)).split(" ")[0]}>{s.viralCoeff.toFixed(2)}</span></span>
                 <span>{s.uniqueNames} names</span>
               </div>
             </a>
-          ))}
+            );
+          })}
         </div>
       </section>
     </>
@@ -651,6 +668,28 @@ function KPICard({
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+function SiteHealth({ views, shareRate, viralK, parked }: { views: number; shareRate: number; viralK: number; parked: boolean }) {
+  if (parked) return <span className="text-[10px] text-zinc-700">--</span>;
+  if (views < 10) return <span className="text-[10px] text-zinc-600" title="Not enough data">new</span>;
+
+  // Score: 0-2 points from share rate, 0-2 from viral K
+  let score = 0;
+  if (shareRate >= 15) score += 2;
+  else if (shareRate >= 5) score += 1;
+  if (viralK >= 1) score += 2;
+  else if (viralK >= 0.5) score += 1;
+
+  const dot = score >= 3 ? "bg-emerald-400" : score >= 1 ? "bg-amber-400" : "bg-red-400";
+  const label = score >= 3 ? "good" : score >= 1 ? "ok" : "low";
+
+  return (
+    <div className="flex items-center justify-center gap-1" title={`Share: ${shareRate.toFixed(1)}%, K: ${viralK.toFixed(2)}`}>
+      <span className={`w-2 h-2 rounded-full ${dot}`} />
+      <span className={`text-[10px] ${score >= 3 ? "text-emerald-400" : score >= 1 ? "text-amber-400" : "text-red-400"}`}>{label}</span>
     </div>
   );
 }
