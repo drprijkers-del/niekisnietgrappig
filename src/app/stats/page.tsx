@@ -286,6 +286,44 @@ function OverviewView({ data, secretKey, range }: { data: OverviewData; secretKe
           })}
         </div>
       </section>
+
+      {/* Suggestions (all sites) */}
+      {data.allSuggestions.length > 0 && (
+        <section className="mb-8">
+          <h2 className="text-sm font-mono uppercase tracking-widest text-zinc-500 mb-4">
+            Suggestions <span className="text-zinc-700">({data.totalSuggestions})</span>
+          </h2>
+          <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 overflow-hidden">
+            <div className="divide-y divide-zinc-800/50">
+              {data.allSuggestions.map((s, i) => {
+                const siteConf = SITES[s.siteId as SiteId];
+                return (
+                  <div key={i} className="px-4 py-3 flex items-start gap-3">
+                    <span
+                      className="text-[10px] font-medium shrink-0 w-14 text-center rounded-full px-1.5 py-0.5"
+                      style={{ backgroundColor: `${siteConf?.accentColor || "#666"}20`, color: siteConf?.accentColor || "#666" }}
+                    >
+                      {s.siteId}
+                    </span>
+                    <span className="text-xs text-zinc-600 font-medium shrink-0 w-16">
+                      {capitalize(s.naam)}
+                    </span>
+                    <p className="text-sm text-zinc-300 flex-1">{s.text}</p>
+                    <span className="text-[10px] text-zinc-700 shrink-0 tabular-nums">
+                      {new Date(s.ts).toLocaleDateString("nl-NL", { day: "numeric", month: "short" })}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+            {data.totalSuggestions > 30 && (
+              <div className="px-4 py-2 border-t border-zinc-800 text-[10px] text-zinc-600">
+                Showing latest 30 of {data.totalSuggestions}
+              </div>
+            )}
+          </div>
+        </section>
+      )}
     </>
   );
 }

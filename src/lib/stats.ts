@@ -267,29 +267,46 @@ export interface OverviewData {
   grandTotalShares: number;
   grandTotalVisitors: number;
   grandTotalSharers: number;
+  allSuggestions: { siteId: SiteId; naam: string; text: string; ts: number }[];
+  totalSuggestions: number;
 }
 
 export async function fetchOverview(redis: Redis): Promise<OverviewData> {
   const pipeline = redis.pipeline();
 
-  // 5 commands per site: views, clicks, shares, visitors HLL, sharers HLL
+  // 7 commands per site: views, clicks, shares, visitors HLL, sharers HLL, suggestions count, suggestions list
   for (const site of ALL_SITES) {
     pipeline.zrange(redisKey(site, "views:leaderboard"), 0, -1, { rev: true, withScores: true });
     pipeline.zrange(redisKey(site, "clicks:leaderboard"), 0, -1, { rev: true, withScores: true });
     pipeline.zrange(redisKey(site, "shares:leaderboard"), 0, -1, { rev: true, withScores: true });
     pipeline.pfcount(redisKey(site, "visitors"));
     pipeline.pfcount(redisKey(site, "sharers"));
+    pipeline.llen(redisKey(site, "suggestions"));
+    pipeline.lrange(redisKey(site, "suggestions"), 0, 19);
   }
 
   const results = await pipeline.exec();
 
+  let totalSuggestions = 0;
+  let allSuggestions: { siteId: SiteId; naam: string; text: string; ts: number }[] = [];
+
   const sites: SiteSummary[] = ALL_SITES.map((site, i) => {
-    const base = i * 5;
+    const base = i * 7;
     const viewsPairs = parsePairs((results[base] as string[]) || []);
     const clicksPairs = parsePairs((results[base + 1] as string[]) || []);
     const sharesPairs = parsePairs((results[base + 2] as string[]) || []);
     const visitors = (results[base + 3] as number) ?? 0;
     const sharers = (results[base + 4] as number) ?? 0;
+    const sugCount = (results[base + 5] as number) ?? 0;
+    const sugRaw = (results[base + 6] as string[]) || [];
+
+    totalSuggestions += sugCount;
+    for (const raw of sugRaw) {
+      try {
+        const parsed = JSON.parse(raw) as { naam: string; text: string; ts: number };
+        allSuggestions.push({ siteId: site.siteId, ...parsed });
+      } catch { /* skip */ }
+    }
 
     const totalViews = viewsPairs.reduce((s, v) => s + v.count, 0);
     const totalClicks = clicksPairs.reduce((s, c) => s + c.count, 0);
@@ -314,6 +331,10 @@ export async function fetchOverview(redis: Redis): Promise<OverviewData> {
     };
   });
 
+  // Sort all suggestions by timestamp (newest first), take 30
+  allSuggestions.sort((a, b) => b.ts - a.ts);
+  allSuggestions = allSuggestions.slice(0, 30);
+
   return {
     sites,
     grandTotalViews: sites.reduce((s, x) => s + x.totalViews, 0),
@@ -321,6 +342,8 @@ export async function fetchOverview(redis: Redis): Promise<OverviewData> {
     grandTotalShares: sites.reduce((s, x) => s + x.totalShares, 0),
     grandTotalVisitors: sites.reduce((s, x) => s + x.uniqueVisitors, 0),
     grandTotalSharers: sites.reduce((s, x) => s + x.uniqueSharers, 0),
+    allSuggestions,
+    totalSuggestions,
   };
 }
 
