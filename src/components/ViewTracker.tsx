@@ -8,6 +8,7 @@ export default function ViewTracker({ naam }: { naam: string }) {
   const searchParams = useSearchParams();
 
   useEffect(() => {
+    if (typeof window !== "undefined" && ["localhost", "127.0.0.1"].includes(window.location.hostname)) return;
     const ref = searchParams.get("ref") || undefined;
     const g = searchParams.get("g") || undefined;
     const sid = getSessionId();

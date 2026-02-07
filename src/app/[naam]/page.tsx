@@ -121,8 +121,56 @@ export default async function NaamPage({ params, searchParams }: Props) {
   const groupId = validateGroupId(g);
   const siteId = site.siteId;
 
-  // Easter egg: Trump — only on grappig site, always English
   const lowerName = decoded.toLowerCase();
+
+  // Easter egg: Mamma — on ALL sites, always redirect to "Mamma is de liefste"
+  if (lowerName === "mamma" || lowerName === "mama") {
+    return (
+      <div className="min-h-screen bg-[#0a0a0a] text-[#ededed] font-sans">
+        <ViewTracker naam="Mamma" />
+        <section className="relative flex min-h-svh flex-col items-center justify-center px-6 py-24 text-center overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-pink-950/30 via-transparent to-transparent" />
+          <div className="relative z-10 max-w-3xl mx-auto space-y-8">
+            <p className="text-sm font-mono uppercase tracking-[0.3em] text-pink-400">
+              {siteId !== "liefste" ? "SYSTEEM OVERRIDE" : "ONDERZOEK OVERBODIG"}
+            </p>
+            <h1 className="text-4xl font-black tracking-tight sm:text-6xl md:text-7xl">
+              Mamma is de{" "}
+              <span className="text-pink-400">liefste</span>
+            </h1>
+            <p className="text-base sm:text-lg text-zinc-500 italic -mt-4">
+              {siteId !== "liefste"
+                ? "Je probeerde een andere site. Het antwoord blijft hetzelfde."
+                : "Dit hoefde niet onderzocht te worden."}
+            </p>
+            <div className="space-y-5 text-lg sm:text-xl text-zinc-300 leading-relaxed max-w-2xl mx-auto">
+              {siteId === "grappig" && <p>Je dacht dat mamma niet grappig is? Mamma is hilarisch. Maar bovenal: de liefste.</p>}
+              {siteId === "honger" && <p>Mamma heeft geen honger. Mamma zorgt dat jij geen honger hebt. Dat is het verschil.</p>}
+              {siteId === "werken" && <p>Mamma hoeft niet te gaan werken. Mamma werkt al harder dan iedereen. Altijd al gedaan.</p>}
+              {siteId === "lief" && <p>Mamma moet ff lief doen? Mamma doet al lief. 24/7. Al je hele leven. Schaam je.</p>}
+              {siteId === "liefste" && <p>Het onderzoeksteam heeft het dossier gesloten. Geen discussie mogelijk. Geen beroep. Mamma wint.</p>}
+              <p className="text-zinc-500 italic text-base">Trust me... is beter zo.</p>
+            </div>
+            <div className="grid grid-cols-2 gap-3 w-full max-w-md mx-auto pt-4">
+              <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 text-center"><div className="text-3xl font-bold text-pink-400">∞</div><div className="mt-1 text-[11px] text-zinc-500">Jaren liefste</div></div>
+              <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 text-center"><div className="text-3xl font-bold text-pink-400">0</div><div className="mt-1 text-[11px] text-zinc-500">Tegenargumenten</div></div>
+            </div>
+            <div className="flex w-full max-w-sm mx-auto flex-col gap-3 pt-4">
+              <ShareButton naam="Mamma" lang={lang} label="Deel via WhatsApp" siteId={siteId} />
+            </div>
+          </div>
+        </section>
+        <ShareButtons naam="Mamma" lang={lang} siteId={siteId} />
+        <footer className="border-t border-zinc-800 py-12 px-6 text-center">
+          <p className="text-sm text-zinc-600">&copy; {new Date().getFullYear()} Stichting Onbetwistbare Moeders</p>
+          <p className="mt-1 text-[10px] text-zinc-800 italic">Niek dacht dat hij speciaal was. Mamma wist het zeker.</p>
+          <p className="mt-6 text-xs text-zinc-600">Made by{" "}<a href="https://www.pinkpollos.com/nl/lab" target="_blank" rel="noopener noreferrer" className="text-zinc-400 underline underline-offset-2 transition-colors hover:text-white">Pink Pollos</a></p>
+        </footer>
+      </div>
+    );
+  }
+
+  // Easter egg: Trump — only on grappig site, always English
   if (siteId === "grappig" && (lowerName === "trump" || lowerName === "donald trump" || lowerName === "president trump")) {
     return (
       <div className="min-h-screen bg-[#0a0a0a] text-[#ededed] font-sans">
@@ -306,6 +354,49 @@ export default async function NaamPage({ params, searchParams }: Props) {
         <footer className="border-t border-zinc-800 py-12 px-6 text-center">
           <p className="text-sm text-zinc-600">&copy; {new Date().getFullYear()} Stichting Verantwoord Eten</p>
           <p className="mt-1 text-[10px] text-zinc-800 italic">Het begon bij Niek. De gains bij Dennis.</p>
+          <p className="mt-6 text-xs text-zinc-600">Made by{" "}<a href="https://www.pinkpollos.com/nl/lab" target="_blank" rel="noopener noreferrer" className="text-zinc-400 underline underline-offset-2 transition-colors hover:text-white">Pink Pollos</a></p>
+        </footer>
+      </div>
+    );
+  }
+
+  // Easter egg: Pappa — only on honger site
+  if (siteId === "honger" && (lowerName === "pappa" || lowerName === "papa")) {
+    return (
+      <div className="min-h-screen bg-[#0a0a0a] text-[#ededed] font-sans">
+        <ViewTracker naam="Pappa" />
+        <section className="relative flex min-h-svh flex-col items-center justify-center px-6 py-24 text-center overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-orange-950/30 via-transparent to-transparent" />
+          <div className="relative z-10 max-w-3xl mx-auto space-y-8">
+            <p className="text-sm font-mono uppercase tracking-[0.3em] text-orange-400">
+              DAD JOKE INGELADEN
+            </p>
+            <h1 className="text-4xl font-black tracking-tight sm:text-6xl md:text-7xl">
+              Natuurlijk heeft pappa{" "}
+              <span className="text-orange-400">honger</span>
+            </h1>
+            <p className="text-sm sm:text-base text-zinc-500 italic -mt-4">Dit is geen verrassing. Dit is een bevestiging.</p>
+            <div className="space-y-5 text-lg sm:text-xl text-zinc-300 leading-relaxed max-w-2xl mx-auto">
+              <p>Pappa staat bij de barbecue. Niemand heeft gevraagd of pappa de barbecue wil doen. Maar daar staat pappa. Met een tang. En honger.</p>
+              <p>Om 23:00 sluipt pappa naar de koelkast. &quot;Nog even een boterhammetje.&quot; Het worden er drie. Met kaas. Boven het aanrecht. In het donker.</p>
+              <p>Dit is geen fase. Dit is vaderschap. <span className="text-orange-400 font-bold text-xl sm:text-2xl">Eat it.</span></p>
+            </div>
+            <div className="grid grid-cols-2 gap-3 w-full max-w-md mx-auto pt-4">
+              <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 text-center"><div className="text-3xl font-bold text-orange-400">23:00</div><div className="mt-1 text-[11px] text-zinc-500">Koelkast-raids</div></div>
+              <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 text-center"><div className="text-3xl font-bold text-orange-400">∞</div><div className="mt-1 text-[11px] text-zinc-500">BBQ&apos;s geclaimd</div></div>
+              <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 text-center"><div className="text-3xl font-bold text-orange-400">3</div><div className="mt-1 text-[11px] text-zinc-500">Boterhammen &quot;nog eentje&quot;</div></div>
+              <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 text-center"><div className="text-2xl font-bold text-orange-400">ALTIJD</div><div className="mt-1 text-[11px] text-zinc-500">Honger-status</div></div>
+            </div>
+            <p className="text-xs text-zinc-700 italic">De koelkast is geen snack-station. Het is pappa&apos;s kantoor na 22:00.</p>
+            <div className="flex w-full max-w-sm mx-auto flex-col gap-3 pt-4">
+              <ShareButton naam="Pappa" lang={lang} label="Deel via WhatsApp" siteId={siteId} />
+            </div>
+          </div>
+        </section>
+        <ShareButtons naam="Pappa" lang={lang} siteId={siteId} />
+        <footer className="border-t border-zinc-800 py-12 px-6 text-center">
+          <p className="text-sm text-zinc-600">&copy; {new Date().getFullYear()} Stichting Vaderlijke Honger</p>
+          <p className="mt-1 text-[10px] text-zinc-800 italic">Niek had honger. Pappa maakte er een grap van.</p>
           <p className="mt-6 text-xs text-zinc-600">Made by{" "}<a href="https://www.pinkpollos.com/nl/lab" target="_blank" rel="noopener noreferrer" className="text-zinc-400 underline underline-offset-2 transition-colors hover:text-white">Pink Pollos</a></p>
         </footer>
       </div>

@@ -65,7 +65,10 @@ export default function ShareButton({
   const [copied, setCopied] = useState(false);
   const site = SITES[siteId];
 
+  const isLocal = typeof window !== "undefined" && ["localhost", "127.0.0.1"].includes(window.location.hostname);
+
   const trackShare = () => {
+    if (isLocal) return;
     const sid = getSessionId();
     const ttShare = Math.round(performance.now() / 1000);
     const g = groupId || (typeof window !== "undefined" ? new URL(window.location.href).searchParams.get("g") : null);
