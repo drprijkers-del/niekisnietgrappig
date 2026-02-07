@@ -195,9 +195,11 @@ export async function fetchDashboard(
   const groupChecks = Number(groupChecksRaw) || 0;
 
   const suggestionsCount = (suggestionsCountRaw as number) ?? 0;
-  const recentSuggestions = ((suggestionsRaw as string[]) || []).map((raw) => {
-    try { return JSON.parse(raw) as { naam: string; text: string; ts: number }; }
-    catch { return null; }
+  const recentSuggestions = ((suggestionsRaw as unknown[]) || []).map((raw) => {
+    try {
+      const item = typeof raw === "string" ? JSON.parse(raw) : raw;
+      return item as { naam: string; text: string; ts: number };
+    } catch { return null; }
   }).filter((s): s is { naam: string; text: string; ts: number } => s !== null);
 
   const rangeViews = hourly.reduce((s, h) => s + h.views, 0);
@@ -298,13 +300,14 @@ export async function fetchOverview(redis: Redis): Promise<OverviewData> {
     const visitors = (results[base + 3] as number) ?? 0;
     const sharers = (results[base + 4] as number) ?? 0;
     const sugCount = (results[base + 5] as number) ?? 0;
-    const sugRaw = (results[base + 6] as string[]) || [];
+    const sugRaw = (results[base + 6] as unknown[]) || [];
 
     totalSuggestions += sugCount;
     for (const raw of sugRaw) {
       try {
-        const parsed = JSON.parse(raw) as { naam: string; text: string; ts: number };
-        allSuggestions.push({ siteId: site.siteId, ...parsed });
+        const parsed = typeof raw === "string" ? JSON.parse(raw) : raw;
+        const item = parsed as { naam: string; text: string; ts: number };
+        allSuggestions.push({ siteId: site.siteId, ...item });
       } catch { /* skip */ }
     }
 
