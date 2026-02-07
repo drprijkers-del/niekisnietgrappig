@@ -550,6 +550,35 @@ function PerSiteView({ d, activeSite, range, secretKey }: { d: DashboardData; ac
           </div>
         </div>
       </section>
+
+      {/* G) Suggestions */}
+      {d.recentSuggestions.length > 0 && (
+        <section className="mb-8">
+          <h2 className="text-sm font-mono uppercase tracking-widest text-zinc-500 mb-4">
+            Suggestions <span className="text-zinc-700">({d.suggestionsCount})</span>
+          </h2>
+          <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 overflow-hidden">
+            <div className="divide-y divide-zinc-800/50">
+              {d.recentSuggestions.map((s, i) => (
+                <div key={i} className="px-4 py-3 flex items-start gap-3">
+                  <span className="text-xs text-zinc-600 font-medium shrink-0 w-16">
+                    {capitalize(s.naam)}
+                  </span>
+                  <p className="text-sm text-zinc-300 flex-1">{s.text}</p>
+                  <span className="text-[10px] text-zinc-700 shrink-0 tabular-nums">
+                    {new Date(s.ts).toLocaleDateString("nl-NL", { day: "numeric", month: "short" })}
+                  </span>
+                </div>
+              ))}
+            </div>
+            {d.suggestionsCount > 20 && (
+              <div className="px-4 py-2 border-t border-zinc-800 text-[10px] text-zinc-600">
+                Showing latest 20 of {d.suggestionsCount}
+              </div>
+            )}
+          </div>
+        </section>
+      )}
     </>
   );
 }

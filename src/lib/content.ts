@@ -380,6 +380,13 @@ export function getUI(lang: Lang = "nl", siteId: SiteId = "grappig") {
       testimonials: { heading: "Eyewitness accounts", subheading: "What others say" },
       faqSection: { heading: "Frequently asked questions", subheading: "FAQ" },
       tipsSection: { heading: "What can you do?", subheading: "Tips" },
+      suggestBox: {
+        heading: "What are we missing?",
+        placeholder: (naam: string) => `${naam} once pretended to...`,
+        button: "Add to the file",
+        success: "Added to the file.",
+        countLabel: (n: number) => `${n} tips received`,
+      },
       share: {
         heading: "Know someone else who should be working?",
         description: "Send this intervention or pick your next target.",
@@ -423,6 +430,13 @@ export function getUI(lang: Lang = "nl", siteId: SiteId = "grappig") {
       testimonials: { heading: "Eyewitness accounts", subheading: "What others say" },
       faqSection: { heading: "Frequently asked questions", subheading: "FAQ" },
       tipsSection: { heading: "What can you do?", subheading: "Tips" },
+      suggestBox: {
+        heading: "What are we missing?",
+        placeholder: (naam: string) => `That time ${naam}...`,
+        button: "Add to the file",
+        success: "Added to the file.",
+        countLabel: (n: number) => `${n} tips received`,
+      },
       share: {
         heading: "Know someone else who isn't funny?",
         description: "Spread the truth or pick your next victim.",
@@ -505,6 +519,20 @@ export function getUI(lang: Lang = "nl", siteId: SiteId = "grappig") {
     testimonials: { heading: "Ooggetuigenverslagen", subheading: "Wat anderen zeggen" },
     faqSection: { heading: "Veelgestelde vragen", subheading: "FAQ" },
     tipsSection: { heading: "Wat kun je doen?", subheading: "Tips" },
+    suggestBox: {
+      heading: "Wat missen we nog?",
+      placeholder: (naam: string) => {
+        if (siteId === "knor") return `${naam} had een keer een excuus...`;
+        if (siteId === "honger") return `${naam} at een keer...`;
+        if (siteId === "werken") return `${naam} deed een keer alsof...`;
+        if (siteId === "liefste") return `${naam} deed iets heel liefs...`;
+        if (siteId === "lief") return `Die keer dat ${naam}...`;
+        return `Welke reden missen we over ${naam}?`;
+      },
+      button: "Toevoegen aan dossier",
+      success: "Toegevoegd aan het dossier.",
+      countLabel: (n: number) => `${n} tips al ontvangen`,
+    },
     share: {
       heading: site.share.heading,
       description: site.share.description,

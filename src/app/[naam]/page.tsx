@@ -11,6 +11,7 @@ import TopShared from "@/components/TopShared";
 import ViewTracker from "@/components/ViewTracker";
 import GroupCheck from "@/components/GroupCheck";
 import SiteDiscovery from "@/components/SiteDiscovery";
+import SuggestBox from "@/components/SuggestBox";
 
 // Simple group ID validation (alphanumeric + hyphens, max 24 chars)
 function validateGroupId(g: unknown): string | null {
@@ -579,6 +580,18 @@ export default async function NaamPage({ params, searchParams }: Props) {
 
       {/* Cross-site discovery */}
       <SiteDiscovery naam={naam} lang={lang} siteId={siteId} />
+
+      {/* Suggestion box */}
+      <SuggestBox
+        naam={naam}
+        siteId={siteId}
+        accentColor={accentColor}
+        heading={ui.suggestBox.heading}
+        placeholder={ui.suggestBox.placeholder(naam)}
+        button={ui.suggestBox.button}
+        success={ui.suggestBox.success}
+        countLabel={ui.suggestBox.countLabel}
+      />
 
       {/* Footer */}
       <footer className="border-t border-zinc-800 py-12 px-6 text-center">

@@ -141,6 +141,10 @@ export interface DashboardData {
   clicksPerShare: number;
   namesPerSession: number;
 
+  // Suggestions
+  suggestionsCount: number;
+  recentSuggestions: { naam: string; text: string; ts: number }[];
+
   // Alerts
   alerts: Alert[];
 }
@@ -157,6 +161,7 @@ export async function fetchDashboard(
     timingSum, timingCount,
     groupChecksRaw,
     hourly, rangeVisitors,
+    suggestionsCountRaw, suggestionsRaw,
   ] = await Promise.all([
     redis.zrange<string[]>(redisKey(site, "views:leaderboard"), 0, 49, { rev: true, withScores: true }),
     redis.zrange<string[]>(redisKey(site, "clicks:leaderboard"), 0, 49, { rev: true, withScores: true }),
@@ -169,6 +174,8 @@ export async function fetchDashboard(
     redis.get<string>(redisKey(site, "group_checks:total")),
     fetchHourlyData(redis, range, site),
     fetchUniqueVisitors(redis, range, site),
+    redis.llen(redisKey(site, "suggestions")),
+    redis.lrange<string>(redisKey(site, "suggestions"), 0, 19),
   ]);
 
   const views = parsePairs(viewsRaw || []);
@@ -186,6 +193,12 @@ export async function fetchDashboard(
   const tSum = Number(timingSum) || 0;
   const tCount = Number(timingCount) || 0;
   const groupChecks = Number(groupChecksRaw) || 0;
+
+  const suggestionsCount = (suggestionsCountRaw as number) ?? 0;
+  const recentSuggestions = ((suggestionsRaw as string[]) || []).map((raw) => {
+    try { return JSON.parse(raw) as { naam: string; text: string; ts: number }; }
+    catch { return null; }
+  }).filter((s): s is { naam: string; text: string; ts: number } => s !== null);
 
   const rangeViews = hourly.reduce((s, h) => s + h.views, 0);
   const rangeClicks = hourly.reduce((s, h) => s + h.clicks, 0);
@@ -219,6 +232,8 @@ export async function fetchDashboard(
     viralCoeff,
     clicksPerShare,
     namesPerSession,
+    suggestionsCount,
+    recentSuggestions,
     alerts: [],
   };
 
