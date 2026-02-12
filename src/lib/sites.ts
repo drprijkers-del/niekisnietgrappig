@@ -12,6 +12,7 @@ export interface SiteConfig {
   hasEnglish: boolean;
   enabled: boolean; // false = parked, hidden from discovery & public UI
   theme?: string; // e.g. "carnaval" — seasonal sites shown in separate section
+  shareDomain?: string; // alternate domain for share URLs (when primary TLD isn't recognized by WhatsApp etc.)
   accentColor: string; // hex for highlight in OG images etc
 
   // Phrase display: "{naam} is niet grappig" or "{naam}, ga eens werken"
@@ -421,6 +422,7 @@ export const SITES: Record<SiteId, SiteConfig> = {
     hasEnglish: false,
     enabled: true,
     theme: "carnaval",
+    shareDomain: "isvandaagprinses.kiwi",
     accentColor: "#ec4899",
     phrase: { before: "is vandaag", highlight: "prinses", after: "" },
     og: {
@@ -478,6 +480,9 @@ for (const s of ALL_SITES) {
   DOMAIN_MAP.set(s.domain, { siteId: s.siteId, locale: "nl" });
   if (s.domainEn) {
     DOMAIN_MAP.set(s.domainEn, { siteId: s.siteId, locale: "en" });
+  }
+  if (s.shareDomain) {
+    DOMAIN_MAP.set(s.shareDomain, { siteId: s.siteId, locale: "nl" });
   }
 }
 

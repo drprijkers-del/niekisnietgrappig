@@ -19,12 +19,24 @@ function getShareUrl(ref: string, siteId: SiteId, groupId?: string) {
 
   // Check if already on a subdomain of any configured domain
   for (const s of Object.values(SITES)) {
+    // Check primary domain
     const subMatch = hostname.match(new RegExp(`^(.+)\\.${s.domain.replace(/\./g, "\\.")}$`));
     if (subMatch && subMatch[1] !== "www") {
-      const shareUrl = new URL(`https://${hostname}`);
+      const targetDomain = s.shareDomain || s.domain;
+      const shareUrl = new URL(`https://${subMatch[1]}.${targetDomain}`);
       applyParams(shareUrl);
       return shareUrl.toString();
     }
+    // Check shareDomain (user already on share domain)
+    if (s.shareDomain) {
+      const shareMatch = hostname.match(new RegExp(`^(.+)\\.${s.shareDomain.replace(/\./g, "\\.")}$`));
+      if (shareMatch && shareMatch[1] !== "www") {
+        const shareUrl = new URL(`https://${shareMatch[1]}.${s.shareDomain}`);
+        applyParams(shareUrl);
+        return shareUrl.toString();
+      }
+    }
+    // Check English domain
     if (s.domainEn) {
       const subMatchEn = hostname.match(new RegExp(`^(.+)\\.${s.domainEn.replace(/\./g, "\\.")}$`));
       if (subMatchEn && subMatchEn[1] !== "www") {
@@ -35,10 +47,11 @@ function getShareUrl(ref: string, siteId: SiteId, groupId?: string) {
     }
   }
 
-  // Fallback: generate production subdomain URL using the site's domain
+  // Fallback: generate production subdomain URL using shareDomain or domain
   const naam = url.pathname.split("/").filter(Boolean)[0];
   if (naam) {
-    const shareUrl = new URL(`https://${naam}.${site.domain}`);
+    const shareDomain = site.shareDomain || site.domain;
+    const shareUrl = new URL(`https://${naam}.${shareDomain}`);
     applyParams(shareUrl);
     return shareUrl.toString();
   }

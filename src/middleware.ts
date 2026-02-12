@@ -57,6 +57,13 @@ export function middleware(request: NextRequest) {
       subdomainName = nlMatch[1];
       break;
     }
+    if (s.shareDomain) {
+      const shareMatch = hostname.match(new RegExp(`^([^.]+)\\.${s.shareDomain.replace(/\./g, "\\.")}$`, "i"));
+      if (shareMatch && shareMatch[1] !== "www") {
+        subdomainName = shareMatch[1];
+        break;
+      }
+    }
     if (s.domainEn) {
       const enMatch = hostname.match(new RegExp(`^([^.]+)\\.${s.domainEn.replace(/\./g, "\\.")}$`, "i"));
       if (enMatch && enMatch[1] !== "www") {
@@ -99,17 +106,18 @@ export function middleware(request: NextRequest) {
   // ── Root domain with path-based name → redirect to subdomain ──
   const host = hostname.split(":")[0].toLowerCase();
   const isRoot = host === site.domain || host === `www.${site.domain}`;
+  const isRootShare = site.shareDomain && (host === site.shareDomain || host === `www.${site.shareDomain}`);
   const isRootEn = site.domainEn && (host === site.domainEn || host === `www.${site.domainEn}`);
 
   const RESERVED_PATHS = new Set(["stats", "battle"]);
 
-  if (isRoot || isRootEn) {
+  if (isRoot || isRootShare || isRootEn) {
     const pathParts = url.pathname.split("/").filter(Boolean);
     if (pathParts.length > 0 && !RESERVED_PATHS.has(pathParts[0])) {
       // Normalize naam to ASCII for subdomain safety
       const rawNaam = decodeURIComponent(pathParts[0]);
       const naam = normalizeSubdomain(rawNaam) || pathParts[0];
-      const baseDomain = isRootEn ? site.domainEn! : site.domain;
+      const baseDomain = isRootEn ? site.domainEn! : isRootShare ? site.shareDomain! : site.domain;
       const rest = pathParts.slice(1).join("/");
       const redirectUrl = new URL(`https://${naam}.${baseDomain}${rest ? `/${rest}` : ""}`);
       url.searchParams.forEach((value, key) => {
