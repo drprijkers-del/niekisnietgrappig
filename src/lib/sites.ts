@@ -376,10 +376,10 @@ export const SITES: Record<SiteId, SiteConfig> = {
     phrase: { before: "is geen echte", highlight: "prins", after: "" },
     og: {
       subtitle: "OFFICIEEL BEWEZEN",
-      description: "Officieel vastgesteld. De kroon is nep.",
+      description: "Gewogen. Gemeten. Afgekeurd.",
       footerLabel: "isgeenechteprins",
       footerTLD: ".pizza",
-      footerCTA: "Deel de waarheid",
+      footerCTA: "Ontmasker meer prinsen",
     },
     meta: {
       titleTemplate: "%s | Is Geen Echte Prins",
@@ -403,11 +403,11 @@ export const SITES: Record<SiteId, SiteConfig> = {
       ctaQuestion: "Ken jij iemand die nóg minder een echte prins is?",
     },
     share: {
-      whatsappText: (naam) => `${naam} is geen echte prins 😂👑`,
+      whatsappText: (naam) => `Hahaha ${naam} 😂👑 dit moet je zien`,
       copyText: (naam, url) =>
-        `${naam} is geen echte prins. De kroon is nep, officieel bewezen 👑😂 ${url}`,
-      heading: "Ken jij ook iemand die geen echte prins is?",
-      description: "Verspreid de waarheid of ontkroon je volgende slachtoffer.",
+        `${naam} is officieel ontmaskerd als carnavalsprins 👑😂 Het bewijs: ${url}`,
+      heading: "Ken jij ook zo'n nepprins?",
+      description: "Deel het bewijs of ontkroon je volgende slachtoffer.",
       battleText: (winnerName) =>
         `${winnerName} is officieel de minst echte prins van ons 😂👑 Check de battle:`,
     },
@@ -427,10 +427,10 @@ export const SITES: Record<SiteId, SiteConfig> = {
     phrase: { before: "is vandaag", highlight: "prinses", after: "" },
     og: {
       subtitle: "OFFICIEEL BEWEZEN",
-      description: "Officieel vastgesteld. De kroon past perfect.",
+      description: "Gewogen. Gemeten. Gekroond.",
       footerLabel: "isvandaagprinses",
       footerTLD: ".hot",
-      footerCTA: "Deel het feest",
+      footerCTA: "Kroon meer prinsessen",
     },
     meta: {
       titleTemplate: "%s | Is Vandaag Prinses",
@@ -454,11 +454,11 @@ export const SITES: Record<SiteId, SiteConfig> = {
       ctaQuestion: "Ken jij iemand die ook prinses verdient te zijn?",
     },
     share: {
-      whatsappText: (naam) => `${naam} is vandaag prinses! 👸🎉`,
+      whatsappText: (naam) => `Hahaha ${naam} 👸😂 check dit even`,
       copyText: (naam, url) =>
-        `${naam} is vandaag officieel prinses van het carnaval 👸🎉 ${url}`,
-      heading: "Ken jij ook iemand die prinses verdient te zijn?",
-      description: "Deel het feest of kroon je volgende prinses.",
+        `${naam} is officieel gekroond tot carnavalsprinses 👸🎉 Check het bewijs: ${url}`,
+      heading: "Ken jij ook iemand die gekroond moet worden?",
+      description: "Deel het bewijs of kroon je volgende prinses.",
       battleText: (winnerName) =>
         `${winnerName} is officieel de prinses van ons carnaval 👸🎉 Check de battle:`,
     },

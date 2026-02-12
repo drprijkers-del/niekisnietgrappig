@@ -48,6 +48,16 @@ export async function generateMetadata({
         ? `Who in ${groupName} is least funny? Open to find out!`
         : `Wie in ${groupName} scoort het hoogst? Open om te ontdekken!`;
     }
+    if (site.siteId === "prins") {
+      if (ref === "wa") return `Iemand heeft ${naam} aangemeld. Het bewijs is vernietigend 👑`;
+      if (ref === "copy") return `${naam} is officieel ontmaskerd. De jury heeft gesproken 👑`;
+      return `Officieel onderzocht. De kroon is nep.`;
+    }
+    if (site.siteId === "prinses") {
+      if (ref === "wa") return `Iemand heeft ${naam} genomineerd. Het resultaat is hilarisch 👸`;
+      if (ref === "copy") return `${naam} is officieel gekroond. Het bewijs ligt er 👸`;
+      return `Officieel onderzocht. De kroon past perfect.`;
+    }
     if (ref === "wa") {
       return isEN
         ? `Someone shared this with you — for good reason.`
@@ -490,19 +500,39 @@ export default async function NaamPage({ params, searchParams }: Props) {
             {ui.hero.description}
           </p>
           <div className="mt-10 flex w-full max-w-sm mx-auto flex-col gap-3">
-            <a
-              href="#bewijs"
-              className="block w-full rounded-full border border-zinc-700 px-8 py-3 text-center text-sm font-medium transition-all hover:bg-white hover:text-black hover:border-white"
-            >
-              {ui.hero.cta}
-            </a>
-            <ShareButton
-              naam={naam}
-              lang={lang}
-              label={ui.share.shareButton()}
-              groupId={groupId || undefined}
-              siteId={siteId}
-            />
+            {site.theme === "carnaval" ? (
+              <>
+                <ShareButton
+                  naam={naam}
+                  lang={lang}
+                  label={ui.share.shareButton()}
+                  groupId={groupId || undefined}
+                  siteId={siteId}
+                />
+                <a
+                  href="#bewijs"
+                  className="block w-full rounded-full border border-zinc-700 px-8 py-3 text-center text-sm font-medium transition-all hover:bg-white hover:text-black hover:border-white"
+                >
+                  {ui.hero.cta}
+                </a>
+              </>
+            ) : (
+              <>
+                <a
+                  href="#bewijs"
+                  className="block w-full rounded-full border border-zinc-700 px-8 py-3 text-center text-sm font-medium transition-all hover:bg-white hover:text-black hover:border-white"
+                >
+                  {ui.hero.cta}
+                </a>
+                <ShareButton
+                  naam={naam}
+                  lang={lang}
+                  label={ui.share.shareButton()}
+                  groupId={groupId || undefined}
+                  siteId={siteId}
+                />
+              </>
+            )}
             <a
               href={`https://${site.domain}`}
               className="flex w-full items-center justify-center gap-2 rounded-full border border-zinc-800 px-6 py-2.5 text-sm text-zinc-400 transition-all hover:bg-white hover:text-black hover:border-white"
@@ -549,6 +579,16 @@ export default async function NaamPage({ params, searchParams }: Props) {
           </div>
         </div>
       </section>
+
+      {/* Mid-page share CTA (carnaval) */}
+      {site.theme === "carnaval" && (
+        <section className="py-8 px-6">
+          <div className="mx-auto max-w-sm text-center">
+            <p className="text-sm text-zinc-500 mb-3">{siteId === "prins" ? "Ken jij ook zo'n nepprins?" : "Ken jij ook iemand die gekroond moet worden?"}</p>
+            <ShareButton naam={naam} lang={lang} label={ui.share.shareButton()} groupId={groupId || undefined} siteId={siteId} />
+          </div>
+        </section>
+      )}
 
       {/* Redenen */}
       <section id="bewijs" className="py-24 px-6">
