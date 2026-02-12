@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { capitalizeName, validateSpice } from "@/lib/utils";
+import { capitalizeName, validateSpice, toSlug } from "@/lib/utils";
 import { getContent, getUI, Lang, getCustomSubtitle } from "@/lib/content";
 import { getSpiceLines } from "@/lib/spice";
 import { getCurrentSite } from "@/lib/sites";
@@ -116,6 +116,18 @@ export default async function NaamPage({ params, searchParams }: Props) {
   const decoded = decodeURIComponent(rawNaam);
   if (decoded.length > 50 || !/^[\p{L}\s'.-]+$/u.test(decoded)) {
     notFound();
+  }
+
+  // Normalize Unicode names to ASCII slugs (é→e, ö→o, etc.)
+  const slug = toSlug(decoded);
+  if (slug !== rawNaam) {
+    const { redirect } = await import("next/navigation");
+    const qp = new URLSearchParams();
+    if (langParam === "en") qp.set("lang", "en");
+    if (w) qp.set("w", w);
+    if (g) qp.set("g", g);
+    const qs = qp.toString();
+    redirect(`/${slug}${qs ? `?${qs}` : ""}`);
   }
 
   const naam = capitalizeName(rawNaam);
@@ -413,6 +425,9 @@ export default async function NaamPage({ params, searchParams }: Props) {
   // Use site accent color for highlight
   const accentColor = site.accentColor;
   const isPositive = siteId === "liefste"; // positive sites use different emoji/tone
+  const isValentineSpice = spice === "valentijn" || spice === "valentine";
+  const isFeb14 = (() => { const d = new Date(); return d.getMonth() === 1 && d.getDate() === 14; })();
+  const isValentine = siteId === "liefste" && (isValentineSpice || isFeb14);
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-[#ededed] font-sans">
@@ -421,7 +436,7 @@ export default async function NaamPage({ params, searchParams }: Props) {
 
       {/* Hero */}
       <section className="relative flex min-h-svh flex-col items-center justify-center px-6 py-24 text-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-red-950/20 via-transparent to-transparent" style={siteId !== "grappig" ? { background: `linear-gradient(to bottom, ${accentColor}15, transparent, transparent)` } : undefined} />
+        <div className="absolute inset-0 bg-gradient-to-b from-red-950/20 via-transparent to-transparent" style={isValentine ? { background: `linear-gradient(to bottom, #ec489920, transparent, transparent)` } : siteId !== "grappig" ? { background: `linear-gradient(to bottom, ${accentColor}15, transparent, transparent)` } : undefined} />
         <div className="absolute top-20 sm:top-8 left-0 right-0 z-10 flex justify-center">
           <TopShared lang={lang} />
         </div>
@@ -431,7 +446,39 @@ export default async function NaamPage({ params, searchParams }: Props) {
           </p>
           <h1 className="text-4xl font-bold tracking-tight sm:text-7xl md:text-8xl landscape:text-3xl landscape:sm:text-5xl">
             {naam} {ui.hero.before}{" "}
-            <span className="animate-pulse-red font-black" style={siteId !== "grappig" ? { color: accentColor } : undefined}>{ui.hero.highlight}</span>{" "}
+            <span className="relative inline-block">
+              <span className="animate-pulse-red font-black" style={siteId !== "grappig" ? { color: accentColor } : undefined}>{ui.hero.highlight}</span>
+              {isValentine && (
+                <>
+                  {[
+                    { x: "-20%", y: "-80%", dx: "-30px", dy: "-50px", d: "0s", s: "14px", e: "\u2764\uFE0F" },
+                    { x: "30%", y: "-90%", dx: "10px", dy: "-55px", d: "0.8s", s: "11px", e: "\uD83D\uDC95" },
+                    { x: "80%", y: "-70%", dx: "35px", dy: "-45px", d: "1.6s", s: "12px", e: "\uD83D\uDC98" },
+                    { x: "105%", y: "-30%", dx: "40px", dy: "-20px", d: "2.4s", s: "10px", e: "\u2764\uFE0F" },
+                    { x: "-15%", y: "20%", dx: "-35px", dy: "30px", d: "3.2s", s: "10px", e: "\uD83D\uDC95" },
+                    { x: "50%", y: "-95%", dx: "5px", dy: "-60px", d: "4s", s: "13px", e: "\uD83D\uDC98" },
+                    { x: "95%", y: "10%", dx: "30px", dy: "25px", d: "4.8s", s: "11px", e: "\u2764\uFE0F" },
+                    { x: "15%", y: "15%", dx: "-15px", dy: "35px", d: "5.6s", s: "9px", e: "\uD83D\uDC95" },
+                  ].map((h, i) => (
+                    <span
+                      key={i}
+                      className="absolute pointer-events-none animate-valentine-heart"
+                      aria-hidden="true"
+                      style={{
+                        left: h.x,
+                        top: h.y,
+                        fontSize: h.s,
+                        animationDelay: h.d,
+                        ["--dx" as string]: h.dx,
+                        ["--dy" as string]: h.dy,
+                      }}
+                    >
+                      {h.e}
+                    </span>
+                  ))}
+                </>
+              )}
+            </span>{" "}
             {ui.hero.after}
           </h1>
           {customSubtitle && (
@@ -456,6 +503,13 @@ export default async function NaamPage({ params, searchParams }: Props) {
               groupId={groupId || undefined}
               siteId={siteId}
             />
+            <a
+              href="/"
+              className="flex w-full items-center justify-center gap-2 rounded-full border border-zinc-800 px-6 py-2.5 text-sm text-zinc-400 transition-all hover:bg-white hover:text-black hover:border-white"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
+              {lang === "en" ? "Try another name" : "Nieuw slachtoffer"}
+            </a>
           </div>
           <GroupCheck lang={lang} currentNaam={naam} compact siteId={siteId} />
         </div>

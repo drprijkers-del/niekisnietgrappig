@@ -38,7 +38,7 @@ function getShareUrl(ref: string, siteId: SiteId, groupId?: string) {
   // Fallback: generate production subdomain URL using the site's domain
   const naam = url.pathname.split("/").filter(Boolean)[0];
   if (naam) {
-    const shareUrl = new URL(`https://${decodeURIComponent(naam)}.${site.domain}`);
+    const shareUrl = new URL(`https://${naam}.${site.domain}`);
     applyParams(shareUrl);
     return shareUrl.toString();
   }

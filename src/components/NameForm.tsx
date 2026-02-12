@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { SiteId, SITES } from "@/lib/sites";
+import { toSlug } from "@/lib/utils";
 
 export default function NameForm({
   placeholder,
@@ -36,12 +37,12 @@ export default function NameForm({
     }
 
     setError("");
-    const slug = encodeURIComponent(trimmed.toLowerCase().replace(/\s+/g, "-"));
+    const slug = toSlug(trimmed);
     const params = new URLSearchParams();
     if (lang === "en") params.set("lang", "en");
 
-    const w = spice.trim().toLowerCase();
-    if (w && /^[\p{L}0-9-]+$/u.test(w) && w.length <= 20) {
+    const w = toSlug(spice);
+    if (w && w.length <= 20) {
       params.set("w", w);
     }
 
@@ -81,16 +82,23 @@ export default function NameForm({
           <p className="mt-1.5 text-xs text-red-400 text-center">{error}</p>
         )}
       </div>
-      {siteId === "grappig" && (
-        <input
-          type="text"
-          value={spice}
-          onChange={(e) => setSpice(e.target.value.replace(/\s/g, ""))}
-          placeholder={lang === "en" ? "🌶️  Add spice — work, gym, cooking..." : "🌶️  Add spice — werk, gym, koken..."}
-          className="w-full rounded-full border border-zinc-800 bg-zinc-900/50 px-6 py-2.5 text-sm text-white placeholder-zinc-600 focus:border-zinc-600 focus:outline-none"
-          maxLength={20}
-        />
-      )}
+      {siteId === "grappig" && (() => {
+        const now = new Date();
+        const isValentinesDay = now.getMonth() === 1 && now.getDate() === 14;
+        const spicePlaceholder = isValentinesDay
+          ? (lang === "en" ? "💘  Valentine's? → isdeliefste.fan" : "💘  Valentijn? → isdeliefste.fan")
+          : (lang === "en" ? "🌶️  Add spice — work, gym, cooking..." : "🌶️  Add spice — werk, gym, koken...");
+        return (
+          <input
+            type="text"
+            value={spice}
+            onChange={(e) => setSpice(e.target.value.replace(/\s/g, ""))}
+            placeholder={spicePlaceholder}
+            className="w-full rounded-full border border-zinc-800 bg-zinc-900/50 px-6 py-2.5 text-sm text-white placeholder-zinc-600 focus:border-zinc-600 focus:outline-none"
+            maxLength={20}
+          />
+        );
+      })()}
       <input
         type="text"
         value={groep}

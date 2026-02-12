@@ -598,6 +598,83 @@ const siteSpice: Partial<Record<string, Partial<SpiceTemplates>>> = {
   },
 };
 
+// Valentine's Day easter egg templates (when spice = "valentijn" / "valentine")
+const valentineNl = {
+  openings: [
+    "Breaking news uit het liefdeslab.",
+    "Na uitgebreid valentijnsonderzoek:",
+    "De resultaten zijn binnen. Cupido heeft geschoten.",
+    "Alert: Valentijnsdag gedetecteerd.",
+    "Het hart heeft gesproken. Luister goed.",
+  ],
+  verdicts: [
+    "Het is officieel: iemand is verliefd op {naam}.",
+    "Cupido mikte op {naam}. En raakte. Vol.",
+    "{naam} + Valentijnsdag = het wordt wat.",
+    "{naam}'s hart klopt. Harder dan normaal. Veel harder.",
+    "Ergens kijkt iemand naar {naam} en denkt: die.",
+  ],
+  contexts: [
+    "De chocolade is al besteld. De rozen staan klaar. {naam} weet nog van niks.",
+    "Ergens checkt iemand {naam}'s profiel. Al voor de derde keer vandaag.",
+    "Valentijnsdag zonder {naam}? Ondenkbaar. Zeg het gewoon.",
+    "De hartjes vliegen door de lucht. Ze zijn voor {naam}. Allemaal.",
+    "{naam} deed alsof Valentijnsdag niks voorstelt. {naam} liegt.",
+  ],
+  stats: [
+    "Hartslag bij het zien van een berichtje: 147 bpm.",
+    "Aantal keer naar telefoon gekeken: 84. Het is pas 10:00.",
+    "Kans op een Valentijnsbericht: hoger dan je denkt.",
+    "Rode rozen besteld vandaag: 1 miljoen. Eén is voor {naam}.",
+    "Chocoladeconsumptie op Valentijnsdag: onbeperkt.",
+  ],
+  closings: [
+    "Stuur dit naar je valentijn. Of naar degene die het moet worden.",
+    "Cupido heeft gesproken. De rest is aan jou.",
+    "Happy Valentine's Day. Stuur dit door.",
+    "De liefde wacht niet. Deze link ook niet.",
+    "Deel dit met iemand van wie je hart sneller gaat kloppen.",
+  ],
+};
+
+const valentineEn = {
+  openings: [
+    "Breaking news from the love laboratory.",
+    "After extensive Valentine's research:",
+    "The results are in. Cupid has struck.",
+    "Alert: Valentine's Day detected.",
+    "The heart has spoken. Listen carefully.",
+  ],
+  verdicts: [
+    "It's official: someone has a crush on {naam}.",
+    "Cupid aimed at {naam}. And hit. Hard.",
+    "{naam} + Valentine's Day = something's happening.",
+    "{naam}'s heart is beating. Faster than usual. Much faster.",
+    "Somewhere, someone is looking at {naam} and thinking: that one.",
+  ],
+  contexts: [
+    "The chocolate has been ordered. The roses are ready. {naam} has no idea.",
+    "Someone is checking {naam}'s profile. For the third time today.",
+    "Valentine's Day without {naam}? Unthinkable. Just say it.",
+    "Hearts are flying through the air. They're all for {naam}.",
+    "{naam} pretended Valentine's Day doesn't matter. {naam} is lying.",
+  ],
+  stats: [
+    "Heart rate when seeing a text notification: 147 bpm.",
+    "Times phone was checked: 84. It's only 10 AM.",
+    "Chance of getting a Valentine's message: higher than you think.",
+    "Red roses ordered today: 1 million. One is for {naam}.",
+    "Chocolate consumption on Valentine's Day: unlimited.",
+  ],
+  closings: [
+    "Send this to your valentine. Or to the one who should be.",
+    "Cupid has spoken. The rest is up to you.",
+    "Happy Valentine's Day. Now share this.",
+    "Love doesn't wait. Neither does this link.",
+    "Share this with someone who makes your heart beat faster.",
+  ],
+};
+
 const templates = { nl, en };
 
 export function getSpiceLines(
@@ -608,6 +685,18 @@ export function getSpiceLines(
 ): SpiceLines {
   const seed = hashString(`${naam}|${spice || ""}|${lang}|${siteId}`);
   const rng = seededRng(seed);
+
+  // Valentine's Day easter egg
+  if (spice === "valentijn" || spice === "valentine") {
+    const v = lang === "en" ? valentineEn : valentineNl;
+    return {
+      opening: pick(v.openings, rng),
+      verdict: pick(v.verdicts, rng).replace(/\{naam\}/g, naam),
+      context: pick(v.contexts, rng).replace(/\{naam\}/g, naam),
+      stat: pick(v.stats, rng).replace(/\{naam\}/g, naam),
+      closing: pick(v.closings, rng).replace(/\{naam\}/g, naam),
+    };
+  }
 
   // Use English templates for grappig EN and werken EN
   const useEnglish = lang === "en" && (siteId === "grappig" || siteId === "werken");

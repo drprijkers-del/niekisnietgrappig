@@ -1,5 +1,22 @@
+/**
+ * Strip diacritics and normalize to ASCII slug for URLs/subdomains.
+ * "Amélie" → "amelie", "Jean-Pierre" → "jean-pierre", "O'Brien" → "obrien"
+ */
+export function toSlug(name: string): string {
+  return name
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9-]/g, "")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
 export function capitalizeName(input: string): string {
   return decodeURIComponent(input)
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
     .replace(/-/g, " ")
     .toLowerCase()
     .replace(/(^|[\s'-])(\S)/gu, (_, separator, char) =>

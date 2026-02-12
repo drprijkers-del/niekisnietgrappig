@@ -1,6 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ALL_SITES, SITES, lookupDomain, type SiteConfig, type SiteId } from "@/lib/sites";
 
+/** Normalize a subdomain to ASCII (strip diacritics, remove non-alphanumeric). */
+function normalizeSubdomain(name: string): string {
+  return name
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9-]/g, "")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
 export function middleware(request: NextRequest) {
   const url = request.nextUrl.clone();
   const hostname = request.headers.get("host") || "";
@@ -57,6 +68,20 @@ export function middleware(request: NextRequest) {
   }
 
   if (subdomainName) {
+    // Punycode subdomains (xn--) can't be reliably decoded in Edge Runtime — redirect to root
+    if (subdomainName.startsWith("xn--")) {
+      const baseDomain = isEnglishDomain
+        ? ALL_SITES.find((s) => s.domainEn && hostname.includes(s.domainEn))?.domainEn || site.domain
+        : site.domain;
+      return NextResponse.redirect(new URL(`https://${baseDomain}`), 302);
+    }
+
+    // Normalize unicode subdomains to ASCII (é→e, ö→o, etc.)
+    subdomainName = normalizeSubdomain(subdomainName);
+    if (!subdomainName) {
+      return NextResponse.redirect(new URL(`https://${site.domain}`), 302);
+    }
+
     url.pathname = `/${subdomainName}${url.pathname === "/" ? "" : url.pathname}`;
 
     if (isEnglishDomain && !url.searchParams.has("lang")) {
@@ -81,7 +106,9 @@ export function middleware(request: NextRequest) {
   if (isRoot || isRootEn) {
     const pathParts = url.pathname.split("/").filter(Boolean);
     if (pathParts.length > 0 && !RESERVED_PATHS.has(pathParts[0])) {
-      const naam = pathParts[0];
+      // Normalize naam to ASCII for subdomain safety
+      const rawNaam = decodeURIComponent(pathParts[0]);
+      const naam = normalizeSubdomain(rawNaam) || pathParts[0];
       const baseDomain = isRootEn ? site.domainEn! : site.domain;
       const rest = pathParts.slice(1).join("/");
       const redirectUrl = new URL(`https://${naam}.${baseDomain}${rest ? `/${rest}` : ""}`);
