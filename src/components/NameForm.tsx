@@ -82,12 +82,19 @@ export default function NameForm({
           <p className="mt-1.5 text-xs text-red-400 text-center">{error}</p>
         )}
       </div>
-      {siteId === "grappig" && (() => {
+      {(siteId === "grappig" || siteId === "liefste") && (() => {
         const now = new Date();
         const isValentinesDay = now.getMonth() === 1 && now.getDate() === 14;
-        const spicePlaceholder = isValentinesDay
-          ? (lang === "en" ? "💘  Valentine's? → isdeliefste.fan" : "💘  Valentijn? → isdeliefste.fan")
-          : (lang === "en" ? "🌶️  Add spice — work, gym, cooking..." : "🌶️  Add spice — werk, gym, koken...");
+        let spicePlaceholder: string;
+        if (siteId === "liefste") {
+          spicePlaceholder = isValentinesDay
+            ? (lang === "en" ? "💘  Type 'valentine' for a surprise..." : "💘  Typ 'valentijn' voor een verrassing...")
+            : (lang === "en" ? "💘  Try 'valentine'..." : "💘  Probeer 'valentijn'...");
+        } else {
+          spicePlaceholder = isValentinesDay
+            ? (lang === "en" ? "💘  Try 'valentine' today..." : "💘  Typ 'valentijn' vandaag...")
+            : (lang === "en" ? "🌶️  Add spice — work, gym, cooking..." : "🌶️  Add spice — werk, gym, koken...");
+        }
         return (
           <input
             type="text"

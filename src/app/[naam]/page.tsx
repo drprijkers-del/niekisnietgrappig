@@ -427,7 +427,7 @@ export default async function NaamPage({ params, searchParams }: Props) {
   const isPositive = siteId === "liefste"; // positive sites use different emoji/tone
   const isValentineSpice = spice === "valentijn" || spice === "valentine";
   const isFeb14 = (() => { const d = new Date(); return d.getMonth() === 1 && d.getDate() === 14; })();
-  const isValentine = siteId === "liefste" && (isValentineSpice || isFeb14);
+  const isValentine = isValentineSpice || (siteId === "liefste" && isFeb14);
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-[#ededed] font-sans">
