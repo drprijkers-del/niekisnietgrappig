@@ -21,6 +21,11 @@ export interface SiteConfig {
     highlight: string; // "niet" / "knor" / "honger" / "werken" / "liefste" / "lief"
     after: string; // "grappig" / "" (empty for most)
   };
+  phraseEn?: {
+    before: string;
+    highlight: string;
+    after: string;
+  };
 
   // OG image strings
   og: {
@@ -79,6 +84,7 @@ export const SITES: Record<SiteId, SiteConfig> = {
     enabled: true,
     accentColor: "#ef4444",
     phrase: { before: "is", highlight: "niet", after: "grappig" },
+    phraseEn: { before: "is", highlight: "not", after: "funny" },
     og: {
       subtitle: "OFFICIEEL BEWEZEN",
       description: "Officieel onderzocht. Onomstotelijk vastgelegd.",
@@ -226,6 +232,7 @@ export const SITES: Record<SiteId, SiteConfig> = {
     enabled: true,
     accentColor: "#22c55e",
     phrase: { before: ", ga eens", highlight: "werken", after: "" },
+    phraseEn: { before: ", you should be", highlight: "working", after: "" },
     og: {
       subtitle: "OFFICIEEL BEWEZEN",
       description: "Officieel vastgesteld. Productiviteit: niet gevonden.",

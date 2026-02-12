@@ -115,7 +115,8 @@ export function middleware(request: NextRequest) {
     const pathParts = url.pathname.split("/").filter(Boolean);
     if (pathParts.length > 0 && !RESERVED_PATHS.has(pathParts[0])) {
       // Normalize naam to ASCII for subdomain safety
-      const rawNaam = decodeURIComponent(pathParts[0]);
+      let rawNaam: string;
+      try { rawNaam = decodeURIComponent(pathParts[0]); } catch { rawNaam = pathParts[0]; }
       const naam = normalizeSubdomain(rawNaam) || pathParts[0];
       const baseDomain = isRootEn ? site.domainEn! : isRootShare ? site.shareDomain! : site.domain;
       const rest = pathParts.slice(1).join("/");

@@ -13,8 +13,23 @@ export function toSlug(name: string): string {
     .replace(/^-|-$/g, "");
 }
 
+/** Safely decode a URI component — returns fallback on malformed input. */
+export function safeDecode(input: string, fallback?: string): string {
+  try {
+    return decodeURIComponent(input);
+  } catch {
+    return fallback ?? input;
+  }
+}
+
+/** Strip null bytes, zero-width chars, and other invisible control characters. */
+export function stripInvisible(s: string): string {
+  // eslint-disable-next-line no-control-regex
+  return s.replace(/[\x00\u200B\u200C\u200D\u200E\u200F\uFEFF\u2060\u2028\u2029\u00AD]/g, "");
+}
+
 export function capitalizeName(input: string): string {
-  return decodeURIComponent(input)
+  return stripInvisible(safeDecode(input))
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/-/g, " ")
@@ -26,7 +41,7 @@ export function capitalizeName(input: string): string {
 
 export function validateSpice(w: string | undefined | null): string | null {
   if (!w || typeof w !== "string") return null;
-  const cleaned = w.trim().toLowerCase();
+  const cleaned = stripInvisible(w).trim().toLowerCase();
   if (cleaned.length === 0 || cleaned.length > 20) return null;
   if (!/^[\p{L}0-9-]+$/u.test(cleaned)) return null;
   return cleaned;

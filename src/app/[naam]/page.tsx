@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { capitalizeName, validateSpice, toSlug } from "@/lib/utils";
+import { capitalizeName, validateSpice, toSlug, safeDecode, stripInvisible } from "@/lib/utils";
 import { getContent, getUI, Lang, getCustomSubtitle } from "@/lib/content";
 import { getSpiceLines } from "@/lib/spice";
 import { getCurrentSite } from "@/lib/sites";
@@ -123,8 +123,24 @@ export default async function NaamPage({ params, searchParams }: Props) {
   const site = await getCurrentSite();
   const lang: Lang = langParam === "en" && site.hasEnglish ? "en" : "nl";
 
-  const decoded = decodeURIComponent(rawNaam);
-  if (decoded.length > 50 || !/^[\p{L}\s'.-]+$/u.test(decoded)) {
+  const rawDecoded = safeDecode(rawNaam);
+  // Detect encoding manipulation: if decoding changed nothing but raw contains %, or invisible chars present
+  const hasInvisible = rawDecoded !== stripInvisible(rawDecoded);
+  const decoded = stripInvisible(rawDecoded);
+  if (hasInvisible || decoded.length > 50 || decoded.length === 0 || !/^[\p{L}\s'.-]+$/u.test(decoded)) {
+    if (hasInvisible || rawNaam !== rawDecoded && !/^[\p{L}\s'.-]+$/u.test(rawDecoded)) {
+      // Encoding manipulation attempt — show easter egg
+      return (
+        <div className="min-h-screen bg-[#0a0a0a] text-[#ededed] font-sans flex items-center justify-center px-6">
+          <div className="text-center space-y-4 max-w-md">
+            <p className="text-6xl">🛑</p>
+            <h1 className="text-2xl font-bold">Max stop er eens mee?</h1>
+            <p className="text-zinc-500 text-sm">Leuke poging met die character encoding. Werkt hier niet.</p>
+            <a href={`https://${site.domain}`} className="inline-block mt-4 text-sm underline text-zinc-400 hover:text-white">Terug naar de homepage</a>
+          </div>
+        </div>
+      );
+    }
     notFound();
   }
 

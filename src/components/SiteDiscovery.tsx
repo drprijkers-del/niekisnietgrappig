@@ -21,7 +21,7 @@ function SiteCard({ site, naam, lang, index, compact }: { site: SiteConfig; naam
     href = `https://${site.domain}`;
   }
 
-  const phrase = site.phrase;
+  const phrase = (lang === "en" && site.phraseEn) ? site.phraseEn : site.phrase;
   const displayNaam = naam || "...";
   const display = `${displayNaam} ${phrase.before} ${phrase.highlight}${phrase.after ? " " + phrase.after : ""}`;
 
@@ -45,7 +45,7 @@ function SiteCard({ site, naam, lang, index, compact }: { site: SiteConfig; naam
             </span>
           ))}
         </p>
-        {!compact && <p className="text-xs text-zinc-600 mt-0.5">{site.domain}</p>}
+        {!compact && <p className="text-xs text-zinc-600 mt-0.5">{(lang === "en" && site.domainEn) ? site.domainEn : site.domain}</p>}
       </div>
       <svg
         className={`shrink-0 text-zinc-600 transition-transform group-hover:translate-x-0.5 group-hover:text-zinc-400 ${compact ? "w-3 h-3" : "w-4 h-4"}`}
