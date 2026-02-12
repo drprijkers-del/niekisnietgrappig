@@ -64,8 +64,8 @@ function SiteCard({ site, naam, lang, index, compact }: { site: SiteConfig; naam
 
 export default function SiteDiscovery({ naam, lang, siteId, compact }: SiteDiscoveryProps) {
   const currentSite = ALL_SITES.find((s) => s.siteId === siteId);
-  const otherSites = ALL_SITES.filter((s) => s.siteId !== siteId && s.enabled);
   const isEN = lang === "en";
+  const otherSites = ALL_SITES.filter((s) => s.siteId !== siteId && s.enabled && (!isEN || s.hasEnglish));
 
   const allSitesFlat = compact ? otherSites : otherSites.filter((s) => !s.theme);
   const regularSites = allSitesFlat;
