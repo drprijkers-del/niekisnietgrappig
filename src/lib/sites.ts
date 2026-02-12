@@ -1,7 +1,7 @@
 // Central site configuration — the foundation of multi-domain support.
 // Every domain-specific string, key prefix, and behavior lives here.
 
-export type SiteId = "grappig" | "knor" | "honger" | "werken" | "liefste" | "lief";
+export type SiteId = "grappig" | "knor" | "honger" | "werken" | "liefste" | "lief" | "prins" | "prinses";
 
 export interface SiteConfig {
   siteId: SiteId;
@@ -11,6 +11,7 @@ export interface SiteConfig {
   siteName: string;
   hasEnglish: boolean;
   enabled: boolean; // false = parked, hidden from discovery & public UI
+  theme?: string; // e.g. "carnaval" — seasonal sites shown in separate section
   accentColor: string; // hex for highlight in OG images etc
 
   // Phrase display: "{naam} is niet grappig" or "{naam}, ga eens werken"
@@ -359,6 +360,105 @@ export const SITES: Record<SiteId, SiteConfig> = {
       description: "Stuur deze interventie door of kies een nieuw doelwit.",
       battleText: (winnerName) =>
         `${winnerName} moet het meest ff lief doen van ons 😤😂 Check de battle:`,
+    },
+  },
+  prins: {
+    siteId: "prins",
+    domain: "isgeenechteprins.pizza",
+    domainEn: null,
+    redisPrefix: "prins",
+    siteName: "Is Geen Echte Prins",
+    hasEnglish: false,
+    enabled: true,
+    theme: "carnaval",
+    accentColor: "#eab308",
+    phrase: { before: "is geen echte", highlight: "prins", after: "" },
+    og: {
+      subtitle: "OFFICIEEL BEWEZEN",
+      description: "Officieel vastgesteld. De kroon is nep.",
+      footerLabel: "isgeenechteprins",
+      footerTLD: ".pizza",
+      footerCTA: "Deel de waarheid",
+    },
+    meta: {
+      titleTemplate: "%s | Is Geen Echte Prins",
+      defaultTitle: "Is Geen Echte Prins",
+      description: "Het wetenschappelijk bewijs dat iemand geen echte carnavalsprins is.",
+    },
+    landing: {
+      subtitle: "Een carnavaleske onthulling",
+      title: "Wie is geen echte",
+      description: "Vul een naam in en ontdek wie zijn kroon niet verdient.",
+      placeholder: "Vul een naam in...",
+      button: "Ontmasker",
+    },
+    battle: {
+      resultTitle: "Battle Resultaten",
+      leastLabel: "Minst echte prins:",
+      viewsLabel: "bekeken",
+      ogDescription: (naam, score) =>
+        `${naam} is ${score}x bekeken en officieel geen echte prins. Ken jij iemand die nóg minder prins is?`,
+      cta: "Wie is er nóg minder prins?",
+      ctaQuestion: "Ken jij iemand die nóg minder een echte prins is?",
+    },
+    share: {
+      whatsappText: (naam) => `${naam} is geen echte prins 😂👑`,
+      copyText: (naam, url) =>
+        `${naam} is geen echte prins. De kroon is nep, officieel bewezen 👑😂 ${url}`,
+      heading: "Ken jij ook iemand die geen echte prins is?",
+      description: "Verspreid de waarheid of ontkroon je volgende slachtoffer.",
+      battleText: (winnerName) =>
+        `${winnerName} is officieel de minst echte prins van ons 😂👑 Check de battle:`,
+    },
+  },
+
+  prinses: {
+    siteId: "prinses",
+    domain: "isvandaagprinses.hot",
+    domainEn: null,
+    redisPrefix: "prinses",
+    siteName: "Is Vandaag Prinses",
+    hasEnglish: false,
+    enabled: true,
+    theme: "carnaval",
+    accentColor: "#ec4899",
+    phrase: { before: "is vandaag", highlight: "prinses", after: "" },
+    og: {
+      subtitle: "OFFICIEEL BEWEZEN",
+      description: "Officieel vastgesteld. De kroon past perfect.",
+      footerLabel: "isvandaagprinses",
+      footerTLD: ".hot",
+      footerCTA: "Deel het feest",
+    },
+    meta: {
+      titleTemplate: "%s | Is Vandaag Prinses",
+      defaultTitle: "Is Vandaag Prinses",
+      description: "Het wetenschappelijk bewijs dat iemand vandaag de carnavalsprinses is.",
+    },
+    landing: {
+      subtitle: "Een koninklijke carnavalsviering",
+      title: "Wie is vandaag",
+      description: "Vul een naam in en kroon de prinses van het carnaval.",
+      placeholder: "Vul een naam in...",
+      button: "Kroon haar",
+    },
+    battle: {
+      resultTitle: "Battle Resultaten",
+      leastLabel: "De echte prinses:",
+      viewsLabel: "bekeken",
+      ogDescription: (naam, score) =>
+        `${naam} is ${score}x bekeken en officieel vandaag prinses. Ken jij iemand die nóg meer prinses is?`,
+      cta: "Wie is er nóg meer prinses?",
+      ctaQuestion: "Ken jij iemand die ook prinses verdient te zijn?",
+    },
+    share: {
+      whatsappText: (naam) => `${naam} is vandaag prinses! 👸🎉`,
+      copyText: (naam, url) =>
+        `${naam} is vandaag officieel prinses van het carnaval 👸🎉 ${url}`,
+      heading: "Ken jij ook iemand die prinses verdient te zijn?",
+      description: "Deel het feest of kroon je volgende prinses.",
+      battleText: (winnerName) =>
+        `${winnerName} is officieel de prinses van ons carnaval 👸🎉 Check de battle:`,
     },
   },
 };

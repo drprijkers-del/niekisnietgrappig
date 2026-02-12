@@ -96,6 +96,24 @@ function randomStats(naam: string, lang: Lang, siteId: SiteId) {
     ];
   }
 
+  if (siteId === "prins") {
+    return [
+      { label: "Biertjes achterover geslagen", waarde: `${r(8, 35)}` },
+      { label: "Polonaises geleid", waarde: `${r(0, 2)}` },
+      { label: "Keer 'Alaaf!' geroepen", waarde: `${r(3, 15)}` },
+      { label: "Prins-waardigheid", waarde: `${r(1, 12)}/100` },
+    ];
+  }
+
+  if (siteId === "prinses") {
+    return [
+      { label: "Polonaises geleid", waarde: `${r(5, 20)}` },
+      { label: "Keer 'Alaaf!' geroepen", waarde: `${r(30, 80)}` },
+      { label: "Mensen aan het dansen", waarde: `${r(85, 100)}%` },
+      { label: "Prinses-score", waarde: `${r(95, 100)}/100` },
+    ];
+  }
+
   // lief
   return [
     { label: "Keer onaardig vandaag", waarde: `${r(5, 25)}` },
@@ -223,6 +241,66 @@ function getContentForSite(naam: string, siteId: SiteId) {
         `Geef ${naam} een knuffel. Nu. Niet straks. Nu.`,
         `Stuur bloemen. Of gewoon dit bewijs. Dat is eigenlijk mooier.`,
         `Zeg het hardop. Doe het vandaag. ${naam} verdient het.`,
+      ],
+    };
+  }
+
+  if (siteId === "prins") {
+    return {
+      redenen: [
+        { titel: `${naam} draagt een kroon, maar verdient 'm niet`, tekst: `Elke carnavalsprins verdient zijn titel. Behalve ${naam}. De kroon zit scheef, de cape is van de Action, en het volk kijkt de andere kant op.` },
+        { titel: "De polonaise stopt zodra hij begint", tekst: `${naam} roept 'Alaaf!' en de hele zaal wordt stil. Niet uit respect. Uit verwarring. Wie is dit? En waarom draagt hij een kroon?` },
+        { titel: `${naam} kent de carnavalsliedjes niet`, tekst: `Elke echte prins kent de teksten uit z'n hoofd. ${naam} bromt mee en hoopt dat niemand het merkt. Iedereen merkt het.` },
+        { titel: "De raad van elf heeft bezwaar", tekst: `Zelfs de raad van elf — die letterlijk alles goedkeurt — keek twijfelachtig toen ${naam} de sleutel kreeg. Eén lid stond op en liep weg.` },
+        { titel: `${naam} danst als een stijve plank`, tekst: `Een echte prins beweegt met het volk. ${naam} staat erbij als een lantaarnpaal met een biertje. Het volk danst eromheen.` },
+        { titel: "Het is officieel: geen echte prins", tekst: `Na uitgebreid onderzoek, polling onder het carnavalsvolk, en analyse van het polonaise-gedrag: ${naam} is geen echte prins. Nooit geweest. Wordt het ook niet.` },
+      ],
+      getuigenissen: [
+        { quote: `${naam} riep 'Alaaf!' op een verjaardag in juni. Niemand reageerde.`, auteur: "Buurtbewoner" },
+        { quote: `${naam} droeg een kroon naar de supermarkt. De caissière vroeg of het Koningsdag was.`, auteur: "Albert Heijn-medewerker" },
+        { quote: `De optocht reed door. ${naam} stond op de verkeerde hoek. Alleen.`, auteur: "Ooggetuige" },
+        { quote: `${naam} zei dat ie prins was. Ik dacht dat het een grap was.`, auteur: "Raad van elf-lid" },
+        { quote: `${naam}'s cape waaide weg. Niemand rende erachteraan.`, auteur: "Anoniem" },
+      ],
+      faq: [
+        { vraag: `Is ${naam} echt geen prins?`, antwoord: `Nee. En het is ook geen mening. Het is een feit. De kroon is nep, het volk herkent hem niet, en de polonaise stopt zodra hij meedoet.` },
+        { vraag: `Kan ${naam} ooit prins worden?`, antwoord: `Theoretisch. Maar dan moet ${naam} eerst de liedjes leren, leren dansen, en ophouden met doen alsof een biertje vasthouden een talent is.` },
+        { vraag: `Is dit niet gemeen?`, antwoord: `${naam} had gewoon een echte prins kunnen zijn. Dit is een publieke dienst.` },
+      ],
+      tips: [
+        `Neem ${naam} mee naar een carnavalsrepetitie. Desnoods onder dwang.`,
+        `Koop een échte prinsenmuts. Die van de Action telt niet.`,
+        `Stuur dit bewijs naar de rest. Groepsdruk werkt ook met carnaval.`,
+      ],
+    };
+  }
+
+  if (siteId === "prinses") {
+    return {
+      redenen: [
+        { titel: `${naam} is vandaag prinses. Punt.`, tekst: `Geen discussie. Geen stemming. De kroon past, de cape wappert, en het volk juicht. ${naam} is de prinses van het carnaval.` },
+        { titel: `Het ${naam}-effect op de dansvloer`, tekst: `${naam} stapt de zaal in en de polonaise begint vanzelf. De muziek speelt harder, de confetti vliegt, en iedereen danst. Dat is het ${naam}-effect.` },
+        { titel: "De Alaaf klinkt het hardst", tekst: `Als ${naam} 'Alaaf!' roept, trilt de hele kroeg. Het is geen schreeuw. Het is een koninklijk bevel. En iedereen gehoorzaamt.` },
+        { titel: "De kroon staat perfect", tekst: `Sommige mensen dragen een kroon. ${naam} ís een kroon. Het straalt, het schittert, en het maakt iedereen om haar heen een beetje koninklijker.` },
+        { titel: "Het carnavalsvolk heeft gestemd", tekst: `Unaniem. Zonder twijfel. Zonder hercount. ${naam} is de prinses. Het volk heeft gesproken en de raad van elf knielt.` },
+        { titel: "Het is officieel", tekst: `Na duizenden stemmen, uitgebreid feestonderzoek en een polonaise als bewijs: ${naam} is vandaag prinses. Morgen waarschijnlijk ook.` },
+      ],
+      getuigenissen: [
+        { quote: `${naam} riep 'Alaaf!' en de hele kroeg ging uit z'n dak.`, auteur: "Barkeeper" },
+        { quote: `De optocht was leuk. Toen ${naam} langskwam was het magisch.`, auteur: "Toeschouwer" },
+        { quote: `${naam} leidde de polonaise. Zelfs de burgemeester deed mee.`, auteur: "Raad van elf-lid" },
+        { quote: `Als iedereen was als ${naam}, was het elke dag carnaval.`, auteur: "Het volk" },
+        { quote: `${naam} gaf me haar confetti. Ik bewaar het nog steeds.`, auteur: "Dankbare feestvierder" },
+      ],
+      faq: [
+        { vraag: `Is ${naam} echt prinses?`, antwoord: `Ja. En deze website doet het nog tekort. In het echt is ${naam} nóg koninklijker.` },
+        { vraag: `Kan iemand meer prinses zijn?`, antwoord: `Theoretisch misschien. Maar het bewijs wijst één kant op. Eén kroon. Eén prinses.` },
+        { vraag: `Is dit niet overdreven?`, antwoord: `Nee. ${naam} verdient dit en meer. Deel het feest.` },
+      ],
+      tips: [
+        `Buig voor ${naam}. Nu. Niet straks. Nu.`,
+        `Gooi confetti. Of stuur gewoon dit bewijs. Dat is eigenlijk mooier.`,
+        `Roep 'Alaaf!' voor ${naam}. Doe het vandaag. Ze verdient het.`,
       ],
     };
   }
@@ -472,6 +550,8 @@ export function getUI(lang: Lang = "nl", siteId: SiteId = "grappig") {
     werken: "Een professionele interventie",
     liefste: "Een hartverwarmend onderzoek",
     lief: "Een dringende lief-interventie",
+    prins: "Een carnavaleske onthulling",
+    prinses: "Een koninklijke carnavalsviering",
   };
 
   // Site-specific hero descriptions (name result page)
@@ -482,6 +562,8 @@ export function getUI(lang: Lang = "nl", siteId: SiteId = "grappig") {
     werken: "Deze website bestaat omdat iemand in je omgeving zich ernstig zorgen maakt over je productiviteit. Of het gebrek daaraan.",
     liefste: "Deze website bestaat om de wereld te vertellen wat iedereen al wist. Maar nu met wetenschappelijk bewijs.",
     lief: "Deze website bestaat omdat iemand in je omgeving vindt dat je ff lief moet doen. En ze hebben gelijk.",
+    prins: "Deze website bestaat om te onthullen wie er wél een kroon draagt, maar géén echte carnavalsprins is.",
+    prinses: "Deze website bestaat om het carnavalsvolk te laten weten wie vandaag de kroon verdient.",
   };
 
   // Site-specific footer disclaimers
@@ -492,6 +574,8 @@ export function getUI(lang: Lang = "nl", siteId: SiteId = "grappig") {
     werken: (naam) => `Geen enkele ${naam} is beschadigd bij het maken van deze website. Alleen hun productiviteit.`,
     liefste: (naam) => `Geen enkele ${naam} is beschadigd bij het maken van deze website. Integendeel.`,
     lief: (naam) => `Geen enkele ${naam} is beschadigd bij het maken van deze website. Alleen hun reputatie.`,
+    prins: (naam) => `Geen enkele ${naam} is beschadigd bij het maken van deze website. Alleen hun kroon.`,
+    prinses: (naam) => `Geen enkele ${naam} is beschadigd bij het maken van deze website. Integendeel, ze is gekroond.`,
   };
 
   return {
@@ -513,6 +597,8 @@ export function getUI(lang: Lang = "nl", siteId: SiteId = "grappig") {
         if (siteId === "werken") return `6 redenen waarom ${naam} eens moet gaan werken`;
         if (siteId === "liefste") return `6 redenen waarom ${naam} de liefste is`;
         if (siteId === "lief") return `6 redenen waarom ${naam} ff lief moet doen`;
+        if (siteId === "prins") return `6 redenen waarom ${naam} geen echte prins is`;
+        if (siteId === "prinses") return `6 redenen waarom ${naam} vandaag prinses is`;
         return `6 redenen over ${naam}`;
       },
     },
@@ -527,6 +613,8 @@ export function getUI(lang: Lang = "nl", siteId: SiteId = "grappig") {
         if (siteId === "werken") return `${naam} deed een keer alsof...`;
         if (siteId === "liefste") return `${naam} deed iets heel liefs...`;
         if (siteId === "lief") return `Die keer dat ${naam}...`;
+        if (siteId === "prins") return `${naam} deed alsof ie prins was toen...`;
+        if (siteId === "prinses") return `${naam} was zo koninklijk toen...`;
         return `Welke reden missen we over ${naam}?`;
       },
       button: "Toevoegen aan dossier",
@@ -539,7 +627,7 @@ export function getUI(lang: Lang = "nl", siteId: SiteId = "grappig") {
       shareButton: () => `Deel via WhatsApp`,
       copied: "Link gekopieerd!",
       copyLink: "Kopieer link",
-      create: siteId === "liefste" ? "Kies een nieuwe lieverd" : "Kies een nieuw doelwit",
+      create: siteId === "liefste" ? "Kies een nieuwe lieverd" : siteId === "prinses" ? "Kroon een nieuwe prinses" : siteId === "prins" ? "Ontkroon het volgende slachtoffer" : "Kies een nieuw doelwit",
       shareText: (naam: string) => site.share.whatsappText(naam),
     },
     footer: {

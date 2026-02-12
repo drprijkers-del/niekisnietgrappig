@@ -675,6 +675,146 @@ const valentineEn = {
   ],
 };
 
+// Site-specific spice templates for carnaval sites
+const prinsSiteSpice: Partial<SpiceTemplates> = {
+  openings: [
+    "Breaking news vanuit de carnavalsoptocht.",
+    "Na uitgebreid kroningsonderzoek kunnen we bevestigen:",
+    "De resultaten zijn binnen. De kroon is nep.",
+    "Lieve carnavalsvierders, de prins is een bedrieger.",
+    "Het onderzoek is afgerond. Ga zitten. Nee, niet op de troon.",
+    "Dit is geen carnavalsgrap. Ironisch genoeg.",
+    "Spoiler: de kroon past niet.",
+    "De raad van elf liegt niet, in tegenstelling tot die prinsentitel.",
+    "Je voelde het al aankomen. Die neppe kroon.",
+    "Wij hebben het onderzocht zodat het carnavalsvolk het niet hoeft te doen.",
+  ],
+  verdicts: [
+    "Het is officieel: {naam} is geen echte prins.",
+    "{naam} droeg een kroon. Niemand boog. Business as usual.",
+    "Als carnaval een koninkrijk was, was {naam} verbannen.",
+    "{naam} en een echte prins zijn? Twee werelden die nooit botsen.",
+    "De raad van elf bevestigt: {naam} is allergisch voor prinselijk gedrag.",
+    "{naam} is zo nep dat het bijna weer echt is. Bijna.",
+    "{naam}: de reden dat ze kronen met een ketting vastmaken.",
+  ],
+  contextWith: [
+    "{naam}'s {w}-prins-gedrag? Zelfs de nar wil weg.",
+    "De {w}-prinselijkheid van {naam} is als wifi in de kelder: geen verbinding.",
+    "{naam} denkt prins te zijn van {w}. {naam} denkt veel.",
+    "Als {w} een optocht was, zou {naam} de verkeerde kant oplopen.",
+    "{naam}'s {w}-kroon zit zo scheef, de Schievetansen is jaloers.",
+    "Misschien moet {naam} zich focussen op {w} in plaats van prinsen spelen.",
+    "Over {w} heeft {naam} precies één talent: de verkeerde cape dragen.",
+  ],
+  contextWithout: [
+    "Het maakt niet uit bij welk feest: altijd geen prins.",
+    "In élke kroeg even nep. Consistent, dat wel.",
+    "Geen enkele optocht is veilig voor {naam}'s nep-prinsgedrag.",
+    "Of het nu gaat om vastelaovend, carnaval, of een feest: geen prins.",
+    "De stilte na {naam}'s 'Alaaf!' is oorverdovend.",
+    "In elke zaal dezelfde energie: ontkroning.",
+    "Het maakt niet uit of er een prinsenwagen is of niet. Het helpt niet.",
+    "Zelfs de trompetten stoppen als {naam} binnenloopt.",
+    "Het is structureel. Niet incidenteel. Structureel nep.",
+  ],
+  fakeStats: [
+    "Gemiddelde tijd voordat de kroon afvalt: 4,7 seconden.",
+    "9 van de 10 raadsleden doen alsof ze moeten hoesten.",
+    "Keer 'Alaaf!' geroepen: 12. Keer dat iemand reageerde: 0.",
+    "Het nep-buig-percentage in de directe omgeving: 97%.",
+    "Prins-score op een schaal van 1-10: carnavals-knor.",
+    "Laatste keer dat {naam} écht prins was: foutmelding.",
+    "Kronen verloren per optocht: 6. Waardigheid verloren: ook 6.",
+    "De nep-prins-index staat op: gevaarlijk hoog.",
+    "Percentage optochten zonder afgang: 3%.",
+    "Wetenschappelijke classificatie: prins-deficiëntie graad 3.",
+  ],
+  closings: [
+    "Deel dit voordat {naam} weer een kroon opzet.",
+    "Stuur dit naar iemand die het moet horen. Alaaf!",
+    "De waarheid doet pijn. Net als die neppe kroon.",
+    "Je kunt nu verder feesten. Zonder {naam} als prins.",
+    "Dit was een carnavaleske dienstaankondiging.",
+    "{naam} speelt al genoeg prins. Verspreid jij de waarheid.",
+    "Als je gelachen hebt om deze pagina, ben je al prinser dan {naam}.",
+    "Wie je ook bent: {naam} moet stoppen met prinsen.",
+    "Bewaar deze link voor de volgende optocht.",
+    "De raad van elf heeft gesproken. De kroon gaat af.",
+  ],
+};
+
+const prinsesSiteSpice: Partial<SpiceTemplates> = {
+  openings: [
+    "Breaking news vanuit het carnavalspaleis.",
+    "Na uitgebreid kroningsonderzoek kunnen we bevestigen:",
+    "De resultaten zijn binnen en het is mooier dan verwacht.",
+    "Lieve carnavalsvierders, maak je confetti klaar.",
+    "Het onderzoek is afgerond. Bereid je voor op koninklijkheid.",
+    "Dit is geen sprookje. Maar het voelt er wel zo.",
+    "Spoiler: de kroon past perfect.",
+    "Het carnavalsvolk liegt niet. Dit keer is het goed nieuws.",
+    "Je voelde het al aankomen. Die koninklijke energie.",
+    "Wij hebben het onderzocht en het resultaat is feestelijk.",
+  ],
+  verdicts: [
+    "Het is officieel: {naam} is vandaag prinses. Alaaf!",
+    "{naam} liep de zaal in. Iedereen boog. Spontaan.",
+    "Als carnaval een koninkrijk was, regeert {naam}. Elke. Dag.",
+    "{naam} en carnavalsprinses? Letterlijk onafscheidelijk.",
+    "Het volk bevestigt: {naam} is de meest koninklijke prinses ooit.",
+    "{naam}: de reden dat carnaval het mooiste feest is.",
+  ],
+  contextWith: [
+    "{naam} en {w}? De hele zaal juicht.",
+    "De {w}-koninklijkheid van {naam} is als confetti in februari: magisch.",
+    "{naam} regeert over {w}. En het is prachtig. Altijd.",
+    "Als {w} een optocht was, zou {naam} op de mooiste wagen staan.",
+    "{naam}'s {w}-uitstraling is zo koninklijk, zelfs de burgemeester knielt.",
+    "{naam} maakt {w} beter gewoon door er te zijn. Alaaf!",
+    "Over {w} heeft {naam} precies één aanpak: koninklijk.",
+  ],
+  contextWithout: [
+    "Het maakt niet uit bij welk feest: altijd prinses.",
+    "In élke zaal even koninklijk. Consistent, dat wel.",
+    "Geen enkel moment is zonder feestelijkheid.",
+    "Of het nu gaat om de optocht, het bal, of de kroeg: altijd prinses.",
+    "De vreugde na een ontmoeting met {naam} is voelbaar.",
+    "In elke polonaise dezelfde energie: koninklijk.",
+    "Het maakt niet uit of er confetti is of niet. {naam} straalt toch.",
+    "Zelfs de DJ draait harder als {naam} binnenloopt.",
+    "Het is structureel. Niet incidenteel. Structureel koninklijk.",
+  ],
+  fakeStats: [
+    "Gemiddelde polonaise-lengte met {naam}: 4,7 kilometer.",
+    "9 van de 10 carnavalsvierders buigen spontaan.",
+    "Keer 'Alaaf!' geroepen voor {naam}: ontelbaar.",
+    "Het glimlach-percentage in de directe omgeving: 100%.",
+    "Prinses-score op een schaal van 1-10: oneindig.",
+    "Laatste keer dat iemand niet danste bij {naam}: nooit.",
+    "Confetti per uur: 6 kilo. Polonaises per uur: ook 6.",
+    "De feest-index staat op: koninklijk hoog.",
+    "Percentage optochten met staande ovatie: 100%.",
+    "Wetenschappelijke classificatie: koninklijkheid graad oneindig.",
+  ],
+  closings: [
+    "Deel dit voordat het carnaval voorbij is.",
+    "Stuur dit naar {naam}. Die verdient het. Alaaf!",
+    "De waarheid is feestelijk. Net als {naam}.",
+    "Je kunt nu verder feesten. Het is een stukje koninklijker geworden.",
+    "Dit was een publieke kroning.",
+    "{naam} verspreidt al genoeg feestelijkheid. Verspreid jij dit bericht.",
+    "Als je gedanst hebt om deze pagina, bedank {naam}.",
+    "Wie je ook bent: {naam} maakt het carnaval beter.",
+    "Bewaar deze link voor als je een glimlach nodig hebt.",
+    "Het volk heeft gesproken. {naam} is officieel prinses. Alaaf!",
+  ],
+};
+
+// Register carnaval spice in siteSpice
+siteSpice.prins = prinsSiteSpice;
+siteSpice.prinses = prinsesSiteSpice;
+
 const templates = { nl, en };
 
 export function getSpiceLines(
