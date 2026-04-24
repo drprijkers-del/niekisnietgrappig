@@ -4,6 +4,7 @@ import { useState } from "react";
 import { getUI, Lang } from "@/lib/content";
 import { getSessionId } from "@/lib/session";
 import { SiteId, SITES } from "@/lib/sites";
+import { getKoningsdagShare } from "@/lib/koningsdag";
 
 function getHomeUrl(siteId: SiteId) {
   if (typeof window === "undefined") return "/";
@@ -82,15 +83,21 @@ export default function ShareButtons({
   lang,
   groupId,
   siteId = "grappig",
+  isKoningsdag,
 }: {
   naam: string;
   lang: Lang;
   groupId?: string;
   siteId?: SiteId;
+  isKoningsdag?: boolean;
 }) {
   const [copied, setCopied] = useState(false);
   const site = SITES[siteId];
-  const ui = getUI(lang, siteId).share;
+  const baseUi = getUI(lang, siteId).share;
+  const kdShare = isKoningsdag ? getKoningsdagShare(siteId) : null;
+  const ui = kdShare
+    ? { ...baseUi, heading: kdShare.heading, description: kdShare.description, shareText: kdShare.whatsappText }
+    : baseUi;
 
   const isLocal = typeof window !== "undefined" && ["localhost", "127.0.0.1"].includes(window.location.hostname);
 
@@ -118,7 +125,7 @@ export default function ShareButtons({
   const handleCopy = async () => {
     trackShare();
     const shareUrl = getShareUrl("copy", siteId, groupId);
-    const copyText = site.share.copyText(naam, shareUrl);
+    const copyText = kdShare ? kdShare.copyText(naam, shareUrl) : site.share.copyText(naam, shareUrl);
     try {
       await navigator.clipboard.writeText(copyText);
     } catch {

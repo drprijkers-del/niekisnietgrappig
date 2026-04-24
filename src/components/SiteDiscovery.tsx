@@ -7,9 +7,10 @@ interface SiteDiscoveryProps {
   lang: "nl" | "en";
   siteId: SiteId;
   compact?: boolean;
+  isKoningsdag?: boolean;
 }
 
-function SiteCard({ site, naam, lang, index, compact }: { site: SiteConfig; naam?: string; lang: "nl" | "en"; index: number; compact?: boolean }) {
+function SiteCard({ site, naam, lang, index, compact, isKoningsdag }: { site: SiteConfig; naam?: string; lang: "nl" | "en"; index: number; compact?: boolean; isKoningsdag?: boolean }) {
   let href: string;
   if (naam) {
     const lowerNaam = naam.toLowerCase();
@@ -21,7 +22,12 @@ function SiteCard({ site, naam, lang, index, compact }: { site: SiteConfig; naam
     href = `https://${site.domain}`;
   }
 
-  const phrase = (lang === "en" && site.phraseEn) ? site.phraseEn : site.phrase;
+  const kdPhrase = isKoningsdag && site.siteId === "prins"
+    ? { before: "is geen echte", highlight: "Koning", after: "" }
+    : isKoningsdag && site.siteId === "prinses"
+      ? { before: "is vandaag", highlight: "Prinses", after: "van Oranje" }
+      : null;
+  const phrase = kdPhrase ?? ((lang === "en" && site.phraseEn) ? site.phraseEn : site.phrase);
   const displayNaam = naam || "...";
   const display = `${displayNaam} ${phrase.before} ${phrase.highlight}${phrase.after ? " " + phrase.after : ""}`;
 
@@ -62,7 +68,7 @@ function SiteCard({ site, naam, lang, index, compact }: { site: SiteConfig; naam
   );
 }
 
-export default function SiteDiscovery({ naam, lang, siteId, compact }: SiteDiscoveryProps) {
+export default function SiteDiscovery({ naam, lang, siteId, compact, isKoningsdag }: SiteDiscoveryProps) {
   const currentSite = ALL_SITES.find((s) => s.siteId === siteId);
   const isEN = lang === "en";
   const otherSites = ALL_SITES.filter((s) => s.siteId !== siteId && s.enabled && (!isEN || s.hasEnglish));
@@ -79,7 +85,9 @@ export default function SiteDiscovery({ naam, lang, siteId, compact }: SiteDisco
   }
 
   const themeLabels: Record<string, { nl: string; en: string; emoji: string }> = {
-    carnaval: { nl: "Carnaval Specials", en: "Carnival Specials", emoji: "🎭" },
+    carnaval: isKoningsdag
+      ? { nl: "Koningsdag Specials", en: "King's Day Specials", emoji: "👑" }
+      : { nl: "Carnaval Specials", en: "Carnival Specials", emoji: "🎭" },
   };
 
   const ghostLabels: Record<string, { nl: string; en: string }> = {
@@ -110,7 +118,7 @@ export default function SiteDiscovery({ naam, lang, siteId, compact }: SiteDisco
 
         <div className={`grid sm:grid-cols-2 lg:grid-cols-3 ${compact ? "gap-2" : "gap-3"}`}>
           {regularSites.map((site, i) => (
-            <SiteCard key={site.siteId} site={site} naam={naam} lang={lang} index={i} compact={compact} />
+            <SiteCard key={site.siteId} site={site} naam={naam} lang={lang} index={i} compact={compact} isKoningsdag={isKoningsdag} />
           ))}
           {naam && currentSite && (
             <a
@@ -151,7 +159,7 @@ export default function SiteDiscovery({ naam, lang, siteId, compact }: SiteDisco
               </p>
               <div className={`grid sm:grid-cols-2 lg:grid-cols-3 ${compact ? "gap-2" : "gap-3"}`}>
                 {sites.map((site, i) => (
-                  <SiteCard key={site.siteId} site={site} naam={naam} lang={lang} index={regularSites.length + i} compact={compact} />
+                  <SiteCard key={site.siteId} site={site} naam={naam} lang={lang} index={regularSites.length + i} compact={compact} isKoningsdag={isKoningsdag} />
                 ))}
               </div>
             </div>

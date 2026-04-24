@@ -12,6 +12,16 @@ import ViewTracker from "@/components/ViewTracker";
 import GroupCheck from "@/components/GroupCheck";
 import SiteDiscovery from "@/components/SiteDiscovery";
 import SuggestBox from "@/components/SuggestBox";
+import {
+  getKoningsdagFromCookies,
+  getKoningsdagContent,
+  getKoningsdagHero,
+  getKoningsdagPhrase,
+  getKoningsdagReasonsHeading,
+  getKoningsdagLines,
+  KONINGSDAG_ACCENT,
+} from "@/lib/koningsdag";
+import KoningsdagBanner from "@/components/KoningsdagBanner";
 
 // Simple group ID validation (alphanumeric + hyphens, max 24 chars)
 function validateGroupId(g: unknown): string | null {
@@ -42,6 +52,9 @@ export async function generateMetadata({
     ? groupId.split(/-+/).map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")
     : null;
 
+  const isKoningsdag = await getKoningsdagFromCookies(site.siteId);
+  const kdPhraseMeta = isKoningsdag ? getKoningsdagPhrase(site.siteId) : null;
+
   const ogDescription = (() => {
     if (groupName) {
       return isEN
@@ -49,11 +62,21 @@ export async function generateMetadata({
         : `Wie in ${groupName} scoort het hoogst? Open om te ontdekken!`;
     }
     if (site.siteId === "prins") {
+      if (isKoningsdag) {
+        if (ref === "wa") return `Iemand heeft ${naam} ontmaskerd op Koningsdag. De échte Koning lacht 👑🧡`;
+        if (ref === "copy") return `${naam} is officieel geen echte Koning. Willem-Alexander slaapt rustig 👑`;
+        return `Koningsdag-decreet. De kroon is nep. Het bewijs is officieel.`;
+      }
       if (ref === "wa") return `Iemand heeft ${naam} aangemeld. Het bewijs is vernietigend 👑`;
       if (ref === "copy") return `${naam} is officieel ontmaskerd. De jury heeft gesproken 👑`;
       return `Officieel onderzocht. De kroon is nep.`;
     }
     if (site.siteId === "prinses") {
+      if (isKoningsdag) {
+        if (ref === "wa") return `Iemand heeft ${naam} gekroond op Koningsdag. Amalia houdt het plekje vrij 👸🧡`;
+        if (ref === "copy") return `${naam} is vandaag Prinses van Oranje. Officieel gekroond 👸`;
+        return `Koningsdag-kroning. De tiara past. Amalia keurt goed.`;
+      }
       if (ref === "wa") return `Iemand heeft ${naam} genomineerd. Het resultaat is hilarisch 👸`;
       if (ref === "copy") return `${naam} is officieel gekroond. Het bewijs ligt er 👸`;
       return `Officieel onderzocht. De kroon past perfect.`;
@@ -73,7 +96,7 @@ export async function generateMetadata({
       : `Officieel onderzocht en vastgelegd.`;
   })();
 
-  const phrase = site.phrase;
+  const phrase = kdPhraseMeta ?? site.phrase;
   const ogTitle = isEN
     ? (site.siteId === "werken"
         ? `${naam}, you should be working.`
@@ -443,13 +466,33 @@ export default async function NaamPage({ params, searchParams }: Props) {
   }
 
   const spice = validateSpice(w);
-  const { redenen, statistieken, getuigenissen, faq, tips } = getContent(naam, lang, siteId);
+  const baseContent = getContent(naam, lang, siteId);
   const ui = getUI(lang, siteId);
-  const lines = getSpiceLines(naam, spice, lang, siteId);
+  const baseLines = getSpiceLines(naam, spice, lang, siteId);
   const customSubtitle = getCustomSubtitle(naam, siteId);
+  const isKoningsdag = await getKoningsdagFromCookies(siteId);
+  const lines = (isKoningsdag ? getKoningsdagLines(naam, siteId) : null) ?? baseLines;
 
-  // Use site accent color for highlight
-  const accentColor = site.accentColor;
+  // Koningsdag content overlay (alleen prins/prinses, tijdens het venster)
+  const kdContent = isKoningsdag ? getKoningsdagContent(naam, siteId) : null;
+  const kdHero = isKoningsdag ? getKoningsdagHero(siteId) : null;
+  const kdPhrase = isKoningsdag ? getKoningsdagPhrase(siteId) : null;
+  const kdReasonsHeading = isKoningsdag ? getKoningsdagReasonsHeading(siteId, naam) : null;
+
+  const redenen = kdContent?.redenen ?? baseContent.redenen;
+  const statistieken = kdContent?.statistieken ?? baseContent.statistieken;
+  const getuigenissen = kdContent?.getuigenissen ?? baseContent.getuigenissen;
+  const faq = kdContent?.faq ?? baseContent.faq;
+  const tips = kdContent?.tips ?? baseContent.tips;
+
+  const heroBefore = kdPhrase ? kdPhrase.before : ui.hero.before;
+  const heroHighlight = kdPhrase ? kdPhrase.highlight : ui.hero.highlight;
+  const heroAfter = kdPhrase ? kdPhrase.after : ui.hero.after;
+  const heroDescription = kdHero ? kdHero.description : ui.hero.description;
+  const reasonsSubheading = kdReasonsHeading ?? ui.reasons.subheading(naam);
+
+  // Use site accent color for highlight (oranje tijdens Koningsdag voor prins/prinses)
+  const accentColor = isKoningsdag ? KONINGSDAG_ACCENT : site.accentColor;
   const isPositive = siteId === "liefste"; // positive sites use different emoji/tone
   const isValentineSpice = spice === "valentijn" || spice === "valentine";
   const isFeb14 = (() => { const d = new Date(); return d.getMonth() === 1 && d.getDate() === 14; })();
@@ -458,6 +501,7 @@ export default async function NaamPage({ params, searchParams }: Props) {
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-[#ededed] font-sans">
       <ViewTracker naam={naam} />
+      {isKoningsdag && <KoningsdagBanner />}
       {site.hasEnglish && <LanguageToggle lang={lang} />}
 
       {/* Hero */}
@@ -467,13 +511,16 @@ export default async function NaamPage({ params, searchParams }: Props) {
           <TopShared lang={lang} />
         </div>
         <div className="relative z-10 animate-fade-in-up">
-          <p className="mb-4 text-sm font-mono uppercase tracking-[0.3em] text-zinc-500">
-            {ui.hero.subtitle}
+          <p
+            className="mb-4 text-sm font-mono uppercase tracking-[0.3em] text-zinc-500"
+            style={isKoningsdag ? { color: KONINGSDAG_ACCENT } : undefined}
+          >
+            {kdHero ? kdHero.subtitle : ui.hero.subtitle}
           </p>
           <h1 className="text-4xl font-bold tracking-tight sm:text-7xl md:text-8xl landscape:text-3xl landscape:sm:text-5xl">
-            {naam} {ui.hero.before}{" "}
+            {naam} {heroBefore}{" "}
             <span className="relative inline-block">
-              <span className="animate-pulse-red font-black" style={siteId !== "grappig" ? { color: accentColor } : undefined}>{ui.hero.highlight}</span>
+              <span className="animate-pulse-red font-black" style={siteId !== "grappig" || isKoningsdag ? { color: accentColor } : undefined}>{heroHighlight}</span>
               {isValentine && (
                 <>
                   {[
@@ -505,7 +552,7 @@ export default async function NaamPage({ params, searchParams }: Props) {
                 </>
               )}
             </span>{" "}
-            {ui.hero.after}
+            {heroAfter}
           </h1>
           {customSubtitle && (
             <p className="mt-2 text-sm sm:text-base text-zinc-500 italic">
@@ -513,7 +560,7 @@ export default async function NaamPage({ params, searchParams }: Props) {
             </p>
           )}
           <p className="mt-6 max-w-xl mx-auto text-lg text-zinc-400 leading-relaxed">
-            {ui.hero.description}
+            {heroDescription}
           </p>
           <div className="mt-10 flex w-full max-w-sm mx-auto flex-col gap-3">
             {site.theme === "carnaval" ? (
@@ -524,6 +571,7 @@ export default async function NaamPage({ params, searchParams }: Props) {
                   label={ui.share.shareButton()}
                   groupId={groupId || undefined}
                   siteId={siteId}
+                  isKoningsdag={isKoningsdag}
                 />
                 <a
                   href="#bewijs"
@@ -546,6 +594,7 @@ export default async function NaamPage({ params, searchParams }: Props) {
                   label={ui.share.shareButton()}
                   groupId={groupId || undefined}
                   siteId={siteId}
+                  isKoningsdag={isKoningsdag}
                 />
               </>
             )}
@@ -596,12 +645,20 @@ export default async function NaamPage({ params, searchParams }: Props) {
         </div>
       </section>
 
-      {/* Mid-page share CTA (carnaval) */}
+      {/* Mid-page share CTA (carnaval / koningsdag) */}
       {site.theme === "carnaval" && (
         <section className="py-8 px-6">
           <div className="mx-auto max-w-sm text-center">
-            <p className="text-sm text-zinc-500 mb-3">{siteId === "prins" ? "Ken jij ook zo'n nepprins?" : "Ken jij ook iemand die gekroond moet worden?"}</p>
-            <ShareButton naam={naam} lang={lang} label={ui.share.shareButton()} groupId={groupId || undefined} siteId={siteId} />
+            <p className="text-sm text-zinc-500 mb-3">
+              {isKoningsdag
+                ? (siteId === "prins"
+                    ? "Ken jij nog iemand die de Kroon niet verdient?"
+                    : "Ken jij nog iemand die vandaag Prinses verdient te zijn?")
+                : (siteId === "prins"
+                    ? "Ken jij ook zo'n nepprins?"
+                    : "Ken jij ook iemand die gekroond moet worden?")}
+            </p>
+            <ShareButton naam={naam} lang={lang} label={ui.share.shareButton()} groupId={groupId || undefined} siteId={siteId} isKoningsdag={isKoningsdag} />
           </div>
         </section>
       )}
@@ -610,7 +667,7 @@ export default async function NaamPage({ params, searchParams }: Props) {
       <section id="bewijs" className="py-24 px-6">
         <div className="mx-auto max-w-3xl">
           <h2 className="mb-4 text-center text-sm font-mono uppercase tracking-[0.3em] text-zinc-500">{ui.reasons.heading}</h2>
-          <h3 className="text-center text-3xl font-bold sm:text-4xl">{ui.reasons.subheading(naam)}</h3>
+          <h3 className="text-center text-3xl font-bold sm:text-4xl">{reasonsSubheading}</h3>
           <div className="mt-16 space-y-12">
             {redenen.map((reden, i) => (
               <div key={i} className="animate-slide-in group rounded-2xl border border-zinc-800 bg-zinc-900/50 p-8 transition-all hover:border-zinc-600 hover:bg-zinc-900" style={{ animationDelay: `${i * 0.1}s` }}>
@@ -686,10 +743,10 @@ export default async function NaamPage({ params, searchParams }: Props) {
       </section>
 
       {/* CTA */}
-      <ShareButtons naam={naam} lang={lang} groupId={groupId || undefined} siteId={siteId} />
+      <ShareButtons naam={naam} lang={lang} groupId={groupId || undefined} siteId={siteId} isKoningsdag={isKoningsdag} />
 
       {/* Cross-site discovery */}
-      <SiteDiscovery naam={naam} lang={lang} siteId={siteId} />
+      <SiteDiscovery naam={naam} lang={lang} siteId={siteId} isKoningsdag={isKoningsdag} />
 
       {/* Suggestion box */}
       <SuggestBox

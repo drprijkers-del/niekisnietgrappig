@@ -44,14 +44,16 @@ export function middleware(request: NextRequest) {
   const url = request.nextUrl.clone();
   const hostname = request.headers.get("host") || "";
 
-  // ── Dev overrides: ?_site=xxx / ?_lang=xx → set cookies, redirect ──
+  // ── Dev overrides: ?_site=xxx / ?_lang=xx / ?_kd=1|0 → set cookies, redirect ──
   const siteParam = url.searchParams.get("_site");
   const langParam = url.searchParams.get("_lang");
+  const kdParam = url.searchParams.get("_kd");
 
-  if (siteParam || langParam) {
+  if (siteParam || langParam || kdParam !== null) {
     const clean = request.nextUrl.clone();
     clean.searchParams.delete("_site");
     clean.searchParams.delete("_lang");
+    clean.searchParams.delete("_kd");
     // Carry _lang as the regular lang param for the page
     if (langParam) clean.searchParams.set("lang", langParam);
 
@@ -61,6 +63,13 @@ export function middleware(request: NextRequest) {
     }
     if (langParam) {
       response.cookies.set("pl_lang", langParam, { path: "/", httpOnly: false, maxAge: 86400 });
+    }
+    if (kdParam !== null) {
+      if (kdParam === "") {
+        response.cookies.delete("pl_kd");
+      } else {
+        response.cookies.set("pl_kd", kdParam, { path: "/", httpOnly: false, maxAge: 86400 });
+      }
     }
     return response;
   }

@@ -4,17 +4,20 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { SiteId, SITES } from "@/lib/sites";
 import { toSlug } from "@/lib/utils";
+import { KONINGSDAG_ACCENT } from "@/lib/koningsdag";
 
 export default function NameForm({
   placeholder,
   button,
   lang,
   siteId = "grappig",
+  isKoningsdag,
 }: {
   placeholder: string;
   button: string;
   lang: string;
   siteId?: SiteId;
+  isKoningsdag?: boolean;
 }) {
   const [naam, setNaam] = useState("");
   const [spice, setSpice] = useState("");
@@ -22,6 +25,7 @@ export default function NameForm({
   const [error, setError] = useState("");
   const router = useRouter();
   const site = SITES[siteId];
+  const buttonColor = isKoningsdag ? KONINGSDAG_ACCENT : site.accentColor;
 
   // Validate name: only letters, spaces, apostrophes, dots, hyphens
   const isValidName = (name: string) => /^[\p{L}\s'.-]+$/u.test(name);
@@ -117,7 +121,7 @@ export default function NameForm({
       <button
         type="submit"
         className="w-full rounded-full px-8 py-3 font-medium text-white transition-all hover:opacity-90"
-        style={{ backgroundColor: site.accentColor }}
+        style={{ backgroundColor: buttonColor }}
       >
         {button}
       </button>
